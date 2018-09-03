@@ -16,7 +16,7 @@ public abstract class PhotoData {
 
     protected String mUri;
     protected String mLocalUri;
-    protected Bitmap mBitmap;
+    protected volatile Bitmap mBitmap;
 
     protected int mState;
     protected int mTargetState;

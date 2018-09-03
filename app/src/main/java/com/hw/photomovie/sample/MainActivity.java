@@ -1,6 +1,7 @@
 package com.hw.photomovie.sample;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.database.DataSetObserver;
@@ -22,10 +23,10 @@ import com.hw.photomovie.PhotoMovie;
 import com.hw.photomovie.PhotoMovieFactory;
 import com.hw.photomovie.PhotoMoviePlayer;
 import com.hw.photomovie.dynamic.DynamicLoader;
-import com.hw.photomovie.model.PhotoInfo;
-import com.hw.photomovie.render.GLMovieRenderer;
 import com.hw.photomovie.model.PhotoData;
+import com.hw.photomovie.model.PhotoInfo;
 import com.hw.photomovie.model.PhotoSource;
+import com.hw.photomovie.render.GLMovieRenderer;
 import com.hw.photomovie.sample.activityAnim.AnimActivity;
 import com.hw.photomovie.segment.MovieSegment;
 import com.hw.photomovie.timer.IMovieTimer;
@@ -59,7 +60,7 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
         glSurfaceView = new GLSurfaceView(this);
         glContainer.addView(glSurfaceView);
 //        DynamicLoader.loadSegmentsFromFile(this,"/mnt/sdcard2/pm.jar","com.hw.photomovietest.app.plugin.PluginSegment");
-        final PhotoMovie photoMovie = PhotoMovieFactory.generatePhotoMovie(genPhotoSource(), PhotoMovieFactory.PhotoMovieType.THAW);
+        final PhotoMovie photoMovie = PhotoMovieFactory.generatePhotoMovie(genPhotoSource(this), PhotoMovieFactory.PhotoMovieType.THAW);
         final GLMovieRenderer glMovieRenderer = new GLMovieRenderer(glSurfaceView);
         photoMoviePlayer = new PhotoMoviePlayer();
         photoMoviePlayer.setMovieRenderer(glMovieRenderer);
@@ -156,7 +157,7 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
         movieSpinner.setOnItemSelectedListener(this);
     }
 
-    public static PhotoSource genPhotoSource() {
+    public static PhotoSource genPhotoSource(Context context) {
         List<PhotoData> dataList = new ArrayList<PhotoData>();
         {
             PhotoInfo photoInfo = new PhotoInfo();
@@ -243,11 +244,11 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
                         this,
                         jarFile.getAbsolutePath(),
                         "com.hw.dynamicdemo.DynamicWindowSegment");
-                photoMovie = new PhotoMovie(genPhotoSource(),movieSegments);
+                photoMovie = new PhotoMovie(genPhotoSource(this),movieSegments);
             }
         } else{
             PhotoMovieFactory.PhotoMovieType photoMovieType = PhotoMovieFactory.PhotoMovieType.values()[id];
-            photoMovie = PhotoMovieFactory.generatePhotoMovie(genPhotoSource(), photoMovieType);
+            photoMovie = PhotoMovieFactory.generatePhotoMovie(genPhotoSource(this), photoMovieType);
         }
 
         photoMoviePlayer.stop();
