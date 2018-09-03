@@ -1,9 +1,11 @@
-package com.hw.photomovie.model;
+package com.hw.photomovie.sample;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
 import android.view.View;
+import com.hw.photomovie.model.ErrorReason;
+import com.hw.photomovie.model.PhotoData;
 import com.hw.photomovie.util.AppResources;
 import com.hw.photomovie.util.MLog;
 import com.hw.photomovie.util.Utils;
@@ -81,7 +83,7 @@ public class UilPhotoData extends PhotoData implements ImageLoadingListener, Ima
         if (mOnDataLoadListener != null) {
             ErrorReason errorReason = null;
             if (failReason != null) {
-                errorReason = new ErrorReason(failReason.getType(), failReason.getCause());
+                errorReason = new ErrorReason(failReason.getCause(), failReason.getType().name());
             }
             mOnDataLoadListener.onError(this, errorReason);
         }

@@ -26,7 +26,6 @@ import com.hw.photomovie.model.PhotoInfo;
 import com.hw.photomovie.render.GLMovieRenderer;
 import com.hw.photomovie.model.PhotoData;
 import com.hw.photomovie.model.PhotoSource;
-import com.hw.photomovie.model.UilPhotoData;
 import com.hw.photomovie.sample.activityAnim.AnimActivity;
 import com.hw.photomovie.segment.MovieSegment;
 import com.hw.photomovie.timer.IMovieTimer;

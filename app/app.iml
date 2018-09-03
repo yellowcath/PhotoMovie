@@ -105,7 +105,7 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 27 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Gradle: __local_aars__:F.\projects\PhotoMovie\library\libs\universal-image-loader-1.9.3-with-sources.jar:unspecified@jar" level="project" />
+    <orderEntry type="library" name="Gradle: com.nostra13.universalimageloader:universal-image-loader:1.9.3@jar" level="project" />
     <orderEntry type="module" module-name="library" />
   </component>
 </module>
