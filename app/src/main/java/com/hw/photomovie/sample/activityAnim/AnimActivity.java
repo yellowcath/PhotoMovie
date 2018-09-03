@@ -43,7 +43,7 @@ public class AnimActivity extends Activity{
         segments.add(new ActivityAnimSegment().setDuration(15000));
         PhotoMovie<Activity> photoMovie = new PhotoMovie<Activity>(new PhotoSource(null),segments);
 
-        final PhotoMoviePlayer photoMoviePlayer = new PhotoMoviePlayer();
+        final PhotoMoviePlayer photoMoviePlayer = new PhotoMoviePlayer(getApplicationContext());
         photoMoviePlayer.setMovieRenderer(new ActivityMovieRenderer().setPainter(this));
         photoMoviePlayer.setMusic(getResources().openRawResourceFd(R.raw.bg).getFileDescriptor());
         photoMoviePlayer.setDataSource(photoMovie);

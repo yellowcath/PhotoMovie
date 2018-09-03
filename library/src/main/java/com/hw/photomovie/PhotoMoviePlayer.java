@@ -11,6 +11,7 @@ import com.hw.photomovie.render.MovieRenderer;
 import com.hw.photomovie.segment.MovieSegment;
 import com.hw.photomovie.timer.IMovieTimer;
 import com.hw.photomovie.timer.MovieTimer;
+import com.hw.photomovie.util.AppResources;
 import com.hw.photomovie.util.MLog;
 
 import java.io.FileDescriptor;
@@ -47,8 +48,9 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
 
     private OnPreparedListener mOnPreparedListener;
 
-    public PhotoMoviePlayer() {
+    public PhotoMoviePlayer(Context context) {
         mMusicPlayer = new MusicPlayer();
+        AppResources.getInstance().init(context.getResources());
     }
 
     public void setDataSource(PhotoMovie photoMovie) {
