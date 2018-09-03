@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="movies">
+        <item>Thaw</item>
+        <item>Scale</item>
+        <item>ScaleTrans_subtitle</item>
+        <item>Window</item>
+        <item>OldMpvie</item>
+    </string-array>
+</resources>
