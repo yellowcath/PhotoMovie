@@ -244,6 +244,14 @@ public class GLMovieRecorder {
         }
     }
 
+    private void drainEncoder(boolean endOfStream) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            drainEncoderImpl(endOfStream);
+        } else {
+            drainEncoderApi21(endOfStream);
+        }
+    }
+
     /**
      * Extracts all pending data from the encoder.
      * <p/>
@@ -251,7 +259,7 @@ public class GLMovieRecorder {
      * is set, we send EOS to the encoder, and then iterate until we see EOS on the output.
      * Calling this with endOfStream set should be done once, right before stopping the muxer.
      */
-    private void drainEncoder(boolean endOfStream) {
+    private void drainEncoderImpl(boolean endOfStream) {
         final int TIMEOUT_USEC = 10000;
         if (VERBOSE) {
             Log.d(TAG, "drainEncoder(" + endOfStream + ")");
@@ -327,6 +335,105 @@ public class GLMovieRecorder {
                 }
 
                 mEncoder.releaseOutputBuffer(encoderStatus, false);
+
+                if ((mBufferInfo.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
+                    if (!endOfStream) {
+                        Log.w(TAG, "reached end of stream unexpectedly");
+                    } else {
+                        if (VERBOSE) {
+                            Log.d(TAG, "end of stream reached");
+                        }
+                    }
+                    break;      // out of while
+                }
+            }
+        }
+    }
+
+
+    /**
+     * Extracts all pending data from the encoder.
+     * <p/>
+     * If endOfStream is not set, this returns when there is no more data to drain.  If it
+     * is set, we send EOS to the encoder, and then iterate until we see EOS on the output.
+     * Calling this with endOfStream set should be done once, right before stopping the muxer.
+     */
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void drainEncoderApi21(boolean endOfStream) {
+        final int TIMEOUT_USEC = 10000;
+        if (VERBOSE) {
+            Log.d(TAG, "drainEncoder(" + endOfStream + ")");
+        }
+
+        if (endOfStream) {
+            if (VERBOSE) {
+                Log.d(TAG, "sending EOS to encoder");
+            }
+            mEncoder.signalEndOfInputStream();
+        }
+
+
+        while (true) {
+            int encoderIndex = mEncoder.dequeueOutputBuffer(mBufferInfo, TIMEOUT_USEC);
+            if (encoderIndex == MediaCodec.INFO_TRY_AGAIN_LATER) {
+                // no output available yet
+                if (!endOfStream) {
+                    break;      // out of while
+                } else {
+                    if (VERBOSE) {
+                        Log.d(TAG, "no output available, spinning to await EOS");
+                    }
+                }
+            } else if (encoderIndex == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
+                // not expected for an encoder
+            } else if (encoderIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
+                // should happen before receiving buffers, and should only happen once
+                if (mMuxerStarted) {
+                    throw new RuntimeException("format changed twice");
+                }
+                MediaFormat newFormat = mEncoder.getOutputFormat();
+                Log.d(TAG, "encoder output format changed: " + newFormat);
+
+                // now that we have the Magic Goodies, start the muxer
+                mTrackIndex = mMuxer.addTrack(newFormat);
+                mMuxer.start();
+                mMuxerStarted = true;
+            } else if (encoderIndex < 0) {
+                Log.w(TAG, "unexpected result from encoder.dequeueOutputBuffer: " +
+                        encoderIndex);
+                // let's ignore it
+            } else {
+                ByteBuffer outputBuffer = mEncoder.getOutputBuffer(encoderIndex);
+                if (outputBuffer == null) {
+                    throw new RuntimeException("encoderOutputBuffer " + encoderIndex +
+                            " was null");
+                }
+
+                if ((mBufferInfo.flags & MediaCodec.BUFFER_FLAG_CODEC_CONFIG) != 0) {
+                    // The codec config data was pulled out and fed to the muxer when we got
+                    // the INFO_OUTPUT_FORMAT_CHANGED status.  Ignore it.
+                    if (VERBOSE) {
+                        Log.d(TAG, "ignoring BUFFER_FLAG_CODEC_CONFIG");
+                    }
+                    mBufferInfo.size = 0;
+                }
+
+                if (mBufferInfo.size != 0) {
+                    if (!mMuxerStarted) {
+                        throw new RuntimeException("muxer hasn't started");
+                    }
+
+                    // adjust the ByteBuffer values to match BufferInfo (not needed?)
+                    outputBuffer.position(mBufferInfo.offset);
+                    outputBuffer.limit(mBufferInfo.offset + mBufferInfo.size);
+
+                    mMuxer.writeSampleData(mTrackIndex, outputBuffer, mBufferInfo);
+                    if (VERBOSE) {
+                        Log.d(TAG, "sent " + mBufferInfo.size + " bytes to muxer");
+                    }
+                }
+
+                mEncoder.releaseOutputBuffer(encoderIndex, false);
 
                 if ((mBufferInfo.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
                     if (!endOfStream) {

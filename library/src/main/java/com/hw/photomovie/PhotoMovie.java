@@ -105,6 +105,10 @@ public class PhotoMovie<T> {
             if (mMovieSegments == null || mMovieSegments.size() == 0) {
                 return null;
             }
+            if (elapsedTime == 0) {
+                mCurSegment = null;
+                mNextSegment = null;
+            }
             MovieSegment<T> segment = getCurrentSegment(elapsedTime);
 
             if (segment != mCurSegment) {
@@ -130,7 +134,7 @@ public class PhotoMovie<T> {
 
         public MovieSegment<T> getCurrentSegment(int elapsedTime) {
             int duration = mPhotoMovie.getDuration();
-            if(duration<=0){
+            if (duration <= 0) {
                 throw new RuntimeException("Segment duration must >0!");
             }
             int size = mMovieSegments.size();
@@ -192,12 +196,12 @@ public class PhotoMovie<T> {
         public MovieSegment<T> getPreSegment(MovieSegment<T> movieSegment) {
             int i = mMovieSegments.indexOf(movieSegment);
             MovieSegment<T> preSegment = null;
-            if(i>0){
-                preSegment = mMovieSegments.get(i-1);
-            } else if(i==0){
-                preSegment = mMovieSegments.get(mMovieSegments.size()-1);
+            if (i > 0) {
+                preSegment = mMovieSegments.get(i - 1);
+            } else if (i == 0) {
+                preSegment = mMovieSegments.get(mMovieSegments.size() - 1);
             }
-            return preSegment!=null && preSegment!=movieSegment?preSegment:null;
+            return preSegment != null && preSegment != movieSegment ? preSegment : null;
         }
     }
 

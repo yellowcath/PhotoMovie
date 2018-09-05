@@ -116,7 +116,7 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
                 dialog.show();
                 GLMovieRecorder recorder = new GLMovieRecorder();
                 final File file = new File(Environment.getExternalStorageDirectory(), "photoMovie.mp4");
-                int bitrate = glSurfaceView.getWidth() * glSurfaceView.getHeight() > 1080 * 1920 ? 10000000 : 5000000;
+                int bitrate = glSurfaceView.getWidth() * glSurfaceView.getHeight() > 1000 * 1500 ? 8000000 : 4000000;
                 recorder.configOutput(glSurfaceView.getWidth(), glSurfaceView.getHeight(), bitrate, 30, 1, file.getAbsolutePath());
                 recorder.setDataSource(glMovieRenderer);
                 recorder.startRecord(new GLMovieRecorder.onRecordListener() {
