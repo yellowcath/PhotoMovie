@@ -10,19 +10,17 @@ import android.opengl.EGLContext;
 import android.opengl.EGLDisplay;
 import android.opengl.EGLExt;
 import android.opengl.EGLSurface;
-import android.opengl.GLES20;
-import android.opengl.GLSurfaceView;
 import android.os.Build;
-import android.os.Environment;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Surface;
 import com.hw.photomovie.PhotoMovie;
-import com.hw.photomovie.opengl.GLES20Canvas;
-import com.hw.photomovie.opengl.GLESCanvas;
 import com.hw.photomovie.render.GLMovieRenderer;
+import com.hw.photomovie.segment.MovieSegment;
 import com.hw.photomovie.util.MLog;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -30,21 +28,23 @@ import java.nio.ByteBuffer;
  * Created by huangwei on 2015/5/26.
  */
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-public class GLMovieRecorder{
+public class GLMovieRecorder {
     private static final String TAG = "GLMovieRecorder";
 
     private GLMovieRenderer mGLMovieRenderer;
     private boolean mInited;
+    private HandlerThread mRecordThread = new HandlerThread("GLMovieRecorder");
 
     public GLMovieRecorder() {
         super();
+        mRecordThread.start();
     }
 
-    public void setDataSource(GLMovieRenderer glMovieRenderer){
+    public void setDataSource(GLMovieRenderer glMovieRenderer) {
         mGLMovieRenderer = glMovieRenderer;
     }
 
-    public void configOutput(int width,int height,int bitRate,int frameRate,int iFrameInterval,String outputPath){
+    public void configOutput(int width, int height, int bitRate, int frameRate, int iFrameInterval, String outputPath) {
         mWidth = width;
         mHeight = height;
         mBitRate = bitRate;
@@ -54,19 +54,48 @@ public class GLMovieRecorder{
         mInited = true;
     }
 
-    public void startRecord(){
-        if(!mInited){
+    public void startRecord(final onRecordListener listener) {
+        if (!mInited) {
             throw new RuntimeException("please configOutput first.");
         }
-        if(mGLMovieRenderer==null){
+        if (mGLMovieRenderer == null) {
             throw new RuntimeException("please setDataSource first.");
         }
+        final Handler handler = new Handler(mRecordThread.getLooper());
+        PhotoMovie photoMovie = mGLMovieRenderer.getPhotoMovie();
+        final MovieSegment firstSegment = (MovieSegment) photoMovie.getMovieSegments().get(0);
+        firstSegment.setOnSegmentPrepareListener(new MovieSegment.OnSegmentPrepareListener() {
+            @Override
+            public void onSegmentPrepared(boolean success) {
+                firstSegment.setOnSegmentPrepareListener(null);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        boolean success = false;
+                        try {
+                            startRecordImpl();
+                            success = true;
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        if (listener != null) {
+                            final boolean finalSuccess = success;
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    listener.onRecordFinish(finalSuccess);
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
+        firstSegment.prepare();
+    }
 
-        try {
-            prepareEncoder();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void startRecordImpl() throws IOException {
+        prepareEncoder();
         mInputSurface.makeCurrent();
 
         //prepare要在 mInputSurface.makeCurrent();之后调用。因为切换了eglSurface之后，GLESCanvas之前上传到GPU的program都失效了
@@ -80,7 +109,7 @@ public class GLMovieRecorder{
         int duration;
         int elapsedTime = 0;
         int frameCount = 0;
-        int frameTime = (int) (1000f/mFrameRate);
+        int frameTime = (int) (1000f / mFrameRate);
         try {
             while (true) {
                 long s = System.currentTimeMillis();
@@ -95,7 +124,7 @@ public class GLMovieRecorder{
                 long e = System.currentTimeMillis();
 
                 MLog.i(TAG, "record frame " + frameCount);
-                MLog.i(TAG, "record 耗时 " + (e-s)+"ms"+" 绘制耗时:"+(e1-s1)+"ms");
+                MLog.i(TAG, "record 耗时 " + (e - s) + "ms" + " 绘制耗时:" + (e1 - s1) + "ms");
                 frameCount++;
                 elapsedTime += frameTime;
                 /**
@@ -312,6 +341,7 @@ public class GLMovieRecorder{
             }
         }
     }
+
     /**
      * Generates the presentation time for frame N, in nanoseconds.
      */
@@ -455,5 +485,9 @@ public class GLMovieRecorder{
                 throw new RuntimeException(msg + ": EGL error: 0x" + Integer.toHexString(error));
             }
         }
+    }
+
+    public interface onRecordListener {
+        void onRecordFinish(boolean success);
     }
 }

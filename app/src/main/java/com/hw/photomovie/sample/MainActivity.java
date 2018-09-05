@@ -1,6 +1,8 @@
 package com.hw.photomovie.sample;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
@@ -109,19 +111,30 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
             @Override
             public void onClick(View v) {
                 photoMoviePlayer.pause();
-
+                final AlertDialog dialog = new ProgressDialog.Builder(MainActivity.this)
+                        .setMessage("making video...").create();
+                dialog.show();
                 GLMovieRecorder recorder = new GLMovieRecorder();
                 final File file = new File(Environment.getExternalStorageDirectory(), "photoMovie.mp4");
-                recorder.configOutput(glSurfaceView.getWidth(), glSurfaceView.getHeight(), 2000000, 30, 10, file.getAbsolutePath());
+                int bitrate = glSurfaceView.getWidth() * glSurfaceView.getHeight() > 1080 * 1920 ? 10000000 : 5000000;
+                recorder.configOutput(glSurfaceView.getWidth(), glSurfaceView.getHeight(), bitrate, 30, 1, file.getAbsolutePath());
                 recorder.setDataSource(glMovieRenderer);
-                recorder.startRecord();
-
-                Intent intent = new Intent();
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setAction(Intent.ACTION_VIEW);
-                String type = "video/avc";
-                intent.setDataAndType(Uri.fromFile(file), type);
-                startActivity(intent);
+                recorder.startRecord(new GLMovieRecorder.onRecordListener() {
+                    @Override
+                    public void onRecordFinish(boolean success) {
+                        dialog.dismiss();
+                        if (success) {
+                            Intent intent = new Intent();
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.setAction(Intent.ACTION_VIEW);
+                            String type = "video/avc";
+                            intent.setDataAndType(Uri.fromFile(file), type);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "record error!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
     }
@@ -144,7 +157,7 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
         AppResources.getInstance().init(getResources());
 
         MySpinnerAdapter movieAdapter = new MySpinnerAdapter(Arrays.asList(
-                new String[]{"Thaw","Scale","ScaleTrans-subtitle","Window","HorTrans","VerticalTrans","Test"}));
+                new String[]{"Thaw", "Scale", "ScaleTrans-subtitle", "Window", "HorTrans", "VerticalTrans", "Test"}));
         List<String> movieList = new ArrayList<String>();
         for (int i = 0; i < PhotoMovieFactory.PhotoMovieType.values().length; i++) {
             PhotoMovieFactory.PhotoMovieType photoMovieType = PhotoMovieFactory.PhotoMovieType.values()[i];
@@ -162,26 +175,26 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
         {
             PhotoInfo photoInfo = new PhotoInfo();
             photoInfo.description = "啦啦啦啦啦";
-            PhotoData photoData1 = new UilPhotoData("drawable://"+R.drawable.p1, PhotoData.STATE_LOCAL);
+            PhotoData photoData1 = new UilPhotoData("drawable://" + R.drawable.p1, PhotoData.STATE_LOCAL);
             photoData1.setPhotoInfo(photoInfo);
             dataList.add(photoData1);
         }
         {
             PhotoInfo photoInfo = new PhotoInfo();
             photoInfo.description = "啦啦";
-            PhotoData photoData1 = new UilPhotoData("drawable://"+R.drawable.p2, PhotoData.STATE_LOCAL);
+            PhotoData photoData1 = new UilPhotoData("drawable://" + R.drawable.p2, PhotoData.STATE_LOCAL);
             photoData1.setPhotoInfo(photoInfo);
             dataList.add(photoData1);
         }
         {
             PhotoInfo photoInfo = new PhotoInfo();
             photoInfo.description = "啦啦啦啦啦阿萨德爱上爱上大声大声道阿萨德阿萨德爱上大师大声道啊";
-            PhotoData photoData1 = new UilPhotoData("drawable://"+R.drawable.p3, PhotoData.STATE_LOCAL);
+            PhotoData photoData1 = new UilPhotoData("drawable://" + R.drawable.p3, PhotoData.STATE_LOCAL);
             photoData1.setPhotoInfo(photoInfo);
             dataList.add(photoData1);
         }
-        dataList.add(new UilPhotoData("drawable://"+R.drawable.p4, PhotoData.STATE_LOCAL));
-        dataList.add(new UilPhotoData("drawable://"+R.drawable.p5, PhotoData.STATE_LOCAL));
+        dataList.add(new UilPhotoData("drawable://" + R.drawable.p4, PhotoData.STATE_LOCAL));
+        dataList.add(new UilPhotoData("drawable://" + R.drawable.p5, PhotoData.STATE_LOCAL));
         PhotoSource source = new PhotoSource(dataList);
         return source;
     }
@@ -214,10 +227,10 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
         mButton.setText("start");
     }
 
-    private File copyRawToFile(AssetFileDescriptor assetFileDescriptor){
+    private File copyRawToFile(AssetFileDescriptor assetFileDescriptor) {
         try {
             FileChannel fileChannel = assetFileDescriptor.createInputStream().getChannel();
-            File cache = new File(getCacheDir(),"dynamic.jar");
+            File cache = new File(getCacheDir(), "dynamic.jar");
             cache.createNewFile();
             FileOutputStream outputStream = new FileOutputStream(cache);
             fileChannel.transferTo(assetFileDescriptor.getStartOffset(), assetFileDescriptor.getLength(), outputStream.getChannel());
@@ -228,25 +241,25 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
         return null;
     }
 
-    private void startMovie(int id){
+    private void startMovie(int id) {
         PhotoMovie photoMovie = null;
         final int typeLen = PhotoMovieFactory.PhotoMovieType.values().length;
-        if(id== typeLen){
-            startActivity(new Intent(this,AnimActivity.class));
+        if (id == typeLen) {
+            startActivity(new Intent(this, AnimActivity.class));
             return;
-        } else if(id == typeLen+1){
+        } else if (id == typeLen + 1) {
             AssetFileDescriptor assetFileDescriptor = getResources().openRawResourceFd(R.raw.dynamic_window_segment);
             File jarFile = copyRawToFile(assetFileDescriptor);
-            if(jarFile==null){
-                Toast.makeText(this,"拷贝jar文件出错",Toast.LENGTH_SHORT).show();
-            } else{
-                List<MovieSegment>  movieSegments = DynamicLoader.loadSegmentsFromFile(
+            if (jarFile == null) {
+                Toast.makeText(this, "拷贝jar文件出错", Toast.LENGTH_SHORT).show();
+            } else {
+                List<MovieSegment> movieSegments = DynamicLoader.loadSegmentsFromFile(
                         this,
                         jarFile.getAbsolutePath(),
                         "com.hw.dynamicdemo.DynamicWindowSegment");
-                photoMovie = new PhotoMovie(genPhotoSource(this),movieSegments);
+                photoMovie = new PhotoMovie(genPhotoSource(this), movieSegments);
             }
-        } else{
+        } else {
             PhotoMovieFactory.PhotoMovieType photoMovieType = PhotoMovieFactory.PhotoMovieType.values()[id];
             photoMovie = PhotoMovieFactory.generatePhotoMovie(genPhotoSource(this), photoMovieType);
         }
@@ -259,7 +272,7 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
             @Override
             public void onPreparing(PhotoMoviePlayer moviePlayer, float progress) {
                 MLog.i("onPrepare", "" + progress);
-                mButton.setText("prepare progress:"+progress);
+                mButton.setText("prepare progress:" + progress);
             }
 
             @Override
@@ -284,9 +297,9 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if(parent.getId() == R.id.spinner_movie){
+        if (parent.getId() == R.id.spinner_movie) {
             startMovie(position);
-        } else{
+        } else {
 
         }
     }
@@ -300,9 +313,10 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
 
         private List<String> list;
         private int padding;
-        public MySpinnerAdapter(List<String> stringList){
+
+        public MySpinnerAdapter(List<String> stringList) {
             this.list = stringList;
-            padding = (int) (getResources().getDisplayMetrics().density*4);
+            padding = (int) (getResources().getDisplayMetrics().density * 4);
         }
 
         @Override
@@ -338,10 +352,10 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             TextView tv;
-            if(convertView==null){
+            if (convertView == null) {
                 convertView = new TextView(parent.getContext());
                 tv = (TextView) convertView;
-                tv.setPadding(padding,padding,padding,padding);
+                tv.setPadding(padding, padding, padding, padding);
                 tv.setGravity(Gravity.CENTER);
             }
             tv = (TextView) convertView;
@@ -366,8 +380,13 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
 
         @Override
         public View getDropDownView(int position, View convertView, ViewGroup parent) {
-            return getView(position,convertView,parent);
+            return getView(position, convertView, parent);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }
 

@@ -30,8 +30,9 @@
             android:id="@+id/record"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_below="@id/bt"
+            android:visibility="visible"
+            android:layout_toRightOf="@id/bt"
+            android:layout_marginLeft="10dp"
             android:alpha="0.5"
             android:text="record" />
     </RelativeLayout>
