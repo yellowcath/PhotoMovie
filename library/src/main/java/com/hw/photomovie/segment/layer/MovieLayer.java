@@ -2,7 +2,7 @@ package com.hw.photomovie.segment.layer;
 
 import android.graphics.RectF;
 import com.hw.photomovie.opengl.GLESCanvas;
-import com.hw.photomovie.segment.MulitBitmapSegment;
+import com.hw.photomovie.segment.BitmapInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
  */
 public abstract class MovieLayer {
 
-    protected List<MulitBitmapSegment.BitmapInfo> mBitmapInfos = new ArrayList<MulitBitmapSegment.BitmapInfo>();
+    protected List<BitmapInfo> mBitmapInfos = new ArrayList<BitmapInfo>();
     protected RectF mViewprotRect = new RectF();
 
     protected MovieLayer mParentLayer;
@@ -83,7 +83,7 @@ public abstract class MovieLayer {
      */
     public abstract int getRequiredPhotoNum();
 
-    public void allocPhotos(List<MulitBitmapSegment.BitmapInfo> bitmapInfos) {
+    public void allocPhotos(List<BitmapInfo> bitmapInfos) {
         mBitmapInfos.clear();
         mBitmapInfos.addAll(bitmapInfos);
     }

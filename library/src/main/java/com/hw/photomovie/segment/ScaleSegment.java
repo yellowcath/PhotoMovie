@@ -67,7 +67,7 @@ public class ScaleSegment extends SingleBitmapSegment {
         public void onDataLoaded(PhotoData photoData, Bitmap bitmap) {
             boolean success = false;
             if (Utils.isBitmapAvailable(bitmap)) {
-                segment.mBitmapInfo = new MulitBitmapSegment.BitmapInfo();
+                segment.mBitmapInfo = new BitmapInfo();
                 segment.mBitmapInfo.bitmapTexture = new BitmapTexture(bitmap);
                 segment.mBitmapInfo.srcRect.set(0, 0, bitmap.getWidth(), bitmap.getHeight());
                 segment.mBitmapInfo.srcShowRect.set(0, 0, bitmap.getWidth(), bitmap.getHeight());

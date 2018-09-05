@@ -1,14 +1,9 @@
 package com.hw.photomovie.segment;
 
 import android.graphics.Bitmap;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import com.hw.photomovie.model.ErrorReason;
 import com.hw.photomovie.model.PhotoData;
 import com.hw.photomovie.opengl.BitmapTexture;
-import com.hw.photomovie.opengl.GLESCanvas;
-import com.hw.photomovie.util.PhotoUtil;
-import com.hw.photomovie.util.ScaleType;
 import com.hw.photomovie.util.Utils;
 
 import java.util.Collection;
@@ -124,46 +119,4 @@ public abstract class MulitBitmapSegment extends GLMovieSegment implements Photo
         checkAllLoaded();
     }
 
-    public static class BitmapInfo {
-        public BitmapTexture bitmapTexture;
-        public Rect srcRect = new Rect();
-        public RectF srcShowRect = new RectF();
-        public ScaleType scaleType = ScaleType.CENTER_CROP;
-
-        public void applyScaleType(RectF dstRect) {
-            if (dstRect == null || dstRect.width() <= 0 || dstRect.height() <= 0) {
-                srcShowRect.set(srcRect);
-            }
-
-            if (scaleType == ScaleType.CENTER_CROP) {
-                srcShowRect.set(PhotoUtil.getCroppedRect(null,
-                        srcRect.width(),
-                        srcRect.height(),
-                        dstRect.width(),
-                        dstRect.height()));
-            } else {
-                srcShowRect.set(srcRect);
-            }
-        }
-
-        public boolean isTextureAvailable() {
-            return bitmapTexture != null && bitmapTexture.isLoaded();
-        }
-
-        /**
-         * 如果材质不可用，尝试重新加载一次
-         * @param canvas
-         * @return
-         */
-        public boolean makeTextureAvailable(GLESCanvas canvas){
-            if(bitmapTexture==null ){
-                return false;
-            }
-            if(bitmapTexture.isLoaded()){
-                return true;
-            }
-            bitmapTexture.updateContent(canvas);
-            return bitmapTexture.isLoaded();
-        }
-    }
 }

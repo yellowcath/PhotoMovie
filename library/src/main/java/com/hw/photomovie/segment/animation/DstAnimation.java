@@ -3,14 +3,14 @@ package com.hw.photomovie.segment.animation;
 import android.graphics.RectF;
 
 /**
- * Created by huangwei on 2015/6/10.
+ * 作用在输出Rect的动画，可用于缩放平移
  */
 public class DstAnimation extends SegmentAnimation {
 
-    public RectF mDstRect = new RectF();
+    public RectF mDstRect ;
 
     public DstAnimation(RectF dstRect) {
-        mDstRect.set(dstRect);
+        mDstRect = dstRect;
     }
 
     @Override
@@ -19,6 +19,6 @@ public class DstAnimation extends SegmentAnimation {
     }
 
     public void updateDstRect(RectF dstRect){
-        mDstRect.set(dstRect);
+        mDstRect = dstRect;
     }
 }

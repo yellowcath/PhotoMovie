@@ -3,7 +3,7 @@ package com.hw.photomovie.segment.layer;
 import android.graphics.Bitmap;
 import com.hw.photomovie.opengl.BitmapTexture;
 import com.hw.photomovie.opengl.GLESCanvas;
-import com.hw.photomovie.segment.MulitBitmapSegment;
+import com.hw.photomovie.segment.BitmapInfo;
 import com.hw.photomovie.util.AppResources;
 import com.hw.photomovie.util.stackblur.StackBlurManager;
 
@@ -14,8 +14,8 @@ import java.util.List;
  */
 public class GaussianBlurLayer extends MovieLayer {
     public static final int BLUR_RADIUS_DEFAULT = 10;
-    private MulitBitmapSegment.BitmapInfo mBitmapInfo;
-    private MulitBitmapSegment.BitmapInfo mBluredBitmapInfo;
+    private BitmapInfo mBitmapInfo;
+    private BitmapInfo mBluredBitmapInfo;
 
     private float mBlurRadius = 10;
 
@@ -43,7 +43,7 @@ public class GaussianBlurLayer extends MovieLayer {
     }
 
     @Override
-    public void allocPhotos(List<MulitBitmapSegment.BitmapInfo> bitmapInfos) {
+    public void allocPhotos(List<BitmapInfo> bitmapInfos) {
         super.allocPhotos(bitmapInfos);
         if (bitmapInfos != null && bitmapInfos.size() > 0) {
             mBitmapInfo = bitmapInfos.get(0);
@@ -54,7 +54,7 @@ public class GaussianBlurLayer extends MovieLayer {
             Bitmap bitmap = mBitmapInfo.bitmapTexture.getBitmap();
             StackBlurManager manager = new StackBlurManager(bitmap, 0.125f);
             Bitmap bluredBitmap = manager.process((int) (mBlurRadius * 0.125f));
-            mBluredBitmapInfo = new MulitBitmapSegment.BitmapInfo();
+            mBluredBitmapInfo = new BitmapInfo();
             mBluredBitmapInfo.bitmapTexture = new BitmapTexture(bluredBitmap);
             mBluredBitmapInfo.bitmapTexture.setOpaque(false);
             mBluredBitmapInfo.srcRect.set(0, 0, bluredBitmap.getWidth(), bluredBitmap.getHeight());

@@ -6,6 +6,7 @@ import com.hw.photomovie.model.PhotoData;
 import com.hw.photomovie.opengl.BitmapTexture;
 import com.hw.photomovie.opengl.GLESCanvas;
 import com.hw.photomovie.util.MLog;
+import com.hw.photomovie.util.ScaleType;
 import com.hw.photomovie.util.Utils;
 
 /**
@@ -15,8 +16,8 @@ import com.hw.photomovie.util.Utils;
 public class SingleBitmapSegment extends GLMovieSegment {
 
     protected static final String TAG = "SingleBitmapSegment";
-    protected MulitBitmapSegment.BitmapInfo mBitmapInfo;
-
+    protected BitmapInfo mBitmapInfo;
+    protected ScaleType mDefaultScaleType = ScaleType.CENTER_CROP;
 
     public SingleBitmapSegment() {
     }
@@ -34,7 +35,8 @@ public class SingleBitmapSegment extends GLMovieSegment {
                 public void onDataLoaded(PhotoData photoData, Bitmap bitmap) {
                     if (Utils.isBitmapAvailable(bitmap)) {
                         BitmapTexture bitmapTexture = new BitmapTexture(bitmap);
-                        mBitmapInfo = new MulitBitmapSegment.BitmapInfo();
+                        mBitmapInfo = new BitmapInfo();
+                        mBitmapInfo.scaleType = mDefaultScaleType;
                         mBitmapInfo.bitmapTexture = bitmapTexture;
                         mBitmapInfo.srcRect.set(0, 0, bitmap.getWidth(), bitmap.getHeight());
                         mBitmapInfo.srcShowRect.set(mBitmapInfo.srcRect);

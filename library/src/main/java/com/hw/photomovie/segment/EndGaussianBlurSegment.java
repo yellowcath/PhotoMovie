@@ -14,7 +14,7 @@ import com.hw.photomovie.util.stackblur.StackBlurManager;
 public class EndGaussianBlurSegment extends GLMovieSegment {
 
     private MovieSegment mPreSegment;
-    private MulitBitmapSegment.BitmapInfo mBluredBitmapInfo;
+    private BitmapInfo mBluredBitmapInfo;
 
     public EndGaussianBlurSegment(int duration) {
         super();
@@ -84,7 +84,7 @@ public class EndGaussianBlurSegment extends GLMovieSegment {
             e.printStackTrace();
         }
 
-        mBluredBitmapInfo = new MulitBitmapSegment.BitmapInfo();
+        mBluredBitmapInfo = new BitmapInfo();
         mBluredBitmapInfo.bitmapTexture = bitmapTexture;
         if(bluredBitmap!=null){
             mBluredBitmapInfo.srcRect.set(0,0,bluredBitmap.getWidth(),bluredBitmap.getHeight());

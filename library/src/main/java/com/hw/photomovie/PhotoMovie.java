@@ -130,6 +130,9 @@ public class PhotoMovie<T> {
 
         public MovieSegment<T> getCurrentSegment(int elapsedTime) {
             int duration = mPhotoMovie.getDuration();
+            if(duration<=0){
+                throw new RuntimeException("Segment duration must >0!");
+            }
             int size = mMovieSegments.size();
             if (elapsedTime >= duration) {
                 return mMovieSegments.get(size - 1);

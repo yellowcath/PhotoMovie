@@ -144,7 +144,7 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
         AppResources.getInstance().init(getResources());
 
         MySpinnerAdapter movieAdapter = new MySpinnerAdapter(Arrays.asList(
-                new String[]{"Thaw","Scale","ScaleTrans-subtitle","Window","Test"}));
+                new String[]{"Thaw","Scale","ScaleTrans-subtitle","Window","HorTrans","VerticalTrans","Test"}));
         List<String> movieList = new ArrayList<String>();
         for (int i = 0; i < PhotoMovieFactory.PhotoMovieType.values().length; i++) {
             PhotoMovieFactory.PhotoMovieType photoMovieType = PhotoMovieFactory.PhotoMovieType.values()[i];
@@ -162,7 +162,7 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
         {
             PhotoInfo photoInfo = new PhotoInfo();
             photoInfo.description = "啦啦啦啦啦";
-            PhotoData photoData1 = new UilPhotoData("drawable://"+R.drawable.p3, PhotoData.STATE_LOCAL);
+            PhotoData photoData1 = new UilPhotoData("drawable://"+R.drawable.p1, PhotoData.STATE_LOCAL);
             photoData1.setPhotoInfo(photoInfo);
             dataList.add(photoData1);
         }
@@ -176,7 +176,7 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
         {
             PhotoInfo photoInfo = new PhotoInfo();
             photoInfo.description = "啦啦啦啦啦阿萨德爱上爱上大声大声道阿萨德阿萨德爱上大师大声道啊";
-            PhotoData photoData1 = new UilPhotoData("drawable://"+R.drawable.p1, PhotoData.STATE_LOCAL);
+            PhotoData photoData1 = new UilPhotoData("drawable://"+R.drawable.p3, PhotoData.STATE_LOCAL);
             photoData1.setPhotoInfo(photoInfo);
             dataList.add(photoData1);
         }

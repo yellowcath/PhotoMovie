@@ -4,7 +4,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 /**
- * Created by huangwei on 2015/5/29.
+ * 作用在图片本身Rect的动画，可用于缩放平移
  */
 public abstract class SrcAnimation extends SegmentAnimation {
 

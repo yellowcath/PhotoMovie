@@ -8,7 +8,7 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import com.hw.photomovie.opengl.BitmapTexture;
 import com.hw.photomovie.opengl.GLESCanvas;
-import com.hw.photomovie.segment.MulitBitmapSegment;
+import com.hw.photomovie.segment.BitmapInfo;
 import com.hw.photomovie.util.AppResources;
 import com.hw.photomovie.util.PhotoUtil;
 
@@ -27,7 +27,7 @@ public class SubtitleLayer extends MovieLayer {
 
     private String mText;
     private int mMarginBottom;
-    private List<MulitBitmapSegment.BitmapInfo> mBitmapInfos = new ArrayList<MulitBitmapSegment.BitmapInfo>();
+    private List<BitmapInfo> mBitmapInfos = new ArrayList<BitmapInfo>();
 
     private RectF mDstRect = new RectF();
     /**
@@ -47,7 +47,7 @@ public class SubtitleLayer extends MovieLayer {
         int index = (int) (progress / rate);
         index = index >= mBitmapInfos.size() ? (mBitmapInfos.size() - 1) : index;
         float subProgress = progress % rate / rate;
-        MulitBitmapSegment.BitmapInfo bitmapInfo = mBitmapInfos.get(index);
+        BitmapInfo bitmapInfo = mBitmapInfos.get(index);
 
         float cx = mViewprotRect.centerX();
         float w = bitmapInfo.srcShowRect.width();
@@ -117,7 +117,7 @@ public class SubtitleLayer extends MovieLayer {
     @Override
     public void release() {
         if (mBitmapInfos != null) {
-            for (MulitBitmapSegment.BitmapInfo bitmapInfo : mBitmapInfos) {
+            for (BitmapInfo bitmapInfo : mBitmapInfos) {
                 bitmapInfo.bitmapTexture.recycle();
             }
             mBitmapInfos.clear();
@@ -156,7 +156,7 @@ public class SubtitleLayer extends MovieLayer {
         for (String subtitle : strList) {
             Bitmap bitmap = genBitmapFromStr(subtitle, textPaint, density);
             if (bitmap != null) {
-                MulitBitmapSegment.BitmapInfo bitmapInfo = new MulitBitmapSegment.BitmapInfo();
+                BitmapInfo bitmapInfo = new BitmapInfo();
                 bitmapInfo.bitmapTexture = new BitmapTexture(bitmap);
                 bitmapInfo.bitmapTexture.setOpaque(false);
                 bitmapInfo.srcRect.set(0, 0, bitmap.getWidth(), bitmap.getHeight());

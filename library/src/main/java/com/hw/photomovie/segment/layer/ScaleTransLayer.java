@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import com.hw.photomovie.opengl.GLESCanvas;
-import com.hw.photomovie.segment.MulitBitmapSegment;
+import com.hw.photomovie.segment.BitmapInfo;
 import com.hw.photomovie.segment.animation.DstAnimation;
 import com.hw.photomovie.segment.animation.DstTransAnimation;
 import com.hw.photomovie.segment.animation.SrcAnimation;
@@ -20,7 +20,7 @@ public class ScaleTransLayer extends MovieLayer {
     private DstAnimation mTransAnimation;
     private float mFrom, mTo;
     private float mScaleRate = 0.5f;
-    private MulitBitmapSegment.BitmapInfo mBitmapInfo;
+    private BitmapInfo mBitmapInfo;
     /**
      * 图片的宽高比超过这个数，就不再展示缩放动画，而是左右移动的动画
      */

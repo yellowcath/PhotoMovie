@@ -11,7 +11,7 @@ import android.text.TextPaint;
 import com.hw.photomovie.filter.MovieFilter;
 import com.hw.photomovie.opengl.BitmapTexture;
 import com.hw.photomovie.opengl.GLESCanvas;
-import com.hw.photomovie.segment.MulitBitmapSegment;
+import com.hw.photomovie.segment.BitmapInfo;
 import com.hw.photomovie.util.AppResources;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import java.util.List;
 public class MovieTextLayer extends MovieLayer {
     private String mText = "啦啦啦，啦啦啦\n我是卖报的小行家。";
     private TextPaint mTextPaint;
-    private List<MulitBitmapSegment.BitmapInfo> mTextBmList;
+    private List<BitmapInfo> mTextBmList;
     private BitmapTexture mCoverTexture;
     private float mRateY = 0.7f;
     private RectF mDstRect = new RectF();
@@ -46,7 +46,7 @@ public class MovieTextLayer extends MovieLayer {
         }
         int y = 300;
         for (int i = 0; i < 1; i++) {
-            MulitBitmapSegment.BitmapInfo bitmapInfo = mTextBmList.get(i);
+            BitmapInfo bitmapInfo = mTextBmList.get(i);
             BitmapTexture bitmapTexture = bitmapInfo.bitmapTexture;
             int w = bitmapInfo.srcRect.width();
             int h = bitmapInfo.srcRect.height();
@@ -79,14 +79,14 @@ public class MovieTextLayer extends MovieLayer {
     public void prepare() {
         int width = (int) (mViewprotRect.width() * 0.75f);
         StaticLayout staticLayout = new StaticLayout(mText, mTextPaint, width, Layout.Alignment.ALIGN_CENTER, 1, 0, true);
-        mTextBmList = new ArrayList<MulitBitmapSegment.BitmapInfo>(staticLayout.getLineCount());
+        mTextBmList = new ArrayList<BitmapInfo>(staticLayout.getLineCount());
         for (int i = 0; i < staticLayout.getLineCount(); i++) {
             int s = staticLayout.getLineStart(i);
             int e = staticLayout.getLineEnd(i);
             Bitmap bitmap = strToBitmap(mText.substring(s, e), mTextPaint);
             BitmapTexture bitmapTexture = new BitmapTexture(bitmap);
             bitmapTexture.setOpaque(false);
-            MulitBitmapSegment.BitmapInfo bitmapInfo = new MulitBitmapSegment.BitmapInfo();
+            BitmapInfo bitmapInfo = new BitmapInfo();
             bitmapInfo.srcRect.set(0, 0, bitmap.getWidth(), bitmap.getHeight());
             bitmapInfo.srcShowRect.set(bitmapInfo.srcRect);
             bitmapInfo.bitmapTexture = bitmapTexture;

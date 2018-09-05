@@ -3,7 +3,9 @@ package com.hw.photomovie;
 import com.hw.photomovie.model.PhotoSource;
 import com.hw.photomovie.opengl.GLESCanvas;
 import com.hw.photomovie.segment.EndGaussianBlurSegment;
+import com.hw.photomovie.segment.FitCenterSegment;
 import com.hw.photomovie.segment.LayerSegment;
+import com.hw.photomovie.segment.MoveTransitionSegment;
 import com.hw.photomovie.segment.MovieSegment;
 import com.hw.photomovie.segment.ScaleSegment;
 import com.hw.photomovie.segment.ScaleTransSegment;
@@ -26,8 +28,11 @@ public class PhotoMovieFactory {
         SCALE, //缩放
         SCALE_TRANS, //缩放 OR 平移
         WINDOW, //窗扉
+        HORIZONTAL_TRANS,//横向平移
+        VERTICAL_TRANS,//纵向平移
         TEST
     }
+
     public static final int END_GAUSSIANBLUR_DURATION = 1500;
 
     public static PhotoMovie generatePhotoMovie(PhotoSource photoSource, PhotoMovieType type) {
@@ -40,11 +45,37 @@ public class PhotoMovieFactory {
                 return generateScaleTransPhotoMovie(photoSource);
             case WINDOW:
                 return generateWindowPhotoMovie(photoSource);
+            case HORIZONTAL_TRANS:
+                return generateHorizontalTransPhotoMovie(photoSource);
+            case VERTICAL_TRANS:
+                return generateVerticalTransPhotoMovie(photoSource);
             case TEST:
                 return generateTestPhotoMovie(photoSource);
             default:
                 return null;
         }
+    }
+
+    private static PhotoMovie generateHorizontalTransPhotoMovie(PhotoSource photoSource) {
+        List<MovieSegment> segmentList = new ArrayList<MovieSegment>();
+        for (int i = 0; i < photoSource.size(); i++) {
+            segmentList.add(new FitCenterSegment(1000).setBackgroundColor(0xFF323232));
+            segmentList.add(new MoveTransitionSegment(MoveTransitionSegment.DIRECTION_HORIZON,800));
+        }
+        segmentList.remove(segmentList.size() - 1);
+        PhotoMovie photoMovie = new PhotoMovie(photoSource, segmentList);
+        return photoMovie;
+    }
+
+    private static PhotoMovie generateVerticalTransPhotoMovie(PhotoSource photoSource) {
+        List<MovieSegment> segmentList = new ArrayList<MovieSegment>();
+        for (int i = 0; i < photoSource.size(); i++) {
+            segmentList.add(new FitCenterSegment(1000).setBackgroundColor(0xFF323232));
+            segmentList.add(new MoveTransitionSegment(MoveTransitionSegment.DIRECTION_VERTICAL,800));
+        }
+        segmentList.remove(segmentList.size() - 1);
+        PhotoMovie photoMovie = new PhotoMovie(photoSource, segmentList);
+        return photoMovie;
     }
 
     private static PhotoMovie generateTestPhotoMovie(PhotoSource photoSource) {

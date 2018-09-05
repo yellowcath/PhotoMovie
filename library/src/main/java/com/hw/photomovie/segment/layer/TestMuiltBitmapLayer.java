@@ -2,7 +2,7 @@ package com.hw.photomovie.segment.layer;
 
 import android.graphics.Rect;
 import com.hw.photomovie.opengl.GLESCanvas;
-import com.hw.photomovie.segment.MulitBitmapSegment;
+import com.hw.photomovie.segment.BitmapInfo;
 import com.hw.photomovie.util.PhotoUtil;
 import com.hw.photomovie.util.ScaleType;
 
@@ -25,7 +25,7 @@ public class TestMuiltBitmapLayer extends MovieLayer {
 
         for (int i = 0; i < dstAvailableRect.length; i++) {
             AvailableRect availableRect = dstAvailableRect[i];
-            MulitBitmapSegment.BitmapInfo bitmapInfo = i < mBitmapInfos.size() ? mBitmapInfos.get(i) : null;
+            BitmapInfo bitmapInfo = i < mBitmapInfos.size() ? mBitmapInfos.get(i) : null;
             if (bitmapInfo == null || bitmapInfo.bitmapTexture == null || availableRect == null || availableRect.rectF == null) {
                 continue;
             }
@@ -58,7 +58,7 @@ public class TestMuiltBitmapLayer extends MovieLayer {
     }
 
     @Override
-    public void allocPhotos(List<MulitBitmapSegment.BitmapInfo> bitmapInfos) {
+    public void allocPhotos(List<BitmapInfo> bitmapInfos) {
         super.allocPhotos(bitmapInfos);
     }
 
