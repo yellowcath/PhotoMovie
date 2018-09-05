@@ -100,6 +100,7 @@ public class GLMovieRecorder {
 
         //prepare要在 mInputSurface.makeCurrent();之后调用。因为切换了eglSurface之后，GLESCanvas之前上传到GPU的program都失效了
         mGLMovieRenderer.prepare();
+        mGLMovieRenderer.releaseTextures();
         mGLMovieRenderer.setViewport(mWidth, mHeight);
         mGLMovieRenderer.setRenderToRecorder(true);
 
@@ -140,6 +141,7 @@ public class GLMovieRecorder {
             releaseEncoder();
             mGLMovieRenderer.setRenderToRecorder(false);
         }
+        mGLMovieRenderer.releaseTextures();
     }
 
     private static final boolean VERBOSE = true;           // lots of logging
@@ -168,13 +170,17 @@ public class GLMovieRecorder {
     //视频输出路径
     private String mOutputPath;
 
+    private int getEven(int n) {
+        return n % 2 == 0 ? n : n + 1;
+    }
+
     /**
      * Configures encoder and muxer state, and prepares the input Surface.
      */
     private void prepareEncoder() throws IOException {
         mBufferInfo = new MediaCodec.BufferInfo();
 
-        MediaFormat format = MediaFormat.createVideoFormat(MIME_TYPE, mWidth, mHeight);
+        MediaFormat format = MediaFormat.createVideoFormat(MIME_TYPE, getEven(mWidth), getEven(mHeight));
 
         // Set some properties.  Failing to specify some of these can cause the MediaCodec
         // configure() call to throw an unhelpful exception.

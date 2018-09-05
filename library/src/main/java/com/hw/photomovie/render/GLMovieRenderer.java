@@ -11,7 +11,7 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * Created by huangwei on 2015/5/26.
  */
-public class GLMovieRenderer extends MovieRenderer<GLESCanvas> implements GLSurfaceView.Renderer {
+public class GLMovieRenderer extends FboMovieRenderer implements GLSurfaceView.Renderer {
 
     private GLSurfaceView mGLSurfaceView;
 
