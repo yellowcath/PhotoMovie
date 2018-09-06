@@ -24,8 +24,7 @@ public class GLTextureMovieRender extends GLMovieRenderer {
 
             @Override
             public void onSurfaceChanged(GL10 gl, int width, int height) {
-                prepare();
-                mSurfaceCreated = true;
+                setViewport(width, height);
             }
 
             @Override

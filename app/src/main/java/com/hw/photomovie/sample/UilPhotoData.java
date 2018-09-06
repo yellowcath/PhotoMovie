@@ -44,6 +44,8 @@ public class UilPhotoData extends PhotoData implements ImageLoadingListener, Ima
             case STATE_BITMAP:
                 if (targetState == STATE_BITMAP && onDataLoadListener != null) {
                     onDataLoadListener.onDataLoaded(this, getBitmap());
+                }else if (targetState == STATE_LOCAL && onDataLoadListener != null) {
+                    onDataLoadListener.onDownloaded(this);
                 }
                 break;
             case STATE_LOADING:
