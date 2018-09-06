@@ -29,14 +29,14 @@ public class MusicPlayer {
             mFadeOutRunnable.cancel();
             mFadeOutRunnable = null;
         }
-        if (!mMediaPlayer.isPlaying()) {
+        if (!isPlaying()) {
             mMediaPlayer.setVolume(1f, 1f);
             mMediaPlayer.start();
         }
     }
 
     public void stop() {
-        if (mMediaPlayer.isPlaying()) {
+        if (isPlaying()) {
             mMediaPlayer.stop();
             try {
                 mMediaPlayer.prepare();
@@ -58,7 +58,7 @@ public class MusicPlayer {
     }
 
     public void pause() {
-        if (mMediaPlayer.isPlaying()) {
+        if (isPlaying()) {
             mMediaPlayer.pause();
         }
     }
@@ -66,6 +66,7 @@ public class MusicPlayer {
     public void release() {
         mMediaPlayer.release();
     }
+
     public void setDataSource(String path) {
         try {
             mMediaPlayer.reset();
@@ -130,8 +131,12 @@ public class MusicPlayer {
         mMediaPlayer.setLooping(bool);
     }
 
-    public boolean isPlaying(){
-        return mMediaPlayer.isPlaying();
+    public boolean isPlaying() {
+        try {
+            return mMediaPlayer.isPlaying();
+        } catch (IllegalStateException e) {
+            return false;
+        }
     }
 
     public void seekTo(int i) {
@@ -151,7 +156,7 @@ public class MusicPlayer {
 
         @Override
         public void run() {
-            if(mCancel){
+            if (mCancel) {
                 return;
             }
             long curTime = System.currentTimeMillis();
@@ -160,7 +165,7 @@ public class MusicPlayer {
             }
             if (curTime - mStartTime > mDuration) {
                 synchronized (this) {
-                    if(mMediaPlayer.isPlaying()) {
+                    if (isPlaying()) {
                         mMediaPlayer.stop();
                         try {
                             mMediaPlayer.prepare();
@@ -180,7 +185,7 @@ public class MusicPlayer {
             mCancel = true;
             mHandler.removeCallbacks(this);
             synchronized (this) {
-                if(mMediaPlayer.isPlaying()) {
+                if (isPlaying()) {
                     mMediaPlayer.stop();
                     try {
                         mMediaPlayer.prepare();
