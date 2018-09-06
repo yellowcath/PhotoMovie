@@ -3,7 +3,6 @@ package com.hw.photomovie;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
-import android.os.Handler;
 import com.hw.photomovie.model.ErrorReason;
 import com.hw.photomovie.model.PhotoData;
 import com.hw.photomovie.model.PhotoSource;
@@ -271,8 +270,8 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
         if (mMovieListener != null) {
             mMovieListener.onMovieEnd();
         }
-//        mMusicPlayer.stop();
-        mMusicPlayer.fadeStop(new Handler());
+        mMusicPlayer.stop();
+//        mMusicPlayer.fadeStop(new Handler());
         setStateValue(STATE_PLAYBACK_COMPLETED);
     }
 

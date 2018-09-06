@@ -5,7 +5,6 @@ import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
-import android.util.Log;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -49,7 +48,7 @@ public class MusicPlayer {
     }
 
     /**
-     * 淡出式停止
+     * 淡出式停止,有bug，暂不使用
      *
      * @param handler
      */
