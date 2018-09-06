@@ -61,7 +61,7 @@ public class FitCenterSegment extends SingleBitmapSegment {
     }
 
     private void calDstRect() {
-        if (mBitmapInfo == null) {
+        if (mBitmapInfo == null || mViewportRect.width() == 0 || mViewportRect.height() == 0) {
             return;
         }
         PhotoUtil.getFitCenterRect(mDstRect, (int) mBitmapInfo.srcShowRect.width(), (int) mBitmapInfo.srcShowRect.height(), (int) mViewportRect.width(), (int) mViewportRect.height());
