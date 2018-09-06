@@ -25,7 +25,7 @@ import android.opengl.GLDebugHelper;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.TextureView;
-import us.pinguo.inspire.util.SystemPropertiesUtil;
+import com.hw.photomovie.util.SystemPropertiesUtil;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGL11;
