@@ -41,4 +41,14 @@ public class GLTextureMovieRender extends GLMovieRenderer {
         });
         mGLTextureView.setRenderMode(GLTextureView.RENDERMODE_WHEN_DIRTY);
     }
+
+    @Override
+    public void drawFrame(int elapsedTime) {
+        mElapsedTime = elapsedTime;
+        if (mSurfaceCreated && !mRenderToRecorder) {
+            mGLTextureView.requestRender();
+        } else {
+            onDrawFrame(null);
+        }
+    }
 }
