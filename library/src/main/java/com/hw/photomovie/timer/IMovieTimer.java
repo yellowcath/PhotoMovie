@@ -13,6 +13,8 @@ public interface IMovieTimer {
 
     public int getCurrentPlayTime();
 
+    void setLoop(boolean loop);
+
     public interface MovieListener {
         void onMovieUpdate(int elapsedTime);
 

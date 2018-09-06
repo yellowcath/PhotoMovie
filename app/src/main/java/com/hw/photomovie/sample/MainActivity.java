@@ -73,6 +73,7 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
         photoMoviePlayer.setMusic(getResources().openRawResourceFd(R.raw.bg));
         photoMoviePlayer.setDataSource(photoMovie);
         photoMoviePlayer.setMovieListener(this);
+        photoMoviePlayer.setLoop(false);
         photoMoviePlayer.setOnPreparedListener(new PhotoMoviePlayer.OnPreparedListener() {
             @Override
             public void onPreparing(PhotoMoviePlayer moviePlayer, float progress) {

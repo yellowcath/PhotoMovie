@@ -18,6 +18,7 @@ public class MovieTimer implements IMovieTimer, ValueAnimator.AnimatorUpdateList
     private boolean mPaused;
 
     private PhotoMovie mPhotoMovie;
+    private boolean mLoop;
 
     public MovieTimer(PhotoMovie photoMovie) {
         mPhotoMovie = photoMovie;
@@ -57,6 +58,11 @@ public class MovieTimer implements IMovieTimer, ValueAnimator.AnimatorUpdateList
     }
 
     @Override
+    public void setLoop(boolean loop) {
+        mLoop = loop;
+    }
+
+    @Override
     public void onAnimationUpdate(ValueAnimator animation) {
         if (mPaused || !animation.isRunning()) {
             return;
@@ -76,6 +82,9 @@ public class MovieTimer implements IMovieTimer, ValueAnimator.AnimatorUpdateList
             }
             mAnimator.addUpdateListener(this);
             mAnimator.addListener(this);
+            if(mLoop){
+                mAnimator.start();
+            }
         }
     }
 

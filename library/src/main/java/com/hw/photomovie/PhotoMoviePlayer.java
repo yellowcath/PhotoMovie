@@ -47,6 +47,7 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
     private MusicPlayer mMusicPlayer;
 
     private OnPreparedListener mOnPreparedListener;
+    private boolean mLoop;
 
     public PhotoMoviePlayer(Context context) {
         mMusicPlayer = new MusicPlayer();
@@ -62,6 +63,7 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
             mPhotoMovie.setMovieRenderer(mMovieRenderer);
             mMovieRenderer.setPhotoMovie(mPhotoMovie);
         }
+        setLoop(mLoop);
     }
 
     public void setMovieRenderer(MovieRenderer movieRenderer) {
@@ -288,6 +290,13 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
 
     public int getState() {
         return mCurrentState;
+    }
+
+    public void setLoop(boolean loop) {
+        mLoop = loop;
+        if (mMovieTimer != null) {
+            mMovieTimer.setLoop(loop);
+        }
     }
 
     public interface OnPreparedListener {
