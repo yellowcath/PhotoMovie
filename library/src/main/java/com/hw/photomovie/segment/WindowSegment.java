@@ -191,7 +191,7 @@ public class WindowSegment extends SingleBitmapSegment {
         if (mBitmapInfo != null && mBitmapInfo.makeTextureAvailable(canvas)) {
             canvas.unbindArrayBuffer();
             filter.setLines(mK, mB1, mK, mB2, mKExisted);
-            filter.drawFrame(0, mBitmapInfo.bitmapTexture.getId(), mBitmapInfo.srcRect, new RectF(mBitmapInfo.srcRect), mViewportRect);
+            filter.drawFrame(0, mBitmapInfo.bitmapTexture.getId(), mBitmapInfo.srcRect, new RectF(mBitmapInfo.srcShowRect), mViewportRect);
             canvas.rebindArrayBuffer();
         }
     }
