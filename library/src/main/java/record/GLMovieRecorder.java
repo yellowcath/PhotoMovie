@@ -100,7 +100,7 @@ public class GLMovieRecorder {
 
         //prepare要在 mInputSurface.makeCurrent();之后调用。因为切换了eglSurface之后，GLESCanvas之前上传到GPU的program都失效了
         mGLMovieRenderer.prepare();
-        mGLMovieRenderer.releaseTextures();
+        mGLMovieRenderer.release();
         mGLMovieRenderer.setViewport(mWidth, mHeight);
         mGLMovieRenderer.setRenderToRecorder(true);
 
@@ -141,7 +141,7 @@ public class GLMovieRecorder {
             releaseEncoder();
             mGLMovieRenderer.setRenderToRecorder(false);
         }
-        mGLMovieRenderer.releaseTextures();
+        mGLMovieRenderer.release();
     }
 
     private static final boolean VERBOSE = true;           // lots of logging

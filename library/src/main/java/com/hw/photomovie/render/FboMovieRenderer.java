@@ -2,9 +2,11 @@ package com.hw.photomovie.render;
 
 import android.content.Context;
 import android.opengl.GLES20;
+import com.hw.photomovie.PhotoMovie;
 import com.hw.photomovie.moviefilter.IMovieFilter;
 import com.hw.photomovie.opengl.FboTexture;
 import com.hw.photomovie.opengl.GLESCanvas;
+import com.hw.photomovie.segment.MovieSegment;
 
 /**
  * Created by huangwei on 2015/5/26.
@@ -14,7 +16,7 @@ public abstract class FboMovieRenderer extends MovieRenderer<GLESCanvas> {
 
     private FboTexture mFboTexture;
     private FboTexture mFilterTexture;
-    private IMovieFilter mMovieFilter;
+    protected IMovieFilter mMovieFilter;
 
     public void setMovieFilter(IMovieFilter movieFilter) {
         mMovieFilter = movieFilter;
@@ -36,8 +38,14 @@ public abstract class FboMovieRenderer extends MovieRenderer<GLESCanvas> {
     }
 
     public void releaseTextures() {
-        mFboTexture = null;
-        mFilterTexture = null;
+        if(mFboTexture!=null) {
+            mFboTexture = null;
+            mFboTexture.release();
+        }
+        if(mFilterTexture!=null) {
+            mFilterTexture.release();
+            mFilterTexture = null;
+        }
     }
 
     @Override
@@ -56,10 +64,17 @@ public abstract class FboMovieRenderer extends MovieRenderer<GLESCanvas> {
         super.drawMovieFrame(elapsedTime);
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, curFb[0]);
 
+        PhotoMovie.SegmentPicker segmentPicker = mPhotoMovie.getSegmentPicker();
+        MovieSegment curSegment = mPhotoMovie.getSegmentPicker().getCurrentSegment(elapsedTime);
+        float segmentProgress = segmentPicker.getSegmentProgress(curSegment, elapsedTime);
         mPainter.unbindArrayBuffer();
-        mMovieFilter.doFilter(mFboTexture, mFilterTexture);
+        mMovieFilter.doFilter(segmentProgress,mFboTexture, mFilterTexture);
         mPainter.rebindArrayBuffer();
 
         mPainter.drawTexture(mFilterTexture, 0, 0, mViewportRect.width(), mViewportRect.height());
+    }
+
+    public void release(){
+        releaseTextures();
     }
 }

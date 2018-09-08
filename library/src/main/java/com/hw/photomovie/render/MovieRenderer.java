@@ -31,14 +31,14 @@ public abstract class MovieRenderer<T> {
         PhotoMovie.SegmentPicker<T> segmentPicker = mPhotoMovie.getSegmentPicker();
         MovieSegment<T> movieSegment = segmentPicker.pickCurrentSegment(elapsedTime);
         if (movieSegment != null) {
-            float segmentRate = segmentPicker.getSegmentProgress(movieSegment, elapsedTime);
+            float segmentProgress = segmentPicker.getSegmentProgress(movieSegment, elapsedTime);
             if (movieSegment.showNextAsBackground()) {
                 MovieSegment<T> nextSegment = segmentPicker.getNextSegment(elapsedTime);
                 if (nextSegment != null && nextSegment != movieSegment) {
                     nextSegment.drawFrame(mPainter, 0);
                 }
             }
-            movieSegment.drawFrame(mPainter, segmentRate);
+            movieSegment.drawFrame(mPainter, segmentProgress);
         }
     }
 

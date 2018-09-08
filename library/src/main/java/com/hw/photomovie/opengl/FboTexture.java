@@ -117,4 +117,14 @@ public class FboTexture extends BasicTexture {
     public boolean isFlippedVertically() {
         return mIsFlipped;
     }
+
+    public void release(){
+        if(mFrameBuffer!=0 && GLES20.glIsFramebuffer(mFrameBuffer)){
+            GLES20.glDeleteFramebuffers(1,new int[]{mFrameBuffer},0);
+            mFrameBuffer = 0;
+        }
+        if(mId!=0 && GLES20.glIsTexture(mId)){
+            GLES20.glDeleteTextures(1,new int[]{mId},0);
+        }
+    }
 }

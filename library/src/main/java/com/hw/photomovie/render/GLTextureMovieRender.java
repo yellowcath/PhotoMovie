@@ -1,6 +1,7 @@
 package com.hw.photomovie.render;
 
 import android.opengl.GLES20;
+import com.hw.photomovie.moviefilter.BaseMovieFilter;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -36,7 +37,9 @@ public class GLTextureMovieRender extends GLMovieRenderer {
 
             @Override
             public void onSurfaceDestroyed() {
-
+                if(mMovieFilter instanceof BaseMovieFilter){
+                    ((BaseMovieFilter) mMovieFilter).destroy();
+                }
             }
         });
         mGLTextureView.setRenderMode(GLTextureView.RENDERMODE_WHEN_DIRTY);
