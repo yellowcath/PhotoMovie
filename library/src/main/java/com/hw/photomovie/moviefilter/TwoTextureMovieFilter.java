@@ -1,20 +1,13 @@
 package com.hw.photomovie.moviefilter;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.opengl.GLES20;
-import android.opengl.GLUtils;
 import com.hw.photomovie.PhotoMovie;
 import com.hw.photomovie.filter.GLHelper;
-import com.hw.photomovie.opengl.BitmapTexture;
 import com.hw.photomovie.opengl.FboTexture;
-import com.hw.photomovie.util.AppResources;
-import com.hw.photomovie.util.OpenGlUtils;
+import com.hw.photomovie.util.GLUtil;
 import record.gles.GlUtil;
 
-import javax.microedition.khronos.opengles.GL11;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -28,7 +21,7 @@ public class TwoTextureMovieFilter extends BaseMovieFilter {
 
     public int mTexture2CoordinateAttribute;
     public int mTexture2Uniform2;
-    public int mTexture2Id = OpenGlUtils.NO_TEXTURE;
+    public int mTexture2Id = GLUtil.NO_TEXTURE;
     private FloatBuffer mTexture2CoordinatesBuffer;
 
     public TwoTextureMovieFilter() {
@@ -39,7 +32,7 @@ public class TwoTextureMovieFilter extends BaseMovieFilter {
         super(vertexShader, fragmentShader);
     }
 
-    public static Bitmap bitmap;
+    public Bitmap mBitmap;
 
     @Override
     public void loadVertex() {
@@ -50,15 +43,16 @@ public class TwoTextureMovieFilter extends BaseMovieFilter {
         mTexture2CoordinatesBuffer.put(TEXTURE_CUBE).position(0);
     }
 
+    public void setBitmap(Bitmap bitmap){
+        mBitmap = bitmap;
+    }
+
     @Override
     public void initShader() {
         super.initShader();
         mTexture2CoordinateAttribute = GLES20.glGetAttribLocation(getProgram(), "inputTextureCoordinate2");
         mTexture2Uniform2 = GLES20.glGetUniformLocation(getProgram(), "inputImageTexture2");
 
-        int[] ids = new int[1];
-        GLES20.glGenTextures(1, ids, 0);
-        mTexture2Id = OpenGlUtils.loadTexture(bitmap,OpenGlUtils.NO_TEXTURE);
     }
 
     @Override
@@ -73,6 +67,7 @@ public class TwoTextureMovieFilter extends BaseMovieFilter {
         }
         GLES20.glUseProgram(mProgId);
 
+        loadBitmap();
         onPreDraw(photoMovie,elapsedTime,inputTexture);
 
         FloatBuffer cubeBuffer = mCubeBuffer;
@@ -122,12 +117,21 @@ public class TwoTextureMovieFilter extends BaseMovieFilter {
         GLES20.glDisable(GLES20.GL_BLEND);
     }
 
+    private void loadBitmap(){
+        if(mBitmap!=null){
+            if(mTexture2Id!= GLUtil.NO_TEXTURE){
+                GLES20.glDeleteTextures(1,new int[]{mTexture2Id},0);
+            }
+            mTexture2Id = GLUtil.loadTexture(mBitmap, GLUtil.NO_TEXTURE);
+            mBitmap = null;
+        }
+    }
     @Override
     public void destroy() {
         super.destroy();
         GLES20.glDeleteTextures(1, new int[]{
                 mTexture2Id
         }, 0);
-        mTexture2Id = OpenGlUtils.NO_TEXTURE;
+        mTexture2Id = GLUtil.NO_TEXTURE;
     }
 }

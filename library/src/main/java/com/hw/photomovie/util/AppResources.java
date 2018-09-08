@@ -2,6 +2,8 @@ package com.hw.photomovie.util;
 
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -68,5 +70,25 @@ public class AppResources {
             }
         }
         return stringBuffer.toString();
+    }
+
+    public static Bitmap loadBitmapFromAssets(String assetsName){
+        AssetManager am = AppResources.getInstance().getAppRes().getAssets();
+        InputStream inputStream = null;
+        try {
+            inputStream = am.open(assetsName);
+            return BitmapFactory.decodeStream(inputStream);
+        }catch (IOException e){
+            e.printStackTrace();
+        }finally {
+            if(inputStream!=null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
     }
 }

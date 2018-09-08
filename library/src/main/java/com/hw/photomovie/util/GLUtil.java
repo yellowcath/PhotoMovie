@@ -25,7 +25,7 @@ import android.util.Log;
 
 import java.nio.IntBuffer;
 
-public class OpenGlUtils {
+public class GLUtil {
     public static final int NO_TEXTURE = -1;
 
     public static int loadTexture(final Bitmap img, final int usedTexId) {
@@ -46,10 +46,10 @@ public class OpenGlUtils {
             GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
                     GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
 
-            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, img, 0);
+            android.opengl.GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, img, 0);
         } else {
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, usedTexId);
-            GLUtils.texSubImage2D(GLES20.GL_TEXTURE_2D, 0, 0, 0, img);
+            android.opengl.GLUtils.texSubImage2D(GLES20.GL_TEXTURE_2D, 0, 0, 0, img);
             textures[0] = usedTexId;
         }
         if (recycle) {

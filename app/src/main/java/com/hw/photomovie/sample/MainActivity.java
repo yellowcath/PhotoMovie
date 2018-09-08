@@ -30,6 +30,7 @@ import com.hw.photomovie.model.PhotoData;
 import com.hw.photomovie.model.PhotoInfo;
 import com.hw.photomovie.model.PhotoSource;
 import com.hw.photomovie.moviefilter.BaseMovieFilter;
+import com.hw.photomovie.moviefilter.LutMovieFilter;
 import com.hw.photomovie.moviefilter.SnowMovieFilter;
 import com.hw.photomovie.moviefilter.TwoTextureMovieFilter;
 import com.hw.photomovie.render.FboMovieRenderer;
@@ -60,7 +61,6 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        TwoTextureMovieFilter.bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.p5);
         super.onCreate(savedInstanceState);
         FboMovieRenderer.sContext = getApplicationContext();
         setContentView(R.layout.activity_main);
@@ -71,7 +71,8 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
 //        DynamicLoader.loadSegmentsFromFile(this,"/mnt/sdcard2/pm.jar","com.hw.photomovietest.app.plugin.PluginSegment");
         final PhotoMovie photoMovie = PhotoMovieFactory.generatePhotoMovie(genPhotoSource(this), PhotoMovieFactory.PhotoMovieType.THAW);
         final GLMovieRenderer glMovieRenderer = new GLMovieRenderer(glSurfaceView);
-        glMovieRenderer.setMovieFilter(new BaseMovieFilter());
+        LutMovieFilter movieFilter = new LutMovieFilter(LutMovieFilter.LutType.E);
+        glMovieRenderer.setMovieFilter(movieFilter);
         photoMoviePlayer = new PhotoMoviePlayer(getApplicationContext());
         photoMoviePlayer.setMovieRenderer(glMovieRenderer);
         photoMoviePlayer.setMusic(getResources().openRawResourceFd(R.raw.bg));

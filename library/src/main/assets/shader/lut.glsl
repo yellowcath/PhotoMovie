@@ -1,8 +1,6 @@
 varying highp vec2 textureCoordinate;
 uniform sampler2D inputImageTexture;
-uniform sampler2D lutTexture;
-
-uniform lowp float intensity;
+uniform sampler2D inputImageTexture2;
 
 void main() {
 
@@ -25,8 +23,8 @@ void main() {
     texPos2.x = (quad2.x * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.r);
     texPos2.y = (quad2.y * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.g);
 
-    lowp vec4 newColor1 = texture2D(lutTexture, texPos1);
-    lowp vec4 newColor2 = texture2D(lutTexture, texPos2);
+    lowp vec4 newColor1 = texture2D(inputImageTexture2, texPos1);
+    lowp vec4 newColor2 = texture2D(inputImageTexture2, texPos2);
 
     lowp vec4 newColor = mix(newColor1, newColor2, fract(blueColor));
     gl_FragColor = vec4(newColor.rgb, textureColor.w);
