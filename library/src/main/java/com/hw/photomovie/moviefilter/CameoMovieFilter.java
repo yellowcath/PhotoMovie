@@ -2,6 +2,9 @@ package com.hw.photomovie.moviefilter;
 
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.opengl.GLES20;
+import com.hw.photomovie.PhotoMovie;
+import com.hw.photomovie.opengl.FboTexture;
 
 /**
  * Created by huangwei on 2018/9/8.
@@ -13,7 +16,7 @@ public class CameoMovieFilter extends BaseMovieFilter {
             "varying vec2 textureCoordinate;\n" +
             "uniform sampler2D inputImageTexture;\n" +
             "const highp vec3 W = vec3(0.2125, 0.7154, 0.0721);\n" +
-            "const vec2 TexSize = vec2(100.0, 100.0);\n" +
+            "uniform vec2 TexSize;\n" +
             "const vec4 bkColor = vec4(0.5, 0.5, 0.5, 1.0);\n" +
             "\n" +
             "void main()\n" +
@@ -27,6 +30,7 @@ public class CameoMovieFilter extends BaseMovieFilter {
             "    gl_FragColor = vec4(vec3(luminance), 0.0) + bkColor;\n" +
             "}"; 
 
+    private int mTexSizeHandle;
     public CameoMovieFilter(){
         super(VERTEX_SHADER,FRAGMENT_SHADER);
     }
@@ -34,10 +38,12 @@ public class CameoMovieFilter extends BaseMovieFilter {
     @Override
     public void initShader() {
         super.initShader();
+        mTexSizeHandle = GLES20.glGetUniformLocation(mProgId,"TexSize");
     }
 
     @Override
-    protected void preDraw(float progress, Rect textureRect, RectF srcRect, RectF dstRect) {
-        super.preDraw(progress, textureRect, srcRect, dstRect);
+    protected void onPreDraw(PhotoMovie photoMovie, int elapsedTime, FboTexture inputTexture) {
+        super.onPreDraw(photoMovie, elapsedTime,inputTexture);
+        GLES20.glUniform2fv(mTexSizeHandle,1,new float[]{inputTexture.getTextureWidth(),inputTexture.getTextureHeight()},0);
     }
 }

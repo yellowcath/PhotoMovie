@@ -1,13 +1,22 @@
 package com.hw.photomovie.moviefilter;
 
-import android.graphics.Matrix;
+import android.content.res.AssetManager;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.opengl.GLES20;
+import android.opengl.GLUtils;
+import com.hw.photomovie.PhotoMovie;
 import com.hw.photomovie.filter.GLHelper;
 import com.hw.photomovie.opengl.FboTexture;
+import com.hw.photomovie.util.AppResources;
+import com.hw.photomovie.util.MLog;
 import record.gles.GlUtil;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -55,8 +64,8 @@ public class BaseMovieFilter implements IMovieFilter {
     private String mVertexShader;
     private String mFragmentShader;
 
-    private FloatBuffer mCubeBuffer;
-    private FloatBuffer mTextureCubeBuffer;
+    protected FloatBuffer mCubeBuffer;
+    protected FloatBuffer mTextureCubeBuffer;
 
     protected int mProgId;
     protected int mAttribPosition;
@@ -102,6 +111,9 @@ public class BaseMovieFilter implements IMovieFilter {
 
     public void initShader() {
         mProgId = GLHelper.loadProgram(mVertexShader, mFragmentShader);
+        if(mProgId==0){
+            throw new RuntimeException("loadProgram fail");
+        }
         GLHelper.checkGlError();
         mAttribPosition = GLES20.glGetAttribLocation(mProgId, "position");
         mUniformTexture = GLES20.glGetUniformLocation(mProgId, "inputImageTexture");
@@ -109,20 +121,21 @@ public class BaseMovieFilter implements IMovieFilter {
                 "inputTextureCoordinate");
     }
 
-    public void drawFrame(float progress, int glTextureId, Rect textureRect, RectF srcRect, RectF dstRect) {
+    public void drawFrame(PhotoMovie photoMovie, int elapsedTime, FboTexture inputTexture) {
         if (!mIsInitialized) {
             return;
         }
         GLHelper.checkGlError();
         if (!GLES20.glIsProgram(mProgId)) {
             initShader();
+            GlUtil.checkGlError("initShader");
         }
         GLES20.glUseProgram(mProgId);
 
-        preDraw(progress,textureRect,srcRect,dstRect);
+        onPreDraw(photoMovie,elapsedTime,inputTexture);
 
-        FloatBuffer cubeBuffer = mCubeBuffer;//getCubeBuffer(dstRect);
-        FloatBuffer textureCubeBuffer = mTextureCubeBuffer;//getTextureCubeBuffer(textureRect, srcRect);
+        FloatBuffer cubeBuffer = mCubeBuffer;
+        FloatBuffer textureCubeBuffer = mTextureCubeBuffer;;
 
         if (mIsOpaque) {
             GLES20.glDisable(GLES20.GL_BLEND);
@@ -139,6 +152,7 @@ public class BaseMovieFilter implements IMovieFilter {
                 textureCubeBuffer);
         GLES20.glEnableVertexAttribArray(mAttribTexCoord);
 
+        int glTextureId = inputTexture.getId();
         if (glTextureId != GLHelper.NO_TEXTURE) {
             GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, glTextureId);
@@ -154,7 +168,7 @@ public class BaseMovieFilter implements IMovieFilter {
 
     }
 
-    protected void preDraw(float progress, Rect textureRect, RectF srcRect, RectF dstRect) {
+    protected void onPreDraw(PhotoMovie photoMovie, int elapsedTime,FboTexture inputTexture) {
 
     }
 
@@ -175,7 +189,7 @@ public class BaseMovieFilter implements IMovieFilter {
     private RectF dstRect = new RectF();
 
     @Override
-    public void doFilter(float progress,FboTexture inputTexture, FboTexture outputTexture) {
+    public void doFilter(PhotoMovie photoMovie, int elapsedTime, FboTexture inputTexture, FboTexture outputTexture) {
         textureRect.set(0, 0, inputTexture.getTextureWidth(), inputTexture.getTextureHeight());
         dstRect.set(0, 0, outputTexture.getWidth(), outputTexture.getHeight());
         if (!mIsInitialized) {
@@ -186,14 +200,14 @@ public class BaseMovieFilter implements IMovieFilter {
         GLES20.glGetIntegerv(GLES20.GL_FRAMEBUFFER_BINDING,curFb,0);
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, outputTexture.getFrameBuffer());
         GlUtil.checkGlError("glBindFramebuffer");
-        drawFrame(0,
-                inputTexture.getId(),
-                textureRect,
-                dstRect,
-                dstRect
-        );
+        drawFrame(photoMovie,
+                elapsedTime,
+                inputTexture);
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, curFb[0]);
         GlUtil.checkGlError("glBindFramebuffer");
     }
 
+    public int getProgram() {
+        return mProgId;
+    }
 }

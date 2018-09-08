@@ -64,11 +64,8 @@ public abstract class FboMovieRenderer extends MovieRenderer<GLESCanvas> {
         super.drawMovieFrame(elapsedTime);
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, curFb[0]);
 
-        PhotoMovie.SegmentPicker segmentPicker = mPhotoMovie.getSegmentPicker();
-        MovieSegment curSegment = mPhotoMovie.getSegmentPicker().getCurrentSegment(elapsedTime);
-        float segmentProgress = segmentPicker.getSegmentProgress(curSegment, elapsedTime);
         mPainter.unbindArrayBuffer();
-        mMovieFilter.doFilter(segmentProgress,mFboTexture, mFilterTexture);
+        mMovieFilter.doFilter(mPhotoMovie,elapsedTime,mFboTexture, mFilterTexture);
         mPainter.rebindArrayBuffer();
 
         mPainter.drawTexture(mFilterTexture, 0, 0, mViewportRect.width(), mViewportRect.height());

@@ -61,8 +61,7 @@ public class GLHelper {
         GLES20.glGetShaderiv(iShader, GLES20.GL_COMPILE_STATUS, compiled, 0);
         checkGlError("");
         if (compiled[0] == 0) {
-            Log.d(TAG,"Load Shader Failed Compilation\n" + GLES20.glGetShaderInfoLog(iShader));
-            return 0;
+            throw new RuntimeException("Load Shader Failed Compilation\n" + GLES20.glGetShaderInfoLog(iShader));
         }
         return iShader;
     }

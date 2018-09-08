@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.database.DataSetObserver;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -29,8 +30,8 @@ import com.hw.photomovie.model.PhotoData;
 import com.hw.photomovie.model.PhotoInfo;
 import com.hw.photomovie.model.PhotoSource;
 import com.hw.photomovie.moviefilter.BaseMovieFilter;
-import com.hw.photomovie.moviefilter.CameoMovieFilter;
-import com.hw.photomovie.moviefilter.GrayMovieFilter;
+import com.hw.photomovie.moviefilter.SnowMovieFilter;
+import com.hw.photomovie.moviefilter.TwoTextureMovieFilter;
 import com.hw.photomovie.render.FboMovieRenderer;
 import com.hw.photomovie.render.GLMovieRenderer;
 import com.hw.photomovie.sample.activityAnim.AnimActivity;
@@ -59,6 +60,7 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        TwoTextureMovieFilter.bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.p5);
         super.onCreate(savedInstanceState);
         FboMovieRenderer.sContext = getApplicationContext();
         setContentView(R.layout.activity_main);
@@ -69,7 +71,7 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
 //        DynamicLoader.loadSegmentsFromFile(this,"/mnt/sdcard2/pm.jar","com.hw.photomovietest.app.plugin.PluginSegment");
         final PhotoMovie photoMovie = PhotoMovieFactory.generatePhotoMovie(genPhotoSource(this), PhotoMovieFactory.PhotoMovieType.THAW);
         final GLMovieRenderer glMovieRenderer = new GLMovieRenderer(glSurfaceView);
-        glMovieRenderer.setMovieFilter(new CameoMovieFilter());
+        glMovieRenderer.setMovieFilter(new BaseMovieFilter());
         photoMoviePlayer = new PhotoMoviePlayer(getApplicationContext());
         photoMoviePlayer.setMovieRenderer(glMovieRenderer);
         photoMoviePlayer.setMusic(getResources().openRawResourceFd(R.raw.bg));
