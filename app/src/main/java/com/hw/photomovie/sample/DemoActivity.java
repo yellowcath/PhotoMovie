@@ -1,13 +1,17 @@
 package com.hw.photomovie.sample;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.Toast;
 import com.hw.photomovie.render.GLTextureView;
 import com.hw.photomovie.sample.widget.FilterItem;
 import com.hw.photomovie.sample.widget.MovieBottomView;
@@ -23,6 +27,7 @@ import java.util.List;
  */
 public class DemoActivity extends AppCompatActivity implements IDemoView, MovieBottomView.MovieBottomCallback {
 
+    private static final int REQUEST_MUSIC = 234;
     private DemoPresenter mDemoPresenter = new DemoPresenter();
     private GLTextureView mGLTextureView;
     private MovieFilterView mFilterView;
@@ -55,12 +60,16 @@ public class DemoActivity extends AppCompatActivity implements IDemoView, MovieB
 
     @Override
     public void onNextClick() {
-
+      mDemoPresenter.saveVideo();
     }
 
     @Override
     public void onMusicClick() {
-
+        Intent i = new Intent();
+        i.setType("audio/*");
+        i.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(i, REQUEST_MUSIC);
+        Toast.makeText(this, "Only AAC audio files are supported now!", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -90,6 +99,15 @@ public class DemoActivity extends AppCompatActivity implements IDemoView, MovieB
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK && requestCode == REQUEST_MUSIC){
+            Uri uri = data.getData();
+            mDemoPresenter.setMusic(uri);
+        }
+    }
+
+    @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if(ev.getAction() == MotionEvent.ACTION_DOWN) {
             if (mFilterView != null && mFilterView.getVisibility() == View.VISIBLE
@@ -97,9 +115,7 @@ public class DemoActivity extends AppCompatActivity implements IDemoView, MovieB
                 mFilterView.hide();
                 mBottomView.setVisibility(View.VISIBLE);
                 return true;
-            }
-        }else if(ev.getAction() == MotionEvent.ACTION_DOWN) {
-            if (mTransferView != null && mTransferView.getVisibility() == View.VISIBLE
+            }else  if (mTransferView != null && mTransferView.getVisibility() == View.VISIBLE
                     && !checkInArea(mTransferView,ev)){
                 mTransferView.hide();
                 mBottomView.setVisibility(View.VISIBLE);

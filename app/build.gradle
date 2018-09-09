@@ -46,4 +46,5 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation 'de.hdodenhof:circleimageview:2.1.0'
+    implementation 'com.github.yellowcath:VideoProcessor:2.3.0'
 }
