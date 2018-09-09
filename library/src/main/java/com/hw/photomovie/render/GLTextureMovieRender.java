@@ -9,7 +9,7 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * Created by huangwei on 2018/9/6 0006.
  */
-public class GLTextureMovieRender extends GLMovieRenderer {
+public class GLTextureMovieRender extends GLSurfaceMovieRenderer {
 
     protected GLTextureView mGLTextureView;
 

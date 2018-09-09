@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.database.DataSetObserver;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -29,12 +28,9 @@ import com.hw.photomovie.dynamic.DynamicLoader;
 import com.hw.photomovie.model.PhotoData;
 import com.hw.photomovie.model.PhotoInfo;
 import com.hw.photomovie.model.PhotoSource;
-import com.hw.photomovie.moviefilter.BaseMovieFilter;
 import com.hw.photomovie.moviefilter.LutMovieFilter;
-import com.hw.photomovie.moviefilter.SnowMovieFilter;
-import com.hw.photomovie.moviefilter.TwoTextureMovieFilter;
-import com.hw.photomovie.render.FboMovieRenderer;
 import com.hw.photomovie.render.GLMovieRenderer;
+import com.hw.photomovie.render.GLSurfaceMovieRenderer;
 import com.hw.photomovie.sample.activityAnim.AnimActivity;
 import com.hw.photomovie.segment.MovieSegment;
 import com.hw.photomovie.timer.IMovieTimer;
@@ -62,7 +58,7 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FboMovieRenderer.sContext = getApplicationContext();
+        GLMovieRenderer.sContext = getApplicationContext();
         setContentView(R.layout.activity_main);
         init();
         final ViewGroup glContainer = (ViewGroup) findViewById(R.id.gl_container);
@@ -70,11 +66,11 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
         glContainer.addView(glSurfaceView);
 //        DynamicLoader.loadSegmentsFromFile(this,"/mnt/sdcard2/pm.jar","com.hw.photomovietest.app.plugin.PluginSegment");
         final PhotoMovie photoMovie = PhotoMovieFactory.generatePhotoMovie(genPhotoSource(this), PhotoMovieFactory.PhotoMovieType.THAW);
-        final GLMovieRenderer glMovieRenderer = new GLMovieRenderer(glSurfaceView);
+        final GLSurfaceMovieRenderer glSurfaceMovieRenderer = new GLSurfaceMovieRenderer(glSurfaceView);
         LutMovieFilter movieFilter = new LutMovieFilter(LutMovieFilter.LutType.E);
-        glMovieRenderer.setMovieFilter(movieFilter);
+        glSurfaceMovieRenderer.setMovieFilter(movieFilter);
         photoMoviePlayer = new PhotoMoviePlayer(getApplicationContext());
-        photoMoviePlayer.setMovieRenderer(glMovieRenderer);
+        photoMoviePlayer.setMovieRenderer(glSurfaceMovieRenderer);
         photoMoviePlayer.setMusic(getResources().openRawResourceFd(R.raw.bg));
         photoMoviePlayer.setDataSource(photoMovie);
         photoMoviePlayer.setMovieListener(this);
@@ -128,7 +124,7 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
                 final File file = new File(Environment.getExternalStorageDirectory(), "photoMovie.mp4");
                 int bitrate = glSurfaceView.getWidth() * glSurfaceView.getHeight() > 1000 * 1500 ? 8000000 : 4000000;
                 recorder.configOutput(glSurfaceView.getWidth(), glSurfaceView.getHeight(), bitrate, 30, 1, file.getAbsolutePath());
-                recorder.setDataSource(glMovieRenderer);
+                recorder.setDataSource(glSurfaceMovieRenderer);
                 recorder.startRecord(new GLMovieRecorder.onRecordListener() {
                     @Override
                     public void onRecordFinish(boolean success) {
@@ -184,21 +180,21 @@ public class MainActivity extends Activity implements IMovieTimer.MovieListener,
         List<PhotoData> dataList = new ArrayList<PhotoData>();
         {
             PhotoInfo photoInfo = new PhotoInfo();
-            photoInfo.description = "啦啦啦啦啦";
+            photoInfo.description = "字幕字幕";
             PhotoData photoData1 = new UilPhotoData("drawable://" + R.drawable.p1, PhotoData.STATE_LOCAL);
             photoData1.setPhotoInfo(photoInfo);
             dataList.add(photoData1);
         }
         {
             PhotoInfo photoInfo = new PhotoInfo();
-            photoInfo.description = "啦啦";
+            photoInfo.description = "字幕字幕";
             PhotoData photoData1 = new UilPhotoData("drawable://" + R.drawable.p2, PhotoData.STATE_LOCAL);
             photoData1.setPhotoInfo(photoInfo);
             dataList.add(photoData1);
         }
         {
             PhotoInfo photoInfo = new PhotoInfo();
-            photoInfo.description = "啦啦啦啦啦阿萨德爱上爱上大声大声道阿萨德阿萨德爱上大师大声道啊";
+            photoInfo.description = "字幕字幕字幕字幕字幕字幕字幕字幕";
             PhotoData photoData1 = new UilPhotoData("drawable://" + R.drawable.p3, PhotoData.STATE_LOCAL);
             photoData1.setPhotoInfo(photoInfo);
             dataList.add(photoData1);

@@ -17,7 +17,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.Surface;
 import com.hw.photomovie.PhotoMovie;
-import com.hw.photomovie.render.GLMovieRenderer;
+import com.hw.photomovie.render.GLSurfaceMovieRenderer;
 import com.hw.photomovie.segment.MovieSegment;
 import com.hw.photomovie.util.MLog;
 
@@ -31,7 +31,7 @@ import java.nio.ByteBuffer;
 public class GLMovieRecorder {
     private static final String TAG = "GLMovieRecorder";
 
-    private GLMovieRenderer mGLMovieRenderer;
+    private GLSurfaceMovieRenderer mGLSurfaceMovieRenderer;
     private boolean mInited;
     private HandlerThread mRecordThread = new HandlerThread("GLMovieRecorder");
 
@@ -40,8 +40,8 @@ public class GLMovieRecorder {
         mRecordThread.start();
     }
 
-    public void setDataSource(GLMovieRenderer glMovieRenderer) {
-        mGLMovieRenderer = glMovieRenderer;
+    public void setDataSource(GLSurfaceMovieRenderer glSurfaceMovieRenderer) {
+        mGLSurfaceMovieRenderer = glSurfaceMovieRenderer;
     }
 
     public void configOutput(int width, int height, int bitRate, int frameRate, int iFrameInterval, String outputPath) {
@@ -58,11 +58,11 @@ public class GLMovieRecorder {
         if (!mInited) {
             throw new RuntimeException("please configOutput first.");
         }
-        if (mGLMovieRenderer == null) {
+        if (mGLSurfaceMovieRenderer == null) {
             throw new RuntimeException("please setDataSource first.");
         }
         final Handler handler = new Handler(mRecordThread.getLooper());
-        PhotoMovie photoMovie = mGLMovieRenderer.getPhotoMovie();
+        PhotoMovie photoMovie = mGLSurfaceMovieRenderer.getPhotoMovie();
         final MovieSegment firstSegment = (MovieSegment) photoMovie.getMovieSegments().get(0);
         firstSegment.setOnSegmentPrepareListener(new MovieSegment.OnSegmentPrepareListener() {
             @Override
@@ -99,13 +99,13 @@ public class GLMovieRecorder {
         mInputSurface.makeCurrent();
 
         //prepare要在 mInputSurface.makeCurrent();之后调用。因为切换了eglSurface之后，GLESCanvas之前上传到GPU的program都失效了
-        mGLMovieRenderer.prepare();
-        mGLMovieRenderer.release();
-        mGLMovieRenderer.setViewport(mWidth, mHeight);
-        mGLMovieRenderer.setRenderToRecorder(true);
+        mGLSurfaceMovieRenderer.prepare();
+        mGLSurfaceMovieRenderer.release();
+        mGLSurfaceMovieRenderer.setViewport(mWidth, mHeight);
+        mGLSurfaceMovieRenderer.setRenderToRecorder(true);
 
         //开始录制
-        PhotoMovie photoMovie = mGLMovieRenderer.getPhotoMovie();
+        PhotoMovie photoMovie = mGLSurfaceMovieRenderer.getPhotoMovie();
 
         int duration;
         int elapsedTime = 0;
@@ -117,7 +117,7 @@ public class GLMovieRecorder {
                 // Feed any pending encoder output into the muxer.
                 drainEncoder(false);
                 long s1 = System.currentTimeMillis();
-                mGLMovieRenderer.drawFrame(elapsedTime);
+                mGLSurfaceMovieRenderer.drawFrame(elapsedTime);
                 long e1 = System.currentTimeMillis();
 
                 mInputSurface.setPresentationTime(computePresentationTimeNsec(frameCount));//这句注释了照样跑，？
@@ -139,9 +139,9 @@ public class GLMovieRecorder {
             drainEncoder(true);
         } finally {
             releaseEncoder();
-            mGLMovieRenderer.setRenderToRecorder(false);
+            mGLSurfaceMovieRenderer.setRenderToRecorder(false);
         }
-        mGLMovieRenderer.release();
+        mGLSurfaceMovieRenderer.release();
     }
 
     private static final boolean VERBOSE = true;           // lots of logging

@@ -1,0 +1,24 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:orientation="vertical">
+    <com.hw.photomovie.render.GLTextureView
+        android:id="@+id/gl_texture"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </com.hw.photomovie.render.GLTextureView>
+    <include
+        android:id="@+id/movie_bottom_layout"
+        layout="@layout/demo_bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/demo_bottom_height"
+        android:layout_gravity="bottom"
+    />
+    <ViewStub
+        android:id="@+id/movie_menu_filter_stub"
+        android:inflatedId="@+id/movie_menu_filter"
+        android:layout="@layout/demo_filter_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/demo_menu_height"
+        android:layout_gravity="bottom" />
+</FrameLayout>

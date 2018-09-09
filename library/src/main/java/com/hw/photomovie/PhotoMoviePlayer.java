@@ -6,6 +6,7 @@ import android.net.Uri;
 import com.hw.photomovie.model.ErrorReason;
 import com.hw.photomovie.model.PhotoData;
 import com.hw.photomovie.model.PhotoSource;
+import com.hw.photomovie.render.GLMovieRenderer;
 import com.hw.photomovie.render.MovieRenderer;
 import com.hw.photomovie.segment.MovieSegment;
 import com.hw.photomovie.timer.IMovieTimer;
@@ -166,7 +167,7 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
         if (segmentList == null || segmentList.size() < 1) {
             setStateValue(STATE_PREPARED);
             if (mOnPreparedListener != null) {
-                mOnPreparedListener.onPrepared(PhotoMoviePlayer.this, prepared, total);
+                onPrepared(prepared, total);
             }
             return;
         }
@@ -177,7 +178,7 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
                 setStateValue(STATE_PREPARED);
                 if (mOnPreparedListener != null) {
                     mOnPreparedListener.onPreparing(PhotoMoviePlayer.this, 1f);
-                    mOnPreparedListener.onPrepared(PhotoMoviePlayer.this, prepared, total);
+                    onPrepared(prepared, total);
                 }
                 firstSegment.setOnSegmentPrepareListener(null);
             }
@@ -285,6 +286,20 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
 
     public void setOnPreparedListener(OnPreparedListener onPreparedListener) {
         this.mOnPreparedListener = onPreparedListener;
+    }
+
+    private void onPrepared(final int prepared,final int total){
+        if(mMovieRenderer instanceof GLMovieRenderer){
+            ((GLMovieRenderer) mMovieRenderer).checkGLPrepared(new GLMovieRenderer.OnGLPrepareListener() {
+                @Override
+                public void onGLPrepared() {
+                    mOnPreparedListener.onPrepared(PhotoMoviePlayer.this, prepared, total);
+                }
+            });
+        }else {
+            mOnPreparedListener.onPrepared(PhotoMoviePlayer.this, prepared, total);
+        }
+
     }
 
     public int getState() {

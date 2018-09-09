@@ -24,7 +24,10 @@ public class ThawSegment extends SingleBitmapSegment {
         if (!mDataPrepared) {
             return;
         }
-        if (mBitmapInfo != null && mBitmapInfo.bitmapTexture != null) {
+        if (mBitmapInfo != null && mBitmapInfo.bitmapTexture != null && !mViewportRect.isEmpty()) {
+            if(mSrcAnimation==null){
+                createAnimation();
+            }
             if (segmentRate < 0.2) {
                 mSrcAnimation.update(0);
                 float ratio = getValue(1, 0, 1 / 0.2f * segmentRate);

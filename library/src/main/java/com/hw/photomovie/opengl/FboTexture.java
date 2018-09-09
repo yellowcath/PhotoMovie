@@ -37,6 +37,7 @@ public class FboTexture extends BasicTexture {
         prepareFrameBuffer(width, height);
     }
 
+    public void setId(int id){mId = id;}
     private void prepareFrameBuffer(int width, int height) {
         GlUtil.checkGlError("prepareFramebuffer start");
 

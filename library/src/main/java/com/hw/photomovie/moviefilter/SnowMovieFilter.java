@@ -32,7 +32,7 @@ public class SnowMovieFilter extends BaseMovieFilter {
     @Override
     protected void onPreDraw(PhotoMovie photoMovie, int elapsedTime, FboTexture inputTexture) {
         super.onPreDraw(photoMovie, elapsedTime, inputTexture);
-        float time = elapsedTime/(float)photoMovie.getDuration();
+        float time = photoMovie==null?0f:elapsedTime/(float)photoMovie.getDuration();
         GLES20.glUniform1f(mTimeHandler,time*mSpeed);
         GLES20.glUniform2fv(mSizeHandler,1,new float[]{inputTexture.getWidth()/(float)inputTexture.getHeight()*mSnowSize,1f*mSnowSize},0);
 

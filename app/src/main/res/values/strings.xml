@@ -3,4 +3,8 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="movie_filter">filter</string>
+    <string name="movie_transfer">transfer</string>
+    <string name="movie_music">music</string>
+    <string name="movie_next">next</string>
 </resources>
