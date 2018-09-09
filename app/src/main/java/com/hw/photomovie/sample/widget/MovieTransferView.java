@@ -2,9 +2,9 @@ package com.hw.photomovie.sample.widget;
 
 import android.animation.Animator;
 import android.content.Context;
-import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -22,27 +22,27 @@ import java.util.List;
 /**
  * Created by huangwei on 2018/9/9.
  */
-public class MovieFilterView extends FrameLayout {
+public class MovieTransferView extends FrameLayout {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
-    private List<FilterItem> mItemList = new ArrayList<FilterItem>();
-    private FilterCallback mCallback;
-    private int mCheckIndex =0;
+    private List<TransferItem> mItemList = new ArrayList<TransferItem>();
+    private TransferCallback mCallback;
+    private int mCheckIndex = -1;
 
-    public MovieFilterView(@NonNull Context context) {
+    public MovieTransferView(@NonNull Context context) {
         super(context);
     }
 
-    public MovieFilterView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public MovieTransferView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public MovieFilterView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public MovieTransferView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public void setItemList(List<FilterItem> itemList) {
+    public void setItemList(List<TransferItem> itemList) {
         if(itemList==null){
             return;
         }
@@ -53,7 +53,7 @@ public class MovieFilterView extends FrameLayout {
         }
     }
 
-    public void setFilterCallback(FilterCallback callback) {
+    public void setTransferCallback(TransferCallback callback) {
         mCallback = callback;
     }
 
@@ -65,7 +65,7 @@ public class MovieFilterView extends FrameLayout {
             @NonNull
             @Override
             public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.demo_filter_item, parent, false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.demo_transfer_item, parent, false);
                 return new RecyclerView.ViewHolder(view) {
 
                 };
@@ -73,20 +73,18 @@ public class MovieFilterView extends FrameLayout {
 
             @Override
             public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
-                ImageView img = holder.itemView.findViewById(R.id.filter_img);
-                TextView txt = holder.itemView.findViewById(R.id.filter_txt);
-                ImageView checkImg = holder.itemView.findViewById(R.id.filter_check);
+                AppCompatImageView img = holder.itemView.findViewById(R.id.transfer_img);
+                TextView txt = holder.itemView.findViewById(R.id.transfer_txt);
 
-                final FilterItem item = mItemList.get(position);
+                final TransferItem item = mItemList.get(position);
                 img.setImageResource(item.imgRes);
                 txt.setText(item.name);
-                checkImg.setVisibility(mCheckIndex==position?View.VISIBLE:View.GONE);
                 holder.itemView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         mCheckIndex = position;
                         if (mCallback != null) {
-                            mCallback.onFilterSelect(item);
+                            mCallback.onTransferSelect(item);
                         }
                         mAdapter.notifyDataSetChanged();
                     }
@@ -137,7 +135,7 @@ public class MovieFilterView extends FrameLayout {
 
     }
 
-    public static interface FilterCallback {
-        void onFilterSelect(FilterItem item);
+    public static interface TransferCallback {
+        void onTransferSelect(TransferItem item);
     }
 }

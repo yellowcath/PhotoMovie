@@ -14,6 +14,8 @@ import com.hw.photomovie.render.GLTextureView;
 import com.hw.photomovie.sample.widget.FilterItem;
 import com.hw.photomovie.sample.widget.FilterType;
 import com.hw.photomovie.sample.widget.MovieFilterView;
+import com.hw.photomovie.sample.widget.MovieTransferView;
+import com.hw.photomovie.sample.widget.TransferItem;
 import com.hw.photomovie.timer.IMovieTimer;
 import com.hw.photomovie.util.MLog;
 
@@ -24,7 +26,7 @@ import java.util.List;
 /**
  * Created by huangwei on 2018/9/9.
  */
-public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTimer.MovieListener {
+public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTimer.MovieListener,MovieTransferView.TransferCallback {
     private IDemoView mDemoView;
 
     private PhotoMovie mPhotoMovie;
@@ -34,7 +36,19 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
     public void attachView(IDemoView demoView){
         mDemoView = demoView;
         initFilters();
+        initTransfers();
         initMoviePlayer();
+    }
+
+    private void initTransfers(){
+        List<TransferItem> items = new LinkedList<TransferItem>();
+        items.add(new TransferItem(R.drawable.ic_movie_transfer,"LeftRight",PhotoMovieFactory.PhotoMovieType.HORIZONTAL_TRANS));
+        items.add(new TransferItem(R.drawable.ic_movie_transfer,"UpDown",PhotoMovieFactory.PhotoMovieType.VERTICAL_TRANS));
+        items.add(new TransferItem(R.drawable.ic_movie_transfer,"Window",PhotoMovieFactory.PhotoMovieType.WINDOW));
+        items.add(new TransferItem(R.drawable.ic_movie_transfer,"Thaw",PhotoMovieFactory.PhotoMovieType.THAW));
+        items.add(new TransferItem(R.drawable.ic_movie_transfer,"Tranlation",PhotoMovieFactory.PhotoMovieType.SCALE_TRANS));
+        items.add(new TransferItem(R.drawable.ic_movie_transfer,"Scale",PhotoMovieFactory.PhotoMovieType.SCALE));
+        mDemoView.setTransfers(items);
     }
 
     private void initFilters(){
@@ -141,6 +155,36 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
 
     @Override
     public void onMovieEnd() {
+
+    }
+
+    @Override
+    public void onTransferSelect(TransferItem item) {
+        mPhotoMoviePlayer.stop();
+        mPhotoMovie = PhotoMovieFactory.generatePhotoMovie(mPhotoMovie.getPhotoSource(),item.type);
+        mPhotoMoviePlayer.setDataSource(mPhotoMovie);
+        mPhotoMoviePlayer.setMusic(mDemoView.getActivity().getResources().openRawResourceFd(R.raw.bg));
+        mPhotoMoviePlayer.setOnPreparedListener(new PhotoMoviePlayer.OnPreparedListener() {
+            @Override
+            public void onPreparing(PhotoMoviePlayer moviePlayer, float progress) {
+            }
+
+            @Override
+            public void onPrepared(PhotoMoviePlayer moviePlayer, int prepared, int total) {
+                mDemoView.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mPhotoMoviePlayer.start();
+                    }
+                });
+            }
+
+            @Override
+            public void onError(PhotoMoviePlayer moviePlayer) {
+                MLog.i("onPrepare", "onPrepare error");
+            }
+        });
+        mPhotoMoviePlayer.prepare();
 
     }
 }

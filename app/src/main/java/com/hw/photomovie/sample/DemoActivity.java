@@ -12,6 +12,8 @@ import com.hw.photomovie.render.GLTextureView;
 import com.hw.photomovie.sample.widget.FilterItem;
 import com.hw.photomovie.sample.widget.MovieBottomView;
 import com.hw.photomovie.sample.widget.MovieFilterView;
+import com.hw.photomovie.sample.widget.MovieTransferView;
+import com.hw.photomovie.sample.widget.TransferItem;
 import com.hw.photomovie.util.AppResources;
 
 import java.util.List;
@@ -24,8 +26,10 @@ public class DemoActivity extends AppCompatActivity implements IDemoView, MovieB
     private DemoPresenter mDemoPresenter = new DemoPresenter();
     private GLTextureView mGLTextureView;
     private MovieFilterView mFilterView;
+    private MovieTransferView mTransferView;
     private MovieBottomView mBottomView;
     private List<FilterItem> mFilters;
+    private List<TransferItem> mTransfers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +65,15 @@ public class DemoActivity extends AppCompatActivity implements IDemoView, MovieB
 
     @Override
     public void onTransferClick() {
-
+        if(mTransferView==null){
+            ViewStub stub = findViewById(R.id.movie_menu_transfer_stub);
+            mTransferView = (MovieTransferView) stub.inflate();
+            mTransferView.setVisibility(View.GONE);
+            mTransferView.setItemList(mTransfers);
+            mTransferView.setTransferCallback(mDemoPresenter);
+        }
+        mBottomView.setVisibility(View.GONE);
+        mTransferView.show();
     }
 
     @Override
@@ -86,6 +98,13 @@ public class DemoActivity extends AppCompatActivity implements IDemoView, MovieB
                 mBottomView.setVisibility(View.VISIBLE);
                 return true;
             }
+        }else if(ev.getAction() == MotionEvent.ACTION_DOWN) {
+            if (mTransferView != null && mTransferView.getVisibility() == View.VISIBLE
+                    && !checkInArea(mTransferView,ev)){
+                mTransferView.hide();
+                mBottomView.setVisibility(View.VISIBLE);
+                return true;
+            }
         }
         return super.dispatchTouchEvent(ev);
     }
@@ -106,9 +125,8 @@ public class DemoActivity extends AppCompatActivity implements IDemoView, MovieB
         return this;
     }
 
-    public void testFilter(){
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.filter_default);
-
-
+    @Override
+    public void setTransfers(List<TransferItem> items) {
+        mTransfers = items;
     }
 }

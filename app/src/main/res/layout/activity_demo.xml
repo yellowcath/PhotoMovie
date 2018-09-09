@@ -21,4 +21,11 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/demo_menu_height"
         android:layout_gravity="bottom" />
+    <ViewStub
+        android:id="@+id/movie_menu_transfer_stub"
+        android:inflatedId="@+id/movie_menu_transfer"
+        android:layout="@layout/demo_transfer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/demo_menu_height"
+        android:layout_gravity="bottom" />
 </FrameLayout>

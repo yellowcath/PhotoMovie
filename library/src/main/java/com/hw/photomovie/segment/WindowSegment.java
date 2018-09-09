@@ -70,6 +70,8 @@ public class WindowSegment extends SingleBitmapSegment {
 
     private MovieSegment mPreMovieSegment;
 
+    private boolean mFilterInited;
+
     /**
      * 坐标x,y范围都是-1~1
      *
@@ -189,18 +191,24 @@ public class WindowSegment extends SingleBitmapSegment {
 
     private void drawBitmap(GLESCanvas canvas) {
         if (mBitmapInfo != null && mBitmapInfo.makeTextureAvailable(canvas)) {
-            canvas.unbindArrayBuffer();
-            filter.setLines(mK, mB1, mK, mB2, mKExisted);
-            filter.drawFrame(0, mBitmapInfo.bitmapTexture.getId(), mBitmapInfo.srcRect, new RectF(mBitmapInfo.srcShowRect), mViewportRect);
-            canvas.rebindArrayBuffer();
+            if(!mFilterInited && !mViewportRect.isEmpty()){
+                filter.init();
+                filter.setViewport((int)mViewportRect.left,(int)mViewportRect.top,(int)mViewportRect.right,(int)mViewportRect.bottom);
+                mFilterInited = true;
+            }
+            if(mFilterInited) {
+                canvas.unbindArrayBuffer();
+                filter.setLines(mK, mB1, mK, mB2, mKExisted);
+                filter.drawFrame(0, mBitmapInfo.bitmapTexture.getId(), mBitmapInfo.srcRect, new RectF(mBitmapInfo.srcShowRect), mViewportRect);
+                canvas.rebindArrayBuffer();
+            }
         }
     }
 
     @Override
     public void setViewport(int l, int t, int r, int b) {
         super.setViewport(l, t, r, b);
-        filter.init();
-        filter.setViewport(l, t, r, b);
+        mFilterInited = false;
     }
 
     private void drawLineAppear(GLESCanvas canvas, float rate) {
