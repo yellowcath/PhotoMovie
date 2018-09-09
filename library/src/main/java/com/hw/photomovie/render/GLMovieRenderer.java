@@ -20,11 +20,14 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
     private FboTexture mFilterTexture;
     protected IMovieFilter mMovieFilter;
     private Object mPrepareLock = new Object();
+    private Object mSetFilterLock = new Object();
     protected volatile boolean mPrepared;
     private volatile OnGLPrepareListener mOnGLPrepareListener;
 
     public void setMovieFilter(IMovieFilter movieFilter) {
-        mMovieFilter = movieFilter;
+        synchronized (mSetFilterLock) {
+            mMovieFilter = movieFilter;
+        }
     }
 
     @Override
@@ -82,7 +85,11 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, curFb[0]);
 
         mPainter.unbindArrayBuffer();
-        mMovieFilter.doFilter(mPhotoMovie,elapsedTime,mFboTexture, mFilterTexture);
+        synchronized (mSetFilterLock) {
+            if(mMovieFilter!=null) {
+                mMovieFilter.doFilter(mPhotoMovie, elapsedTime, mFboTexture, mFilterTexture);
+            }
+        }
         mPainter.rebindArrayBuffer();
 
         mPainter.drawTexture(mFilterTexture, 0, 0, mViewportRect.width(), mViewportRect.height());
