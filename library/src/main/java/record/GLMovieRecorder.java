@@ -54,7 +54,7 @@ public class GLMovieRecorder {
         mInited = true;
     }
 
-    public void startRecord(final onRecordListener listener) {
+    public void startRecord(final OnRecordListener listener) {
         if (!mInited) {
             throw new RuntimeException("please configOutput first.");
         }
@@ -73,7 +73,7 @@ public class GLMovieRecorder {
                     public void run() {
                         boolean success = false;
                         try {
-                            startRecordImpl();
+                            startRecordImpl(listener);
                             success = true;
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -94,7 +94,7 @@ public class GLMovieRecorder {
         firstSegment.prepare();
     }
 
-    public void startRecordImpl() throws IOException {
+    public void startRecordImpl(final OnRecordListener listener) throws IOException {
         prepareEncoder();
         mInputSurface.makeCurrent();
 
@@ -111,6 +111,7 @@ public class GLMovieRecorder {
         int elapsedTime = 0;
         int frameCount = 0;
         int frameTime = (int) (1000f / mFrameRate);
+        int totalDuration = photoMovie.getDuration();
         try {
             while (true) {
                 long s = System.currentTimeMillis();
@@ -132,6 +133,9 @@ public class GLMovieRecorder {
                  * 有的PhotoMovie时长是会变化的{@link com.hw.photomovie.segment.MovieSegment.IS_DURATION_VARIABLE}
                  */
                 duration = photoMovie.getDuration();
+                if (listener != null) {
+                    listener.onRecordProgress(elapsedTime, totalDuration);
+                }
                 if (elapsedTime > duration) {
                     break;
                 }
@@ -600,7 +604,9 @@ public class GLMovieRecorder {
         }
     }
 
-    public interface onRecordListener {
+    public interface OnRecordListener {
         void onRecordFinish(boolean success);
+
+        void onRecordProgress(int recordedDuration, int totalDuration);
     }
 }

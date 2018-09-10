@@ -1,6 +1,5 @@
 package com.hw.photomovie.sample;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -207,8 +206,11 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
 
     public void saveVideo() {
         mPhotoMoviePlayer.pause();
-        final AlertDialog dialog = new ProgressDialog.Builder(mDemoView.getActivity())
-                .setMessage("saving video...").create();
+        final ProgressDialog dialog = new ProgressDialog(mDemoView.getActivity());
+        dialog.setMessage("saving video...");
+        dialog.setMax(100);
+        dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        dialog.setCancelable(false);
         dialog.show();
         GLMovieRecorder recorder = new GLMovieRecorder();
         final File file = initVideoFile();
@@ -216,14 +218,14 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
         int bitrate = glTextureView.getWidth() * glTextureView.getHeight() > 1000 * 1500 ? 8000000 : 4000000;
         recorder.configOutput(glTextureView.getWidth(), glTextureView.getHeight(), bitrate, 30, 1, file.getAbsolutePath());
         recorder.setDataSource(mMovieRenderer);
-        recorder.startRecord(new GLMovieRecorder.onRecordListener() {
+        recorder.startRecord(new GLMovieRecorder.OnRecordListener() {
             @Override
             public void onRecordFinish(boolean success) {
                 File outputFile = file;
                 if (mMusicUri != null) {
-                    if(Build.VERSION.SDK_INT<Build.VERSION_CODES.LOLLIPOP){
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                         Toast.makeText(mDemoView.getActivity().getApplicationContext(), "Mix audio needs api21!", Toast.LENGTH_LONG).show();
-                    }else {
+                    } else {
                         //合成音乐
                         File mixFile = initVideoFile();
                         String audioPath = UriUtil.getPath(mDemoView.getActivity(), mMusicUri);
@@ -249,6 +251,11 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
                     Toast.makeText(mDemoView.getActivity().getApplicationContext(), "record error!", Toast.LENGTH_LONG).show();
                 }
             }
+
+            @Override
+            public void onRecordProgress(int recordedDuration, int totalDuration) {
+                dialog.setProgress((int) (recordedDuration / (float) totalDuration * 100));
+            }
         });
     }
 
@@ -262,7 +269,7 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
     }
 
     public void onResume() {
-        if(mPhotoMoviePlayer.isPrepared()) {
+        if (mPhotoMoviePlayer.isPrepared()) {
             mPhotoMoviePlayer.start();
         }
     }
