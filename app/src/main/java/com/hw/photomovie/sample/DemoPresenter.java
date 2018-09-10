@@ -16,7 +16,6 @@ import com.hw.photomovie.model.PhotoData;
 import com.hw.photomovie.model.PhotoInfo;
 import com.hw.photomovie.model.PhotoSource;
 import com.hw.photomovie.model.SimplePhotoData;
-import com.hw.photomovie.render.GLMovieRenderer;
 import com.hw.photomovie.render.GLSurfaceMovieRenderer;
 import com.hw.photomovie.render.GLTextureMovieRender;
 import com.hw.photomovie.render.GLTextureView;
@@ -28,8 +27,6 @@ import com.hw.photomovie.sample.widget.TransferItem;
 import com.hw.photomovie.timer.IMovieTimer;
 import com.hw.photomovie.util.MLog;
 import com.hw.videoprocessor.VideoProcessor;
-import com.hw.videoprocessor.VideoUtil;
-import com.hw.videoprocessor.util.AudioUtil;
 import record.GLMovieRecorder;
 
 import java.io.File;
@@ -231,7 +228,6 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
                         //合成音乐
                         File mixFile = initVideoFile();
                         String audioPath = UriUtil.getPath(mDemoView.getActivity(), mMusicUri);
-                        audioPath = getAACAudio(audioPath, getVideoDurationUs(file.getAbsolutePath()));
                         try {
                             VideoProcessor.mixAudioTrack(mDemoView.getActivity(), file.getAbsolutePath(), audioPath, mixFile.getAbsolutePath(), null, null, 0,
                                     100, 1f, 1f);
@@ -255,17 +251,6 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
                 }
             }
         });
-    }
-
-    private String getPCMAudio(String audioPath,long endTimeUs){
-        File tempPCM=new File(mDemoView.getActivity().getCacheDir(),System.currentTimeMillis()+".pcm");
-        try {
-            AudioUtil.decodeToPCM(audioPath,tempPCM.getAbsolutePath(),0, (int) endTimeUs);
-            return tempAAC.getAbsolutePath();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     private File initVideoFile() {

@@ -2,16 +2,12 @@ package com.hw.photomovie.sample;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewStub;
-import android.widget.Toast;
 import com.hw.photomovie.render.GLTextureView;
 import com.hw.photomovie.sample.widget.FilterItem;
 import com.hw.photomovie.sample.widget.MovieBottomView;
@@ -69,7 +65,6 @@ public class DemoActivity extends AppCompatActivity implements IDemoView, MovieB
         i.setType("audio/*");
         i.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(i, REQUEST_MUSIC);
-        Toast.makeText(this, "Only AAC audio files are supported now!", Toast.LENGTH_LONG).show();
     }
 
     @Override
