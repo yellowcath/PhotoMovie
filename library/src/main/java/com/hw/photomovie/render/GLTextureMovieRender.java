@@ -1,7 +1,6 @@
 package com.hw.photomovie.render;
 
 import android.opengl.GLES20;
-import com.hw.photomovie.moviefilter.BaseMovieFilter;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -30,6 +29,11 @@ public class GLTextureMovieRender extends GLSurfaceMovieRenderer {
 
             @Override
             public boolean onDrawFrame(GL10 gl) {
+                if(mNeedRelease.get()){
+                    mNeedRelease.set(false);
+                    releaseGLResources();
+                    return true;
+                }
                 GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
                 drawMovieFrame(mElapsedTime);
                 return true;
@@ -37,9 +41,8 @@ public class GLTextureMovieRender extends GLSurfaceMovieRenderer {
 
             @Override
             public void onSurfaceDestroyed() {
-                if(mMovieFilter !=null){
-                    mMovieFilter.release();
-                }
+                mSurfaceCreated = false;
+                release();
             }
         });
         mGLTextureView.setRenderMode(GLTextureView.RENDERMODE_WHEN_DIRTY);
@@ -52,6 +55,14 @@ public class GLTextureMovieRender extends GLSurfaceMovieRenderer {
             mGLTextureView.requestRender();
         } else {
             onDrawFrame(null);
+        }
+    }
+
+    @Override
+    public void release() {
+        mNeedRelease.set(true);
+        if(mSurfaceCreated){
+            mGLTextureView.requestRender();
         }
     }
 }

@@ -42,7 +42,15 @@ public abstract class MovieRenderer<T> {
         }
     }
 
-    ;
+    public void releaseLastSegment(boolean draw){
+        PhotoMovie.SegmentPicker<T> segmentPicker = mPhotoMovie.getSegmentPicker();
+        MovieSegment<T> lastSegment = segmentPicker.getLastSegment();
+        if(draw) {
+            lastSegment.drawFrame(mPainter, 1f);
+        }
+        lastSegment.onSegmentEnd();
+        lastSegment.release();
+    }
 
     public void setMovieViewport(int l, int t, int r, int b) {
         if (mPhotoMovie != null) {
@@ -67,4 +75,6 @@ public abstract class MovieRenderer<T> {
     public void enableDraw(boolean enableDraw) {
         mEnableDraw = enableDraw;
     }
+
+    public abstract void release();
 }

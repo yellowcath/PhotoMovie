@@ -282,6 +282,7 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
         mMusicPlayer.stop();
 //        mMusicPlayer.fadeStop(new Handler());
         setStateValue(STATE_PLAYBACK_COMPLETED);
+        mMovieRenderer.release();
     }
 
     public void destroy() {

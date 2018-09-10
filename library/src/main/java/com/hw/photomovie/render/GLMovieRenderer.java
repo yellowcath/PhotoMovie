@@ -41,7 +41,7 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
         mFilterTexture.setSize(w, h);
     }
 
-    public void releaseTextures() {
+    protected void releaseTextures() {
         if(mFboTexture!=null) {
             mFboTexture.release();
             mFboTexture = null;
@@ -91,11 +91,16 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
         mPainter.drawTexture(mFilterTexture, 0, 0, mViewportRect.width(), mViewportRect.height());
     }
 
-    public void release(){
+    /**
+     * 由子类调用
+     */
+    protected void releaseGLResources(){
+        releaseLastSegment(true);
         releaseTextures();
         if(mMovieFilter!=null){
             mMovieFilter.release();
         }
+        mPainter.deleteRecycledResources();
     }
 
     public void checkGLPrepared(OnGLPrepareListener onGLPrepareListener){

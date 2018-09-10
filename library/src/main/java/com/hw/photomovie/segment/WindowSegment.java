@@ -3,10 +3,12 @@ package com.hw.photomovie.segment;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.util.Log;
 import com.hw.photomovie.filter.BetweenLinesFilter;
 import com.hw.photomovie.opengl.GLESCanvas;
 import com.hw.photomovie.opengl.GLPaint;
 import com.hw.photomovie.util.AppResources;
+import com.hw.photomovie.util.MLog;
 
 /**
  * Created by huangwei on 2015/6/19.
@@ -130,10 +132,13 @@ public class WindowSegment extends SingleBitmapSegment {
     @Override
     public void onPrepare() {
         super.onPrepare();
-        mPreMovieSegment = mPhotoMovie.getSegmentPicker().getPreSegment(this);
-        if (mPreMovieSegment != null) {
+        if (mPreMovieSegment == null) {
+            mPreMovieSegment = mPhotoMovie.getSegmentPicker().getPreSegment(this);
+        }
+        if(mPreMovieSegment!=null){
             mPreMovieSegment.enableRelease(false);
         }
+//        enableRelease(false);
     }
 
     @Override
@@ -184,6 +189,9 @@ public class WindowSegment extends SingleBitmapSegment {
     }
 
     private void drawPreForBackground(GLESCanvas canvas) {
+        if (mPreMovieSegment == null) {
+            mPreMovieSegment = mPhotoMovie.getSegmentPicker().getPreSegment(this);
+        }
         if (mPreMovieSegment != null) {
             mPreMovieSegment.drawFrame(canvas, 1);
         }
@@ -369,6 +377,4 @@ public class WindowSegment extends SingleBitmapSegment {
         LINE_ANIM_RATE = 0;
         return this;
     }
-
-
 }

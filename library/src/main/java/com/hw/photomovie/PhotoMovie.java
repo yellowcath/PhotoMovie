@@ -177,6 +177,10 @@ public class PhotoMovie<T> {
             return mMovieSegments.get(0);
         }
 
+        public MovieSegment<T> getLastSegment() {
+            return mMovieSegments.get(mMovieSegments.size()-1);
+        }
+
         public float getSegmentProgress(MovieSegment<T> movieSegment, int elapsedTime) {
             float rtn = 0;
             int duration = 0;
