@@ -153,7 +153,7 @@ public abstract class MovieSegment<T> {
     }
 
     /**
-     * @param enableRelease 为true后当{@link #release()}函数被调用时不会真正执行释放资源操作，
+     * @param enableRelease 为false后当{@link #release()}函数被调用时不会真正执行释放资源操作，
      *                      需要由该函数的调用者自行管理释放资源
      */
     public final void enableRelease(boolean enableRelease) {

@@ -100,7 +100,7 @@ public class PhotoMovieFactory {
 
     private static PhotoMovie generateScalePhotoMovie(PhotoSource photoSource) {
         List<MovieSegment> segmentList = new ArrayList<MovieSegment>(photoSource.size()+1);
-        for (int i = 0; i < photoSource.size() - 1; i++) {
+        for (int i = 0; i < photoSource.size(); i++) {
             segmentList.add(new ScaleSegment(1800, 10, 1));
         }
         segmentList.add(new EndGaussianBlurSegment(END_GAUSSIANBLUR_DURATION));
@@ -110,7 +110,7 @@ public class PhotoMovieFactory {
 
     private static PhotoMovie generateScaleTransPhotoMovie(PhotoSource photoSource) {
         List<MovieSegment> segmentList = new ArrayList<MovieSegment>(photoSource.size()+1);
-        for (int i = 0; i < photoSource.size() - 1; i++) {
+        for (int i = 0; i < photoSource.size()-1; i++) {
             segmentList.add(new ScaleTransSegment());
         }
         segmentList.add(new LayerSegment(new MovieLayer[]{new GaussianBlurLayer()}, 2000));
