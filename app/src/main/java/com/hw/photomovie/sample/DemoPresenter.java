@@ -42,6 +42,7 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
     private PhotoMoviePlayer mPhotoMoviePlayer;
     private GLSurfaceMovieRenderer mMovieRenderer;
     private Uri mMusicUri;
+    private PhotoMovieFactory.PhotoMovieType mMovieType = PhotoMovieFactory.PhotoMovieType.HORIZONTAL_TRANS;
 
     public void attachView(IDemoView demoView) {
         mDemoView = demoView;
@@ -108,7 +109,7 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
     }
 
     private void startPlay(PhotoSource photoSource){
-        mPhotoMovie = PhotoMovieFactory.generatePhotoMovie(photoSource, PhotoMovieFactory.PhotoMovieType.HORIZONTAL_TRANS);
+        mPhotoMovie = PhotoMovieFactory.generatePhotoMovie(photoSource, mMovieType);
         mPhotoMoviePlayer.setDataSource(mPhotoMovie);
         mPhotoMoviePlayer.prepare();
     }
@@ -149,8 +150,9 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
 
     @Override
     public void onTransferSelect(TransferItem item) {
+        mMovieType = item.type;
         mPhotoMoviePlayer.stop();
-        mPhotoMovie = PhotoMovieFactory.generatePhotoMovie(mPhotoMovie.getPhotoSource(), item.type);
+        mPhotoMovie = PhotoMovieFactory.generatePhotoMovie(mPhotoMovie.getPhotoSource(), mMovieType);
         mPhotoMoviePlayer.setDataSource(mPhotoMovie);
         if(mMusicUri!=null) {
             mPhotoMoviePlayer.setMusic(mDemoView.getActivity(), mMusicUri);
@@ -197,7 +199,13 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
         GLTextureView glTextureView = mDemoView.getGLView();
         int bitrate = glTextureView.getWidth() * glTextureView.getHeight() > 1000 * 1500 ? 8000000 : 4000000;
         recorder.configOutput(glTextureView.getWidth(), glTextureView.getHeight(), bitrate, 30, 1, file.getAbsolutePath());
-        recorder.setDataSource(mMovieRenderer);
+        //生成一个全新的MovieRender，不然与现有的GL环境不一致，相互干扰容易出问题
+        PhotoMovie newPhotoMovie = PhotoMovieFactory.generatePhotoMovie(mPhotoMovie.getPhotoSource(),mMovieType);
+        GLSurfaceMovieRenderer newMovieRenderer = new GLSurfaceMovieRenderer();
+        newMovieRenderer.setMovieFilter(mMovieRenderer.getMovieFilter());
+        newMovieRenderer.setPhotoMovie(newPhotoMovie);
+
+        recorder.setDataSource(newMovieRenderer);
         recorder.startRecord(new GLMovieRecorder.OnRecordListener() {
             @Override
             public void onRecordFinish(boolean success) {

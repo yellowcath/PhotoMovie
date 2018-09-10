@@ -116,6 +116,10 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
         new Handler(Looper.getMainLooper()).post(r);
     }
 
+    public IMovieFilter getMovieFilter() {
+        return mMovieFilter;
+    }
+
     public static interface OnGLPrepareListener{
         void onGLPrepared();
     }
