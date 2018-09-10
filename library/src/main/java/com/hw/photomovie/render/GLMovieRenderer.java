@@ -93,6 +93,9 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
 
     public void release(){
         releaseTextures();
+        if(mMovieFilter!=null){
+            mMovieFilter.release();
+        }
     }
 
     public void checkGLPrepared(OnGLPrepareListener onGLPrepareListener){

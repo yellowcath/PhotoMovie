@@ -37,8 +37,8 @@ public class GLTextureMovieRender extends GLSurfaceMovieRenderer {
 
             @Override
             public void onSurfaceDestroyed() {
-                if(mMovieFilter instanceof BaseMovieFilter){
-                    ((BaseMovieFilter) mMovieFilter).destroy();
+                if(mMovieFilter !=null){
+                    mMovieFilter.release();
                 }
             }
         });

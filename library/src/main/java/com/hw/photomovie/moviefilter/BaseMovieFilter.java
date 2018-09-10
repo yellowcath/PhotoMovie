@@ -180,11 +180,6 @@ public class BaseMovieFilter implements IMovieFilter {
         mIsOpaque = bool;
     }
 
-    public void destroy() {
-        mIsInitialized = false;
-        GLES20.glDeleteProgram(mProgId);
-    }
-
     private Rect textureRect = new Rect();
     private RectF dstRect = new RectF();
 
@@ -209,5 +204,11 @@ public class BaseMovieFilter implements IMovieFilter {
 
     public int getProgram() {
         return mProgId;
+    }
+
+    @Override
+    public void release() {
+        mIsInitialized = false;
+        GLES20.glDeleteProgram(mProgId);
     }
 }
