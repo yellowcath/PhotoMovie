@@ -140,4 +140,16 @@ public class DemoActivity extends AppCompatActivity implements IDemoView, MovieB
     public void setTransfers(List<TransferItem> items) {
         mTransfers = items;
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mDemoPresenter.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mDemoPresenter.onResume();
+    }
 }

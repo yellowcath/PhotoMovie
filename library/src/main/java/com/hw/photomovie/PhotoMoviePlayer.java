@@ -199,6 +199,10 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
     }
 
     public void start() {
+        if (!isPrepared()) {
+            MLog.e(TAG, "start error!not prepared!");
+            return;
+        }
         //重新开始的话，重新计算电影持续时间
         if (mCurrentState != STATE_PAUSED) {
             mPhotoMovie.calcuDuration();
@@ -288,15 +292,15 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
         this.mOnPreparedListener = onPreparedListener;
     }
 
-    private void onPrepared(final int prepared,final int total){
-        if(mMovieRenderer instanceof GLMovieRenderer){
+    private void onPrepared(final int prepared, final int total) {
+        if (mMovieRenderer instanceof GLMovieRenderer) {
             ((GLMovieRenderer) mMovieRenderer).checkGLPrepared(new GLMovieRenderer.OnGLPrepareListener() {
                 @Override
                 public void onGLPrepared() {
                     mOnPreparedListener.onPrepared(PhotoMoviePlayer.this, prepared, total);
                 }
             });
-        }else {
+        } else {
             mOnPreparedListener.onPrepared(PhotoMoviePlayer.this, prepared, total);
         }
 
@@ -311,6 +315,10 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
         if (mMovieTimer != null) {
             mMovieTimer.setLoop(loop);
         }
+    }
+
+    public boolean isPrepared() {
+        return mCurrentState == STATE_PREPARED || mCurrentState == STATE_PAUSED || mCurrentState == STATE_PLAYBACK_COMPLETED;
     }
 
     public interface OnPreparedListener {

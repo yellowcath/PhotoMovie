@@ -4,11 +4,9 @@ import android.content.Context;
 import android.opengl.GLES20;
 import android.os.Handler;
 import android.os.Looper;
-import com.hw.photomovie.PhotoMovie;
 import com.hw.photomovie.moviefilter.IMovieFilter;
 import com.hw.photomovie.opengl.FboTexture;
 import com.hw.photomovie.opengl.GLESCanvas;
-import com.hw.photomovie.segment.MovieSegment;
 
 /**
  * Created by huangwei on 2015/5/26.
@@ -47,8 +45,8 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
 
     public void releaseTextures() {
         if(mFboTexture!=null) {
-            mFboTexture = null;
             mFboTexture.release();
+            mFboTexture = null;
         }
         if(mFilterTexture!=null) {
             mFilterTexture.release();

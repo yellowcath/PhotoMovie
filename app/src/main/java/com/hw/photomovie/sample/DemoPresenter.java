@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -258,10 +257,13 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
                 new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(System.currentTimeMillis())));
     }
 
-    private long getVideoDurationUs(String videoPath){
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        retriever.setDataSource(videoPath);
-        long duration = Long.parseLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
-        return duration*1000;
+    public void onPause() {
+        mPhotoMoviePlayer.pause();
+    }
+
+    public void onResume() {
+        if(mPhotoMoviePlayer.isPrepared()) {
+            mPhotoMoviePlayer.start();
+        }
     }
 }
