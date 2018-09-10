@@ -1,7 +1,6 @@
 package com.hw.photomovie.sample;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -11,7 +10,6 @@ import com.hw.photomovie.PhotoMovie;
 import com.hw.photomovie.PhotoMovieFactory;
 import com.hw.photomovie.PhotoMoviePlayer;
 import com.hw.photomovie.model.PhotoData;
-import com.hw.photomovie.model.PhotoInfo;
 import com.hw.photomovie.model.PhotoSource;
 import com.hw.photomovie.model.SimplePhotoData;
 import com.hw.photomovie.render.GLSurfaceMovieRenderer;
@@ -81,11 +79,9 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
     private void initMoviePlayer() {
         final GLTextureView glTextureView = mDemoView.getGLView();
 
-        mPhotoMovie = PhotoMovieFactory.generatePhotoMovie(genPhotoSource(mDemoView.getActivity()), PhotoMovieFactory.PhotoMovieType.HORIZONTAL_TRANS);
         mMovieRenderer = new GLTextureMovieRender(glTextureView);
         mPhotoMoviePlayer = new PhotoMoviePlayer(mDemoView.getActivity().getApplicationContext());
         mPhotoMoviePlayer.setMovieRenderer(mMovieRenderer);
-        mPhotoMoviePlayer.setDataSource(mPhotoMovie);
         mPhotoMoviePlayer.setMovieListener(this);
         mPhotoMoviePlayer.setLoop(true);
         mPhotoMoviePlayer.setOnPreparedListener(new PhotoMoviePlayer.OnPreparedListener() {
@@ -95,7 +91,13 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
 
             @Override
             public void onPrepared(PhotoMoviePlayer moviePlayer, int prepared, int total) {
-                mPhotoMoviePlayer.start();
+                mDemoView.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mPhotoMoviePlayer.start();
+                    }
+                });
+
             }
 
             @Override
@@ -103,36 +105,12 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
                 MLog.i("onPrepare", "onPrepare error");
             }
         });
-        mPhotoMoviePlayer.prepare();
     }
 
-    public static PhotoSource genPhotoSource(Context context) {
-        List<PhotoData> dataList = new ArrayList<PhotoData>();
-        {
-            PhotoInfo photoInfo = new PhotoInfo();
-            photoInfo.description = "字幕字幕";
-            PhotoData photoData1 = new SimplePhotoData(context, "drawable://" + R.drawable.p1, PhotoData.STATE_LOCAL);
-            photoData1.setPhotoInfo(photoInfo);
-            dataList.add(photoData1);
-        }
-        {
-            PhotoInfo photoInfo = new PhotoInfo();
-            photoInfo.description = "字幕字幕";
-            PhotoData photoData1 = new SimplePhotoData(context, "drawable://" + R.drawable.p2, PhotoData.STATE_LOCAL);
-            photoData1.setPhotoInfo(photoInfo);
-            dataList.add(photoData1);
-        }
-        {
-            PhotoInfo photoInfo = new PhotoInfo();
-            photoInfo.description = "字幕字幕字幕字幕字幕字幕字幕字幕";
-            PhotoData photoData1 = new SimplePhotoData(context, "drawable://" + R.drawable.p3, PhotoData.STATE_LOCAL);
-            photoData1.setPhotoInfo(photoInfo);
-            dataList.add(photoData1);
-        }
-        dataList.add(new SimplePhotoData(context, "drawable://" + R.drawable.p4, PhotoData.STATE_LOCAL));
-        dataList.add(new SimplePhotoData(context, "drawable://" + R.drawable.p5, PhotoData.STATE_LOCAL));
-        PhotoSource source = new PhotoSource(dataList);
-        return source;
+    private void startPlay(PhotoSource photoSource){
+        mPhotoMovie = PhotoMovieFactory.generatePhotoMovie(photoSource, PhotoMovieFactory.PhotoMovieType.HORIZONTAL_TRANS);
+        mPhotoMoviePlayer.setDataSource(mPhotoMovie);
+        mPhotoMoviePlayer.prepare();
     }
 
     public void detachView() {
@@ -174,7 +152,9 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
         mPhotoMoviePlayer.stop();
         mPhotoMovie = PhotoMovieFactory.generatePhotoMovie(mPhotoMovie.getPhotoSource(), item.type);
         mPhotoMoviePlayer.setDataSource(mPhotoMovie);
-        mPhotoMoviePlayer.setMusic(mDemoView.getActivity(), mMusicUri);
+        if(mMusicUri!=null) {
+            mPhotoMoviePlayer.setMusic(mDemoView.getActivity(), mMusicUri);
+        }
         mPhotoMoviePlayer.setOnPreparedListener(new PhotoMoviePlayer.OnPreparedListener() {
             @Override
             public void onPreparing(PhotoMoviePlayer moviePlayer, float progress) {
@@ -269,8 +249,46 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
     }
 
     public void onResume() {
-        if (mPhotoMoviePlayer.isPrepared()) {
-            mPhotoMoviePlayer.start();
+        mPhotoMoviePlayer.start();
+    }
+
+    public void onPhotoPick(ArrayList<String> photos) {
+        List<PhotoData> photoDataList = new ArrayList<PhotoData>(photos.size());
+        for (String path : photos) {
+            PhotoData photoData = new SimplePhotoData(mDemoView.getActivity(), path, PhotoData.STATE_LOCAL);
+            photoDataList.add(photoData);
+        }
+        PhotoSource photoSource = new PhotoSource(photoDataList);
+        if (mPhotoMoviePlayer == null) {
+            startPlay(photoSource);
+        } else {
+            mPhotoMoviePlayer.stop();
+            mPhotoMovie = PhotoMovieFactory.generatePhotoMovie(photoSource, PhotoMovieFactory.PhotoMovieType.HORIZONTAL_TRANS);
+            mPhotoMoviePlayer.setDataSource(mPhotoMovie);
+            if(mMusicUri!=null) {
+                mPhotoMoviePlayer.setMusic(mDemoView.getActivity(), mMusicUri);
+            }
+            mPhotoMoviePlayer.setOnPreparedListener(new PhotoMoviePlayer.OnPreparedListener() {
+                @Override
+                public void onPreparing(PhotoMoviePlayer moviePlayer, float progress) {
+                }
+
+                @Override
+                public void onPrepared(PhotoMoviePlayer moviePlayer, int prepared, int total) {
+                    mDemoView.getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mPhotoMoviePlayer.start();
+                        }
+                    });
+                }
+
+                @Override
+                public void onError(PhotoMoviePlayer moviePlayer) {
+                    MLog.i("onPrepare", "onPrepare error");
+                }
+            });
+            mPhotoMoviePlayer.prepare();
         }
     }
 }

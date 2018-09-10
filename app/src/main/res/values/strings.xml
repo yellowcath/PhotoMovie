@@ -7,4 +7,5 @@
     <string name="movie_transfer">transfer</string>
     <string name="movie_music">music</string>
     <string name="movie_next">next</string>
+    <string name="select_photos">select photos</string>
 </resources>

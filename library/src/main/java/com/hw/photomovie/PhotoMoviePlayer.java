@@ -195,7 +195,9 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
     }
 
     public void pause() {
-        mMovieTimer.pause();
+        if (mMovieTimer != null) {
+            mMovieTimer.pause();
+        }
     }
 
     public void start() {
@@ -211,9 +213,11 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
     }
 
     public void stop() {
+        if (mCurrentState < STATE_PREPARED) {
+            return;
+        }
         pause();
         seekTo(0);
-//        throw new UnsupportedOperationException();
     }
 
     public boolean isPlaying() {

@@ -108,7 +108,7 @@ public class SimplePhotoData extends PhotoData {
         } else if (uri.startsWith("file://")) {
             String path = uri.substring("file://".length());
             bitmap = BitmapFactory.decodeFile(path);
-        } else {
+        } else if(uri.startsWith("http")){
             InputStream is = null;
             try {
                 URL url = new URL(uri);
@@ -126,6 +126,9 @@ public class SimplePhotoData extends PhotoData {
                     }
                 }
             }
+        }else{
+            String path = uri;
+            bitmap = BitmapFactory.decodeFile(path);
         }
         return bitmap;
     }

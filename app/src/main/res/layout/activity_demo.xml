@@ -1,12 +1,32 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             android:layout_width="match_parent" android:layout_height="match_parent"
              android:orientation="vertical">
     <com.hw.photomovie.render.GLTextureView
         android:id="@+id/gl_texture"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </com.hw.photomovie.render.GLTextureView>
+    <LinearLayout
+        android:id="@+id/movie_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+    >
+        <android.support.v7.widget.AppCompatImageView
+            app:srcCompat="@drawable/ic_add_frame"
+            android:layout_width="60dp"
+            android:layout_height="60dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="#FFFFFF"
+            android:text="@string/select_photos" />
+
+    </LinearLayout>
     <include
         android:id="@+id/movie_bottom_layout"
         layout="@layout/demo_bottom_layout"
@@ -28,4 +48,18 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/demo_menu_height"
         android:layout_gravity="bottom" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/movie_add_float"
+        app:srcCompat="@drawable/ic_add"
+        app:backgroundTint="@android:color/holo_red_dark"
+        app:rippleColor="#FFFFFFFF"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="136dp"
+        android:layout_marginRight="16dp"
+        android:visibility="gone"
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
+
+
 </FrameLayout>
