@@ -1,6 +1,5 @@
 package com.hw.photomovie.render;
 
-import android.content.Context;
 import android.opengl.GLES20;
 import android.os.Handler;
 import android.os.Looper;
@@ -12,7 +11,6 @@ import com.hw.photomovie.opengl.GLESCanvas;
  * Created by huangwei on 2015/5/26.
  */
 public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
-    public static Context sContext;
 
     private FboTexture mFboTexture;
     private FboTexture mFilterTexture;

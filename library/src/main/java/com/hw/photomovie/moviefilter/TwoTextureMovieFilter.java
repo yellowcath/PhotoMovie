@@ -25,7 +25,7 @@ public class TwoTextureMovieFilter extends BaseMovieFilter {
     private FloatBuffer mTexture2CoordinatesBuffer;
 
     public TwoTextureMovieFilter() {
-        super(loadShaderFromAssets("shader/two_vertex.glsl"),loadShaderFromAssets("shader/two_fragment.glsl"));
+        super(loadShaderFromAssets("shader/two_vertex.glsl"), loadShaderFromAssets("shader/two_fragment.glsl"));
     }
 
     public TwoTextureMovieFilter(String vertexShader, String fragmentShader) {
@@ -43,7 +43,7 @@ public class TwoTextureMovieFilter extends BaseMovieFilter {
         mTexture2CoordinatesBuffer.put(TEXTURE_CUBE).position(0);
     }
 
-    public void setBitmap(Bitmap bitmap){
+    public void setBitmap(Bitmap bitmap) {
         mBitmap = bitmap;
     }
 
@@ -68,10 +68,11 @@ public class TwoTextureMovieFilter extends BaseMovieFilter {
         GLES20.glUseProgram(mProgId);
 
         loadBitmap();
-        onPreDraw(photoMovie,elapsedTime,inputTexture);
+        onPreDraw(photoMovie, elapsedTime, inputTexture);
 
         FloatBuffer cubeBuffer = mCubeBuffer;
-        FloatBuffer textureCubeBuffer = mTextureCubeBuffer;;
+        FloatBuffer textureCubeBuffer = mTextureCubeBuffer;
+        ;
 
         if (mIsOpaque) {
             GLES20.glDisable(GLES20.GL_BLEND);
@@ -95,13 +96,13 @@ public class TwoTextureMovieFilter extends BaseMovieFilter {
             GLES20.glUniform1i(mUniformTexture, 0);
         }
         //加载第二纹理
-        if(mTexture2CoordinateAttribute>=0) {
+        if (mTexture2CoordinateAttribute >= 0) {
             GLES20.glEnableVertexAttribArray(mTexture2CoordinateAttribute);
             mTexture2CoordinatesBuffer.position(0);
             GLES20.glVertexAttribPointer(mTexture2CoordinateAttribute, 2, GLES20.GL_FLOAT, false, 0, mTexture2CoordinatesBuffer);
         }
 
-        if(mTexture2Id>=0) {
+        if (mTexture2Id >= 0) {
             GLES20.glActiveTexture(GLES20.GL_TEXTURE3);
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTexture2Id);
             GLES20.glUniform1i(mTexture2Uniform2, 3);
@@ -117,15 +118,15 @@ public class TwoTextureMovieFilter extends BaseMovieFilter {
         GLES20.glDisable(GLES20.GL_BLEND);
     }
 
-    private void loadBitmap(){
-        if(mBitmap!=null){
-            if(mTexture2Id!= GLUtil.NO_TEXTURE){
-                GLES20.glDeleteTextures(1,new int[]{mTexture2Id},0);
+    private void loadBitmap() {
+        if (mTexture2Id == GLUtil.NO_TEXTURE) {
+            if (mTexture2Id != GLUtil.NO_TEXTURE) {
+                GLES20.glDeleteTextures(1, new int[]{mTexture2Id}, 0);
             }
-            mTexture2Id = GLUtil.loadTexture(mBitmap, GLUtil.NO_TEXTURE);
-            mBitmap = null;
+            mTexture2Id = GLUtil.loadTexture(mBitmap, GLUtil.NO_TEXTURE, false);
         }
     }
+
     @Override
     public void destroy() {
         super.destroy();
