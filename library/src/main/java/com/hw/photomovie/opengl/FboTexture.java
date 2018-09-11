@@ -12,6 +12,7 @@ public class FboTexture extends BasicTexture {
 
     private int mFrameBuffer;
     private boolean mIsFlipped;
+    private int mRenderBuffer;
 
     public FboTexture() {
     }
@@ -37,7 +38,10 @@ public class FboTexture extends BasicTexture {
         prepareFrameBuffer(width, height);
     }
 
-    public void setId(int id){mId = id;}
+    public void setId(int id) {
+        mId = id;
+    }
+
     private void prepareFrameBuffer(int width, int height) {
         GlUtil.checkGlError("prepareFramebuffer start");
 
@@ -76,9 +80,9 @@ public class FboTexture extends BasicTexture {
         // Create a depth buffer and bind it.
         GLES20.glGenRenderbuffers(1, values, 0);
         GlUtil.checkGlError("glGenRenderbuffers");
-        int depthBuffer = values[0];    // expected > 0
-        GLES20.glBindRenderbuffer(GLES20.GL_RENDERBUFFER, depthBuffer);
-        GlUtil.checkGlError("glBindRenderbuffer " + depthBuffer);
+        mRenderBuffer = values[0];    // expected > 0
+        GLES20.glBindRenderbuffer(GLES20.GL_RENDERBUFFER, mRenderBuffer);
+        GlUtil.checkGlError("glBindRenderbuffer " + mRenderBuffer);
 
         // Allocate storage for the depth buffer.
         GLES20.glRenderbufferStorage(GLES20.GL_RENDERBUFFER, GLES20.GL_DEPTH_COMPONENT16,
@@ -87,7 +91,7 @@ public class FboTexture extends BasicTexture {
 
         // Attach the depth buffer and the texture (color buffer) to the framebuffer object.
         GLES20.glFramebufferRenderbuffer(GLES20.GL_FRAMEBUFFER, GLES20.GL_DEPTH_ATTACHMENT,
-                GLES20.GL_RENDERBUFFER, depthBuffer);
+                GLES20.GL_RENDERBUFFER, mRenderBuffer);
         GlUtil.checkGlError("glFramebufferRenderbuffer");
         GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0,
                 GLES20.GL_TEXTURE_2D, offscreenTexture, 0);
@@ -114,18 +118,22 @@ public class FboTexture extends BasicTexture {
     public void setIsFlippedVertically(boolean isFlipped) {
         mIsFlipped = isFlipped;
     }
+
     @Override
     public boolean isFlippedVertically() {
         return mIsFlipped;
     }
 
-    public void release(){
-        if(mFrameBuffer!=0 && GLES20.glIsFramebuffer(mFrameBuffer)){
-            GLES20.glDeleteFramebuffers(1,new int[]{mFrameBuffer},0);
-            mFrameBuffer = 0;
+    public void release() {
+        if (mId != 0 && GLES20.glIsTexture(mId)) {
+            GLES20.glDeleteTextures(1, new int[]{mId}, 0);
         }
-        if(mId!=0 && GLES20.glIsTexture(mId)){
-            GLES20.glDeleteTextures(1,new int[]{mId},0);
+        if (mRenderBuffer != 0 && GLES20.glIsRenderbuffer(mRenderBuffer)) {
+            GLES20.glDeleteRenderbuffers(1, new int[]{mRenderBuffer}, 0);
+        }
+        if (mFrameBuffer != 0 && GLES20.glIsFramebuffer(mFrameBuffer)) {
+            GLES20.glDeleteFramebuffers(1, new int[]{mFrameBuffer}, 0);
+            mFrameBuffer = 0;
         }
     }
 }
