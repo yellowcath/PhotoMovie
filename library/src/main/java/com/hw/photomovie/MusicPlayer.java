@@ -30,7 +30,7 @@ public class MusicPlayer {
             mFadeOutRunnable = null;
         }
         if (!isPlaying()) {
-            mMediaPlayer.setVolume(1f, 1f);
+            safeSetVolume(1f);
             mMediaPlayer.start();
         }
     }
@@ -44,6 +44,14 @@ public class MusicPlayer {
                 e.printStackTrace();
             }
             mMediaPlayer.seekTo(0);
+        }
+    }
+
+    private void safeSetVolume(float volume) {
+        try {
+            mMediaPlayer.setVolume(volume, volume);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -177,7 +185,7 @@ public class MusicPlayer {
                 return;
             }
             float rate = 1 - (curTime - mStartTime) / (float) mDuration;
-            mMediaPlayer.setVolume(rate, rate);
+            safeSetVolume(rate);
             mHandler.postDelayed(this, 50);
         }
 
