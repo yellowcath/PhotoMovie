@@ -1,4 +1,9 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+ext {
+    //在模拟器上运行需要强行打开x86开关
+    RunForEmulator = false
+}
+
 
 buildscript {
     repositories {
