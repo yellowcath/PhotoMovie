@@ -50,4 +50,9 @@ public abstract class TransitionSegment<PRE extends MovieSegment, NEXT extends M
         mPreSegment.enableRelease(true);
         mPreSegment.release();
     }
+
+    @Override
+    protected boolean checkPrepared() {
+        return false;
+    }
 }

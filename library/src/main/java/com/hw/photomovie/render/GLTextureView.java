@@ -29,13 +29,13 @@ import java.util.ArrayList;
  */
 public class GLTextureView extends TextureView implements TextureView.SurfaceTextureListener {
     private final static String TAG = "GLSurfaceView";
-    private final static boolean LOG_ATTACH_DETACH = false;
-    private final static boolean LOG_THREADS = false;
-    private final static boolean LOG_PAUSE_RESUME = false;
-    private final static boolean LOG_SURFACE = false;
-    private final static boolean LOG_RENDERER = false;
-    private final static boolean LOG_RENDERER_DRAW_FRAME = false;
-    private final static boolean LOG_EGL = false;
+    private final static boolean LOG_ATTACH_DETACH = true;
+    private final static boolean LOG_THREADS = true;
+    private final static boolean LOG_PAUSE_RESUME = true;
+    private final static boolean LOG_SURFACE = true;
+    private final static boolean LOG_RENDERER = true;
+    private final static boolean LOG_RENDERER_DRAW_FRAME = true;
+    private final static boolean LOG_EGL = true;
     /**
      * The renderer only renders
      * when the surface is created, or when {@link #requestRender} is called.

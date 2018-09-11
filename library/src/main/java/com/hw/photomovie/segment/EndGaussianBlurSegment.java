@@ -22,6 +22,11 @@ public class EndGaussianBlurSegment extends GLMovieSegment {
     }
 
     @Override
+    protected boolean checkPrepared() {
+        return mBluredBitmapInfo != null && mBluredBitmapInfo.isTextureAvailable();
+    }
+
+    @Override
     public void onPrepare() {
         mPreSegment = mPhotoMovie.getSegmentPicker().getPreSegment(this);
         if (mPreSegment != null) {
@@ -45,8 +50,8 @@ public class EndGaussianBlurSegment extends GLMovieSegment {
             initBluredTexture();
         }
 
-        if(mBluredBitmapInfo.bitmapTexture!=null){
-            canvas.drawMixed(mBluredBitmapInfo.bitmapTexture,0,1-segmentProgress,mBluredBitmapInfo.srcShowRect,mViewportRect);
+        if (mBluredBitmapInfo.bitmapTexture != null) {
+            canvas.drawMixed(mBluredBitmapInfo.bitmapTexture, 0, 1 - segmentProgress, mBluredBitmapInfo.srcShowRect, mViewportRect);
         }
     }
 
@@ -57,7 +62,7 @@ public class EndGaussianBlurSegment extends GLMovieSegment {
 
     @Override
     protected void onRelease() {
-        if(mPreSegment!=null){
+        if (mPreSegment != null) {
             mPreSegment.enableRelease(true);
             mPreSegment.release();
             mPreSegment = null;
@@ -86,8 +91,8 @@ public class EndGaussianBlurSegment extends GLMovieSegment {
 
         mBluredBitmapInfo = new BitmapInfo();
         mBluredBitmapInfo.bitmapTexture = bitmapTexture;
-        if(bluredBitmap!=null){
-            mBluredBitmapInfo.srcRect.set(0,0,bluredBitmap.getWidth(),bluredBitmap.getHeight());
+        if (bluredBitmap != null) {
+            mBluredBitmapInfo.srcRect.set(0, 0, bluredBitmap.getWidth(), bluredBitmap.getHeight());
             mBluredBitmapInfo.srcShowRect.set(mBluredBitmapInfo.srcRect);
         }
     }

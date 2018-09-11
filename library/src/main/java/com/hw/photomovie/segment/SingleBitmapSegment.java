@@ -16,7 +16,7 @@ import com.hw.photomovie.util.Utils;
 public class SingleBitmapSegment extends GLMovieSegment {
 
     protected static final String TAG = "SingleBitmapSegment";
-    protected BitmapInfo mBitmapInfo;
+    protected volatile BitmapInfo mBitmapInfo;
     protected ScaleType mDefaultScaleType = ScaleType.CENTER_CROP;
 
     public SingleBitmapSegment() {
@@ -96,5 +96,10 @@ public class SingleBitmapSegment extends GLMovieSegment {
         if (mBitmapInfo != null) {
             mBitmapInfo.applyScaleType(mViewportRect);
         }
+    }
+
+    @Override
+    protected boolean checkPrepared() {
+        return mBitmapInfo!=null && mBitmapInfo.isTextureAvailable();
     }
 }

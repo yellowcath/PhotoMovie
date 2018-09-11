@@ -45,15 +45,12 @@ public abstract class MovieRenderer<T> {
         }
     }
 
-    public void releaseLastSegment(boolean draw) {
+    public void releaseLastSegment() {
         if (mPhotoMovie == null) {
             return;
         }
         PhotoMovie.SegmentPicker<T> segmentPicker = mPhotoMovie.getSegmentPicker();
         MovieSegment<T> lastSegment = segmentPicker.getLastSegment();
-        if (draw) {
-            lastSegment.drawFrame(mPainter, 1f);
-        }
         lastSegment.onSegmentEnd();
         lastSegment.release();
     }

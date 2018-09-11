@@ -42,6 +42,11 @@ public class GLSurfaceMovieRenderer extends GLMovieRenderer implements GLSurface
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         mSurfaceCreated = true;
+        mNeedRelease.set(false);
+        if (mMovieFilter != null) {
+            mMovieFilter.release();
+        }
+        releaseTextures();
         prepare();
     }
 

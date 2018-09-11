@@ -119,4 +119,15 @@ public abstract class MulitBitmapSegment extends GLMovieSegment implements Photo
         checkAllLoaded();
     }
 
+    @Override
+    protected boolean checkPrepared() {
+        Collection<BitmapInfo> bitmapInfos = mPhotoDataMap.values();
+        for (Iterator<BitmapInfo> it = bitmapInfos.iterator(); it.hasNext(); ) {
+            BitmapInfo bitmapInfo = it.next();
+            if (!bitmapInfo.isTextureAvailable()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

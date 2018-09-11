@@ -10,7 +10,6 @@ import com.hw.photomovie.filter.OldMovieFilter;
 import com.hw.photomovie.model.PhotoData;
 import com.hw.photomovie.opengl.BitmapTexture;
 import com.hw.photomovie.opengl.GLESCanvas;
-import com.hw.photomovie.opengl.StringTexture;
 import com.hw.photomovie.util.Utils;
 
 /**
@@ -19,7 +18,6 @@ import com.hw.photomovie.util.Utils;
 public class TestMovieSegment extends GLMovieSegment {
 
     private BitmapTexture mBitmapTexture;
-    private StringTexture stringTexture;
     private MovieFilter movieFilter;
 
     public TestMovieSegment(int i) {
@@ -27,7 +25,6 @@ public class TestMovieSegment extends GLMovieSegment {
         TextPaint textPaint = new TextPaint();
         textPaint.setColor(Color.RED);
         textPaint.setTextSize(88);
-        stringTexture = StringTexture.newInstance("Test" + i, textPaint);
         movieFilter = new OldMovieFilter();
     }
 
@@ -38,6 +35,11 @@ public class TestMovieSegment extends GLMovieSegment {
         int colors[] = new int[]{Color.BLUE, Color.RED, Color.DKGRAY, Color.GREEN, Color.YELLOW, Color.MAGENTA, Color.WHITE};
         int i = (int) (Math.random() * colors.length);
         return colors[i];
+    }
+
+    @Override
+    protected boolean checkPrepared() {
+        return mBitmapTexture!=null && mBitmapTexture.isLoaded();
     }
 
     @Override

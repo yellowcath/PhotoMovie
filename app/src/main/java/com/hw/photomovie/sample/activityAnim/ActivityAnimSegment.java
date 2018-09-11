@@ -1,7 +1,6 @@
 package com.hw.photomovie.sample.activityAnim;
 
 import android.app.Activity;
-import android.widget.Button;
 import android.widget.TextView;
 import com.hw.photomovie.segment.MovieSegment;
 
@@ -12,6 +11,11 @@ public class ActivityAnimSegment extends MovieSegment<Activity> {
 
     private float mTransX, mTransY;
     private float mStepX, mStepY;
+
+    @Override
+    protected boolean checkPrepared() {
+        return false;
+    }
 
     @Override
     protected void onPrepare() {

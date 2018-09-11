@@ -89,4 +89,9 @@ public abstract class AbsLayerSegment extends MulitBitmapSegment {
             mLayers[i].release();
         }
     }
+
+    @Override
+    protected boolean checkPrepared() {
+        return false;
+    }
 }

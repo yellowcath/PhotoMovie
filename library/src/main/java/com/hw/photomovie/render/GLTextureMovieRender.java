@@ -20,6 +20,11 @@ public class GLTextureMovieRender extends GLSurfaceMovieRenderer {
         mGLTextureView.setRenderer(new GLTextureView.Renderer() {
             @Override
             public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+                if (mMovieFilter != null) {
+                    mMovieFilter.release();
+                }
+                releaseTextures();
+                mNeedRelease.set(false);
                 mSurfaceCreated = true;
                 prepare();
             }
@@ -31,7 +36,7 @@ public class GLTextureMovieRender extends GLSurfaceMovieRenderer {
 
             @Override
             public boolean onDrawFrame(GL10 gl) {
-                if(mNeedRelease.get()){
+                if (mNeedRelease.get()) {
                     mNeedRelease.set(false);
                     releaseGLResources();
                     return false;
@@ -44,7 +49,7 @@ public class GLTextureMovieRender extends GLSurfaceMovieRenderer {
             @Override
             public void onSurfaceDestroyed() {
                 mSurfaceCreated = false;
-                release();
+                mNeedRelease.set(false);
             }
         });
         mGLTextureView.setRenderMode(GLTextureView.RENDERMODE_WHEN_DIRTY);
@@ -53,21 +58,21 @@ public class GLTextureMovieRender extends GLSurfaceMovieRenderer {
     @Override
     public void drawFrame(int elapsedTime) {
         mElapsedTime = elapsedTime;
-        if(mRenderToRecorder){
+        if (mRenderToRecorder) {
             onDrawFrame(null);
             return;
         }
-        if(mSurfaceCreated){
+        if (mSurfaceCreated) {
             mGLTextureView.requestRender();
-        }else{
-            MLog.e(TAG,"Surface not created!");
+        } else {
+            MLog.e(TAG, "Surface not created!");
         }
     }
 
     @Override
     public void release() {
         mNeedRelease.set(true);
-        if(mSurfaceCreated){
+        if (mSurfaceCreated) {
             mGLTextureView.requestRender();
         }
     }

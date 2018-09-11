@@ -7,7 +7,6 @@ import com.hw.photomovie.PhotoMovie;
 import com.hw.photomovie.model.PhotoData;
 import com.hw.photomovie.segment.strategy.ReallocStrategy;
 import com.hw.photomovie.segment.strategy.RetryStrategy;
-import com.hw.photomovie.util.MLog;
 
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -34,7 +33,6 @@ public abstract class MovieSegment<T> {
 
     protected boolean mDataPrepared;
 
-    private boolean mReleased = true;
     /**
      * 是否真正执行{@link #release()}函数的内容
      */
@@ -58,20 +56,24 @@ public abstract class MovieSegment<T> {
     }
 
     public final void prepare() {
-        if (!mReleased) {
-            MLog.w("MovieSegment", "已调用过prepare,请在release之后再重新prepare.index:"+mPhotoMovie.getMovieSegments().indexOf(this));
+        if (checkPrepared()) {
             if (mOnSegmentPrepareListener != null) {
                 mOnSegmentPrepareListener.onSegmentPrepared(true);
             }
             return;
         }
-        mReleased = false;
         checkPhotoData();
         onPrepare();
         if (IS_DURATION_VARIABLE) {
             mPhotoMovie.calcuDuration();
         }
     }
+
+    /**
+     * if true {@link #onPrepare()} will be skiped to avoid repeated prepare.
+     * @return
+     */
+    protected abstract boolean checkPrepared();
 
     public boolean isVariableDuration() {
         return IS_DURATION_VARIABLE;
@@ -100,7 +102,7 @@ public abstract class MovieSegment<T> {
     }
 
     /**
-     * 开始播放某一片段会调用上一个片段的prepare()函数
+     * 开始播放某一片段会调用上一个片段的{@link #prepare()}
      */
     protected abstract void onPrepare();
 
@@ -145,18 +147,16 @@ public abstract class MovieSegment<T> {
     public abstract int getRequiredPhotoNum();
 
     public final void release() {
-        if (mReleased || !mEnableRelease) {
+        if (!mEnableRelease) {
             return;
         }
         onRelease();
-        mReleased = true;
     }
 
     /**
      * @param enableRelease 为false后当{@link #release()}函数被调用时不会真正执行释放资源操作，
      *                      需要由该函数的调用者自行管理释放资源
      *                      用于下一个片段需要用到当前片段的情况
-     *
      */
     public final void enableRelease(boolean enableRelease) {
         mEnableRelease = enableRelease;
@@ -167,7 +167,8 @@ public abstract class MovieSegment<T> {
     /**
      * 该片段播放完毕时调用
      */
-    public void onSegmentEnd(){}
+    public void onSegmentEnd() {
+    }
 
     public void setOnSegmentPrepareListener(OnSegmentPrepareListener l) {
         mOnSegmentPrepareListener = l;
@@ -177,7 +178,7 @@ public abstract class MovieSegment<T> {
         void onSegmentPrepared(boolean success);
     }
 
-    public Bitmap captureBitmap() throws OutOfMemoryError{
+    public Bitmap captureBitmap() throws OutOfMemoryError {
         int width = (int) mViewportRect.width();
         int height = (int) mViewportRect.height();
 

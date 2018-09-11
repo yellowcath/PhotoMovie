@@ -99,9 +99,12 @@ public class GLMovieRecorder {
         mInputSurface.makeCurrent();
 
         //prepare要在 mInputSurface.makeCurrent();之后调用。因为切换了eglSurface之后，GLESCanvas之前上传到GPU的program都失效了
+        mGLSurfaceMovieRenderer.setRenderToRecorder(true);
+        if (mGLSurfaceMovieRenderer.getMovieFilter() != null) {
+            mGLSurfaceMovieRenderer.getMovieFilter().release();
+        }
         mGLSurfaceMovieRenderer.prepare();
         mGLSurfaceMovieRenderer.setViewport(mWidth, mHeight);
-        mGLSurfaceMovieRenderer.setRenderToRecorder(true);
 
         //开始录制
         PhotoMovie photoMovie = mGLSurfaceMovieRenderer.getPhotoMovie();

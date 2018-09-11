@@ -97,7 +97,7 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
      */
     protected void releaseGLResources() {
         releaseCurrentSegment();
-        releaseLastSegment(true);
+        releaseLastSegment();
         releaseTextures();
         if (mMovieFilter != null) {
             mMovieFilter.release();
