@@ -41,8 +41,8 @@ public class GLSurfaceMovieRenderer extends GLMovieRenderer implements GLSurface
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        prepare();
         mSurfaceCreated = true;
+        prepare();
     }
 
     @Override
@@ -54,6 +54,8 @@ public class GLSurfaceMovieRenderer extends GLMovieRenderer implements GLSurface
     public void onDrawFrame(GL10 gl) {
         if(mNeedRelease.get()){
             mNeedRelease.set(false);
+            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+            drawMovieFrame(mElapsedTime);
             releaseGLResources();
             return;
         }
@@ -65,6 +67,9 @@ public class GLSurfaceMovieRenderer extends GLMovieRenderer implements GLSurface
         GLES20.glClearColor(0, 0, 0, 1);
         GLESCanvas canvas = new GLES20Canvas();
         setPainter(canvas);
+        if(mCurrentSegment!=null){
+            mCurrentSegment.prepare();
+        }
     }
 
     public void setViewport(int width, int height) {

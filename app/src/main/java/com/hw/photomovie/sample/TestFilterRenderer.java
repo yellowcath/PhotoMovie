@@ -61,7 +61,7 @@ public class TestFilterRenderer implements GLTextureView.Renderer {
 
     private int n = 0;
     @Override
-    public void onDrawFrame(GL10 gl) {
+    public boolean onDrawFrame(GL10 gl) {
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER,mInputTexture.getFrameBuffer());
         mCanvas.drawTexture(mBitmapTexture,0,0,mBitmapTexture.getWidth(),mBitmapTexture.getHeight());
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER,0);
@@ -92,6 +92,7 @@ public class TestFilterRenderer implements GLTextureView.Renderer {
                 }
             }
         }
+        return true;
     }
 
     @Override

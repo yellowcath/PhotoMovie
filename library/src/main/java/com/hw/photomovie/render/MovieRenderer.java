@@ -14,6 +14,7 @@ public abstract class MovieRenderer<T> {
     protected T mPainter;
     protected boolean mEnableDraw = true;
     protected OnReleaseListener mOnReleaseListener;
+    protected MovieSegment<T> mCurrentSegment;
 
     public MovieRenderer() {
     }
@@ -40,6 +41,7 @@ public abstract class MovieRenderer<T> {
                 }
             }
             movieSegment.drawFrame(mPainter, segmentProgress);
+            mCurrentSegment = movieSegment;
         }
     }
 

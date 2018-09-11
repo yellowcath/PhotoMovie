@@ -20,8 +20,8 @@ public class GLTextureMovieRender extends GLSurfaceMovieRenderer {
         mGLTextureView.setRenderer(new GLTextureView.Renderer() {
             @Override
             public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-                prepare();
                 mSurfaceCreated = true;
+                prepare();
             }
 
             @Override
@@ -30,14 +30,15 @@ public class GLTextureMovieRender extends GLSurfaceMovieRenderer {
             }
 
             @Override
-            public void onDrawFrame(GL10 gl) {
+            public boolean onDrawFrame(GL10 gl) {
                 if(mNeedRelease.get()){
                     mNeedRelease.set(false);
                     releaseGLResources();
-                    return;
+                    return false;
                 }
                 GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
                 drawMovieFrame(mElapsedTime);
+                return true;
             }
 
             @Override

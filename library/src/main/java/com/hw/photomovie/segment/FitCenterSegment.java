@@ -2,6 +2,7 @@ package com.hw.photomovie.segment;
 
 import android.graphics.Matrix;
 import android.graphics.RectF;
+import android.util.Log;
 import com.hw.photomovie.opengl.GLESCanvas;
 import com.hw.photomovie.util.PhotoUtil;
 import com.hw.photomovie.util.ScaleType;
@@ -37,7 +38,9 @@ public class FitCenterSegment extends SingleBitmapSegment {
     }
 
     protected void drawContent(GLESCanvas canvas, float scale) {
+        Log.e("hwLog","mBitmapInfo:"+mBitmapInfo);
         if (mBitmapInfo != null && mBitmapInfo.makeTextureAvailable(canvas)) {
+            Log.e("hwLog","drawTexture");
             if (scale != 1f) {
                 mScaleMatrix.setScale(scale, scale, mDstRect.centerX(), mDstRect.centerY());
                 mScaleMatrix.mapRect(mScaleRect, mDstRect);
@@ -45,6 +48,8 @@ public class FitCenterSegment extends SingleBitmapSegment {
             } else {
                 canvas.drawTexture(mBitmapInfo.bitmapTexture, mBitmapInfo.srcShowRect, mDstRect);
             }
+        }else{
+            Log.e("hwLog","NOT drawTexture");
         }
     }
 

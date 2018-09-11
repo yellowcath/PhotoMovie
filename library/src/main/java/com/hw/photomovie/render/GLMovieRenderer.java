@@ -96,14 +96,21 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
      * 由子类调用
      */
     protected void releaseGLResources() {
+        releaseCurrentSegment();
         releaseLastSegment(true);
         releaseTextures();
         if (mMovieFilter != null) {
             mMovieFilter.release();
         }
         mPainter.deleteRecycledResources();
-        if(mOnReleaseListener!=null){
+        if (mOnReleaseListener != null) {
             mOnReleaseListener.onRelease();
+        }
+    }
+
+    protected void releaseCurrentSegment() {
+        if (mCurrentSegment != null) {
+            mCurrentSegment.release();
         }
     }
 
