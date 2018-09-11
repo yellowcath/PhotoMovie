@@ -3,6 +3,7 @@ package com.hw.photomovie;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
+import android.os.Handler;
 import com.hw.photomovie.model.ErrorReason;
 import com.hw.photomovie.model.PhotoData;
 import com.hw.photomovie.model.PhotoSource;
@@ -175,12 +176,12 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
         firstSegment.setOnSegmentPrepareListener(new MovieSegment.OnSegmentPrepareListener() {
             @Override
             public void onSegmentPrepared(boolean success) {
+                firstSegment.setOnSegmentPrepareListener(null);
                 setStateValue(STATE_PREPARED);
                 if (mOnPreparedListener != null) {
                     mOnPreparedListener.onPreparing(PhotoMoviePlayer.this, 1f);
                     onPrepared(prepared, total);
                 }
-                firstSegment.setOnSegmentPrepareListener(null);
             }
         });
         firstSegment.prepare();
@@ -282,7 +283,47 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
         mMusicPlayer.stop();
 //        mMusicPlayer.fadeStop(new Handler());
         setStateValue(STATE_PLAYBACK_COMPLETED);
+        if (mLoop) {
+            releaseAndRestart();
+        } else {
+            mMovieRenderer.release();
+        }
+    }
+
+    private void releaseAndRestart() {
+        final Handler handler = new Handler();
+        //在只有一个片段的情况下，有可能先准备好下一轮的资源，然后立刻被这一轮的release释放掉,因此等释放完再启动下一轮播放
+        mMovieRenderer.setOnReleaseListener(new MovieRenderer.OnReleaseListener() {
+            @Override
+            public void onRelease() {
+                mMovieRenderer.setOnReleaseListener(null);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        restartImpl();
+                    }
+                });
+            }
+        });
         mMovieRenderer.release();
+    }
+
+    private void restartImpl() {
+        List<MovieSegment> segmentList = mPhotoMovie.getMovieSegments();
+        if (segmentList == null || segmentList.size() == 0) {
+            return;
+        }
+        setStateValue(STATE_PREPARING);
+        final MovieSegment firstSegment = segmentList.get(0);
+        firstSegment.setOnSegmentPrepareListener(new MovieSegment.OnSegmentPrepareListener() {
+            @Override
+            public void onSegmentPrepared(boolean success) {
+                firstSegment.setOnSegmentPrepareListener(null);
+                setStateValue(STATE_PREPARED);
+                start();
+            }
+        });
+        firstSegment.prepare();
     }
 
     public void destroy() {
@@ -317,9 +358,6 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
 
     public void setLoop(boolean loop) {
         mLoop = loop;
-        if (mMovieTimer != null) {
-            mMovieTimer.setLoop(loop);
-        }
     }
 
     public boolean isPrepared() {

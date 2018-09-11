@@ -1,6 +1,7 @@
 package com.hw.photomovie.segment;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 import com.hw.photomovie.model.ErrorReason;
 import com.hw.photomovie.model.PhotoData;
 import com.hw.photomovie.opengl.BitmapTexture;
@@ -28,6 +29,7 @@ public class SingleBitmapSegment extends GLMovieSegment {
 
     @Override
     public void onPrepare() {
+        Log.e("hwLog","onPrepare");
         PhotoData photoData = getPhoto(0);
         if (photoData != null) {
             photoData.prepareData(PhotoData.STATE_BITMAP, new PhotoData.SimpleOnDataLoadListener() {
@@ -84,6 +86,8 @@ public class SingleBitmapSegment extends GLMovieSegment {
 
     @Override
     public void onRelease() {
+        Log.e("hwLog","onRelease");
+
         if (mBitmapInfo != null && mBitmapInfo.bitmapTexture != null) {
             mBitmapInfo.bitmapTexture.recycle();
         }

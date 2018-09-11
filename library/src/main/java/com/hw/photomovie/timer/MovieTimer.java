@@ -69,9 +69,6 @@ public class MovieTimer implements IMovieTimer, ValueAnimator.AnimatorUpdateList
         }
 
         long curTime = animation.getCurrentPlayTime();
-        if (mMovieListener != null) {
-            mMovieListener.onMovieUpdate((int) curTime);
-        }
 
         if (curTime >= mPhotoMovie.getDuration()) {
             mAnimator.removeUpdateListener(this);
@@ -84,6 +81,10 @@ public class MovieTimer implements IMovieTimer, ValueAnimator.AnimatorUpdateList
             mAnimator.addListener(this);
             if(mLoop){
                 mAnimator.start();
+            }
+        }else{
+            if (mMovieListener != null) {
+                mMovieListener.onMovieUpdate((int) curTime);
             }
         }
     }

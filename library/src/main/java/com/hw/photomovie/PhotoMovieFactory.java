@@ -122,7 +122,7 @@ public class PhotoMovieFactory {
         List<MovieSegment> segmentList = new ArrayList<>();
         int thawType = 0;
         int duration = 1800;
-        for (int i = 0; i < photoSource.size() - 2; i++) {
+        for (int i = 0; i < photoSource.size()-1; i++) {
             segmentList.add(new ThawSegment(duration,thawType++));
             if(thawType==3){
                 thawType = 0;

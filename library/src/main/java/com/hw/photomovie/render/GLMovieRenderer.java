@@ -42,11 +42,11 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
     }
 
     protected void releaseTextures() {
-        if(mFboTexture!=null) {
+        if (mFboTexture != null) {
             mFboTexture.release();
             mFboTexture = null;
         }
-        if(mFilterTexture!=null) {
+        if (mFilterTexture != null) {
             mFilterTexture.release();
             mFilterTexture = null;
         }
@@ -54,14 +54,15 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
 
     @Override
     public void drawMovieFrame(int elapsedTime) {
-        synchronized (mPrepareLock){
+        synchronized (mPrepareLock) {
             mPrepared = true;
-            if(mOnGLPrepareListener!=null){
+            if (mOnGLPrepareListener != null) {
+                final OnGLPrepareListener listener = mOnGLPrepareListener;
+                mOnGLPrepareListener = null;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mOnGLPrepareListener.onGLPrepared();
-                        mOnGLPrepareListener = null;
+                        listener.onGLPrepared();
                     }
                 });
             }
@@ -82,7 +83,7 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
 
         mPainter.unbindArrayBuffer();
         synchronized (mSetFilterLock) {
-            if(mMovieFilter!=null) {
+            if (mMovieFilter != null) {
                 mMovieFilter.doFilter(mPhotoMovie, elapsedTime, mFboTexture, mFilterTexture);
             }
         }
@@ -94,20 +95,23 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
     /**
      * 由子类调用
      */
-    protected void releaseGLResources(){
+    protected void releaseGLResources() {
         releaseLastSegment(true);
         releaseTextures();
-        if(mMovieFilter!=null){
+        if (mMovieFilter != null) {
             mMovieFilter.release();
         }
         mPainter.deleteRecycledResources();
+        if(mOnReleaseListener!=null){
+            mOnReleaseListener.onRelease();
+        }
     }
 
-    public void checkGLPrepared(OnGLPrepareListener onGLPrepareListener){
-        synchronized (mPrepareLock){
-            if(mPrepared){
+    public void checkGLPrepared(OnGLPrepareListener onGLPrepareListener) {
+        synchronized (mPrepareLock) {
+            if (mPrepared) {
                 onGLPrepareListener.onGLPrepared();
-            }else{
+            } else {
                 mOnGLPrepareListener = onGLPrepareListener;
             }
         }
@@ -117,7 +121,7 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
         return mPrepared;
     }
 
-    private void runOnUiThread(Runnable r){
+    private void runOnUiThread(Runnable r) {
         new Handler(Looper.getMainLooper()).post(r);
     }
 
@@ -125,7 +129,7 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
         return mMovieFilter;
     }
 
-    public static interface OnGLPrepareListener{
+    public static interface OnGLPrepareListener {
         void onGLPrepared();
     }
 }

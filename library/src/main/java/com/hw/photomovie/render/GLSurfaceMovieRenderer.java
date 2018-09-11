@@ -16,7 +16,7 @@ public class GLSurfaceMovieRenderer extends GLMovieRenderer implements GLSurface
 
     private GLSurfaceView mGLSurfaceView;
 
-    protected boolean mSurfaceCreated;
+    protected volatile boolean mSurfaceCreated;
     /**
      * 录制时不再渲染到GLSurfaceView上
      */

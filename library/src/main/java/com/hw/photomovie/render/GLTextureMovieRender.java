@@ -1,6 +1,7 @@
 package com.hw.photomovie.render;
 
 import android.opengl.GLES20;
+import com.hw.photomovie.util.MLog;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -10,6 +11,7 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class GLTextureMovieRender extends GLSurfaceMovieRenderer {
 
+    private static final String TAG = "GLTextureMovieRender";
     protected GLTextureView mGLTextureView;
 
     public GLTextureMovieRender(GLTextureView glTextureView) {
@@ -28,15 +30,14 @@ public class GLTextureMovieRender extends GLSurfaceMovieRenderer {
             }
 
             @Override
-            public boolean onDrawFrame(GL10 gl) {
+            public void onDrawFrame(GL10 gl) {
                 if(mNeedRelease.get()){
                     mNeedRelease.set(false);
                     releaseGLResources();
-                    return true;
+                    return;
                 }
                 GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
                 drawMovieFrame(mElapsedTime);
-                return true;
             }
 
             @Override
@@ -51,10 +52,14 @@ public class GLTextureMovieRender extends GLSurfaceMovieRenderer {
     @Override
     public void drawFrame(int elapsedTime) {
         mElapsedTime = elapsedTime;
-        if (mSurfaceCreated && !mRenderToRecorder) {
-            mGLTextureView.requestRender();
-        } else {
+        if(mRenderToRecorder){
             onDrawFrame(null);
+            return;
+        }
+        if(mSurfaceCreated){
+            mGLTextureView.requestRender();
+        }else{
+            MLog.e(TAG,"Surface not created!");
         }
     }
 

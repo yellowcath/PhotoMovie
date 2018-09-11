@@ -13,6 +13,7 @@ public abstract class MovieRenderer<T> {
     protected Rect mViewportRect = new Rect();
     protected T mPainter;
     protected boolean mEnableDraw = true;
+    protected OnReleaseListener mOnReleaseListener;
 
     public MovieRenderer() {
     }
@@ -42,10 +43,13 @@ public abstract class MovieRenderer<T> {
         }
     }
 
-    public void releaseLastSegment(boolean draw){
+    public void releaseLastSegment(boolean draw) {
+        if (mPhotoMovie == null) {
+            return;
+        }
         PhotoMovie.SegmentPicker<T> segmentPicker = mPhotoMovie.getSegmentPicker();
         MovieSegment<T> lastSegment = segmentPicker.getLastSegment();
-        if(draw) {
+        if (draw) {
             lastSegment.drawFrame(mPainter, 1f);
         }
         lastSegment.onSegmentEnd();
@@ -68,7 +72,7 @@ public abstract class MovieRenderer<T> {
         }
     }
 
-    public PhotoMovie getPhotoMovie(){
+    public PhotoMovie getPhotoMovie() {
         return mPhotoMovie;
     }
 
@@ -77,4 +81,12 @@ public abstract class MovieRenderer<T> {
     }
 
     public abstract void release();
+
+    public void setOnReleaseListener(OnReleaseListener listener) {
+        mOnReleaseListener = listener;
+    }
+
+    public interface OnReleaseListener {
+        void onRelease();
+    }
 }

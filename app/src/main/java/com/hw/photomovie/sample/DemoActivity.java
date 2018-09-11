@@ -197,11 +197,13 @@ public class DemoActivity extends AppCompatActivity implements IDemoView, MovieB
     protected void onPause() {
         super.onPause();
         mDemoPresenter.onPause();
+        mGLTextureView.onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         mDemoPresenter.onResume();
+        mGLTextureView.onResume();
     }
 }

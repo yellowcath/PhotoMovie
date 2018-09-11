@@ -5,17 +5,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
 import com.hw.photomovie.moviefilter.BaseMovieFilter;
-import com.hw.photomovie.moviefilter.CameoMovieFilter;
-import com.hw.photomovie.moviefilter.GrayMovieFilter;
-import com.hw.photomovie.moviefilter.KuwaharaMovieFilter;
 import com.hw.photomovie.moviefilter.LutMovieFilter;
-import com.hw.photomovie.moviefilter.SnowMovieFilter;
 import com.hw.photomovie.opengl.BitmapTexture;
 import com.hw.photomovie.opengl.FboTexture;
 import com.hw.photomovie.opengl.GLES20Canvas;
 import com.hw.photomovie.render.GLTextureView;
-import com.hw.photomovie.util.AppResources;
-import com.hw.photomovie.util.GLUtil;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -23,7 +17,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.IntBuffer;
 
 /**
  * Created by huangwei on 2018/9/9.
@@ -40,7 +33,7 @@ public class TestFilterRenderer implements GLTextureView.Renderer {
     private BitmapTexture mBitmapTexture;
     private GLTextureView mTextureView;
 
-    public TestFilterRenderer(Context context,GLTextureView glTextureView){
+    public TestFilterRenderer(Context context, GLTextureView glTextureView){
         mContext  =context;
         mBitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.filter_default);
         mTextureView = glTextureView;
@@ -68,7 +61,7 @@ public class TestFilterRenderer implements GLTextureView.Renderer {
 
     private int n = 0;
     @Override
-    public boolean onDrawFrame(GL10 gl) {
+    public void onDrawFrame(GL10 gl) {
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER,mInputTexture.getFrameBuffer());
         mCanvas.drawTexture(mBitmapTexture,0,0,mBitmapTexture.getWidth(),mBitmapTexture.getHeight());
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER,0);
@@ -99,8 +92,6 @@ public class TestFilterRenderer implements GLTextureView.Renderer {
                 }
             }
         }
-
-        return true;
     }
 
     @Override
