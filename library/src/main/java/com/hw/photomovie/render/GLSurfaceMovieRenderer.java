@@ -101,6 +101,10 @@ public class GLSurfaceMovieRenderer extends GLMovieRenderer implements GLSurface
         }
     }
 
+    public boolean isSurfaceCreated() {
+        return mSurfaceCreated;
+    }
+
     public void setRenderToRecorder(boolean renderToRecorder){
         mRenderToRecorder = renderToRecorder;
     }

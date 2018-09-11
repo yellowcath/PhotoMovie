@@ -8,6 +8,7 @@ import com.hw.photomovie.model.ErrorReason;
 import com.hw.photomovie.model.PhotoData;
 import com.hw.photomovie.model.PhotoSource;
 import com.hw.photomovie.render.GLMovieRenderer;
+import com.hw.photomovie.render.GLSurfaceMovieRenderer;
 import com.hw.photomovie.render.MovieRenderer;
 import com.hw.photomovie.segment.MovieSegment;
 import com.hw.photomovie.timer.IMovieTimer;
@@ -291,6 +292,10 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
     }
 
     private void releaseAndRestart() {
+        if(mMovieRenderer instanceof GLSurfaceMovieRenderer && !((GLSurfaceMovieRenderer) mMovieRenderer).isSurfaceCreated()){
+            restartImpl();
+            return;
+        }
         final Handler handler = new Handler();
         //在只有一个片段的情况下，有可能先准备好下一轮的资源，然后立刻被这一轮的release释放掉,因此等释放完再启动下一轮播放
         mMovieRenderer.setOnReleaseListener(new MovieRenderer.OnReleaseListener() {
