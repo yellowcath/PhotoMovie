@@ -229,10 +229,11 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
                 }
                 dialog.dismiss();
                 if (success) {
+                    Toast.makeText(mDemoView.getActivity().getApplicationContext(), "Video save to path:"+outputFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
                     Intent intent = new Intent();
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.setAction(Intent.ACTION_VIEW);
-                    String type = "video/avc";
+                    String type = "video/*";
                     intent.setDataAndType(Uri.fromFile(outputFile), type);
                     mDemoView.getActivity().startActivity(intent);
                 } else {
