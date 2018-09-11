@@ -19,4 +19,9 @@ public class ActivityMovieRenderer extends MovieRenderer<Activity> {
         setMovieViewport(0,0,displayMetrics.widthPixels,displayMetrics.heightPixels);
         return super.setPainter(painter);
     }
+
+    @Override
+    public void release() {
+
+    }
 }

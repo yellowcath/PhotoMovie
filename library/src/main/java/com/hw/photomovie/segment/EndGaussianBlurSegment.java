@@ -57,16 +57,16 @@ public class EndGaussianBlurSegment extends GLMovieSegment {
 
     @Override
     protected void onRelease() {
-    }
-
-    @Override
-    public void onSegmentEnd() {
-        super.onSegmentEnd();
         if(mPreSegment!=null){
             mPreSegment.enableRelease(true);
             mPreSegment.release();
             mPreSegment = null;
         }
+    }
+
+    @Override
+    public void onSegmentEnd() {
+        super.onSegmentEnd();
     }
 
     private void initBluredTexture() {

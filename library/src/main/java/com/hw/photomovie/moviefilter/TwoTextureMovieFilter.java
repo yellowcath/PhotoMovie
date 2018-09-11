@@ -128,8 +128,8 @@ public class TwoTextureMovieFilter extends BaseMovieFilter {
     }
 
     @Override
-    public void destroy() {
-        super.destroy();
+    public void release() {
+        super.release();
         GLES20.glDeleteTextures(1, new int[]{
                 mTexture2Id
         }, 0);

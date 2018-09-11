@@ -34,15 +34,15 @@ public class LutMovieFilter extends TwoTextureMovieFilter {
     public static Bitmap typeToBitmap(LutType type){
         switch (type){
             case A:
-                return AppResources.loadBitmapFromAssets("lut/lut_1.png");
+                return AppResources.loadBitmapFromAssets("lut/lut_1.jpg");
             case B:
-                return AppResources.loadBitmapFromAssets("lut/lut_2.png");
+                return AppResources.loadBitmapFromAssets("lut/lut_2.jpg");
             case C:
-                return AppResources.loadBitmapFromAssets("lut/lut_3.png");
+                return AppResources.loadBitmapFromAssets("lut/lut_3.jpg");
             case D:
-                return AppResources.loadBitmapFromAssets("lut/lut_4.png");
+                return AppResources.loadBitmapFromAssets("lut/lut_4.jpg");
             case E:
-                return AppResources.loadBitmapFromAssets("lut/lut_5.png");
+                return AppResources.loadBitmapFromAssets("lut/lut_5.jpg");
         }
         return null;
     }

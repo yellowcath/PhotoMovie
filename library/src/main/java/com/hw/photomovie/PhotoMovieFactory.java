@@ -99,20 +99,18 @@ public class PhotoMovieFactory {
     }
 
     private static PhotoMovie generateScalePhotoMovie(PhotoSource photoSource) {
-        List<MovieSegment> segmentList = new ArrayList<MovieSegment>(6);
-        segmentList.add(new ScaleSegment(1800, 10, 1));
-        segmentList.add(new ScaleSegment(1800, 10, 1));
-        segmentList.add(new ScaleSegment(1800, 10, 1));
-        segmentList.add(new ScaleSegment(1800, 10, 1));
-        segmentList.add(new ScaleSegment(1800, 10, 1));
+        List<MovieSegment> segmentList = new ArrayList<MovieSegment>(photoSource.size()+1);
+        for (int i = 0; i < photoSource.size(); i++) {
+            segmentList.add(new ScaleSegment(1800, 10, 1));
+        }
         segmentList.add(new EndGaussianBlurSegment(END_GAUSSIANBLUR_DURATION));
         PhotoMovie photoMovie = new PhotoMovie(photoSource, segmentList);
         return photoMovie;
     }
 
     private static PhotoMovie generateScaleTransPhotoMovie(PhotoSource photoSource) {
-        List<MovieSegment> segmentList = new ArrayList<MovieSegment>(photoSource.size());
-        for (int i = 0; i < photoSource.size() - 1; i++) {
+        List<MovieSegment> segmentList = new ArrayList<MovieSegment>(photoSource.size()+1);
+        for (int i = 0; i < photoSource.size()-1; i++) {
             segmentList.add(new ScaleTransSegment());
         }
         segmentList.add(new LayerSegment(new MovieLayer[]{new GaussianBlurLayer()}, 2000));
@@ -121,10 +119,15 @@ public class PhotoMovieFactory {
     }
 
     private static PhotoMovie generateThawPhotoMovie(PhotoSource photoSource) {
-        List<MovieSegment> segmentList = new ArrayList<MovieSegment>(6);
-        segmentList.add(new ThawSegment(1800, 0));
-        segmentList.add(new ThawSegment(1800, 1));
-        segmentList.add(new ThawSegment(1800, 2));
+        List<MovieSegment> segmentList = new ArrayList<>();
+        int thawType = 0;
+        int duration = 1800;
+        for (int i = 0; i < photoSource.size() - 2; i++) {
+            segmentList.add(new ThawSegment(duration,thawType++));
+            if(thawType==3){
+                thawType = 0;
+            }
+        }
         segmentList.add(new ScaleSegment(1800, 1, 1.1f));
         segmentList.add(new EndGaussianBlurSegment(END_GAUSSIANBLUR_DURATION));
         PhotoMovie photoMovie = new PhotoMovie(photoSource, segmentList);

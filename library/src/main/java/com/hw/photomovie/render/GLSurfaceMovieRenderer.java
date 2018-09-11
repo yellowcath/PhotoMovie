@@ -7,6 +7,7 @@ import com.hw.photomovie.opengl.GLESCanvas;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by huangwei on 2015/5/26.
@@ -27,6 +28,8 @@ public class GLSurfaceMovieRenderer extends GLMovieRenderer implements GLSurface
     public GLSurfaceMovieRenderer() {
         super();
     }
+
+    protected AtomicBoolean mNeedRelease = new AtomicBoolean(false);
 
     public GLSurfaceMovieRenderer(GLSurfaceView glSurfaceView) {
         super();
@@ -49,6 +52,11 @@ public class GLSurfaceMovieRenderer extends GLMovieRenderer implements GLSurface
 
     @Override
     public void onDrawFrame(GL10 gl) {
+        if(mNeedRelease.get()){
+            mNeedRelease.set(false);
+            releaseGLResources();
+            return;
+        }
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
         drawMovieFrame(mElapsedTime);
     }
@@ -72,6 +80,14 @@ public class GLSurfaceMovieRenderer extends GLMovieRenderer implements GLSurface
             mGLSurfaceView.requestRender();
         } else {
             onDrawFrame(null);
+        }
+    }
+
+    @Override
+    public void release() {
+        mNeedRelease.set(true);
+        if(mSurfaceCreated){
+            mGLSurfaceView.requestRender();
         }
     }
 

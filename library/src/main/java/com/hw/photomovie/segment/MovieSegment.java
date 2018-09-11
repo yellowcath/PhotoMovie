@@ -59,7 +59,7 @@ public abstract class MovieSegment<T> {
 
     public final void prepare() {
         if (!mReleased) {
-            MLog.w("MovieSegment", "已调用过prepare,请在release之后再重新prepare.");
+            MLog.w("MovieSegment", "已调用过prepare,请在release之后再重新prepare.index:"+mPhotoMovie.getMovieSegments().indexOf(this));
             if (mOnSegmentPrepareListener != null) {
                 mOnSegmentPrepareListener.onSegmentPrepared(true);
             }
@@ -153,8 +153,10 @@ public abstract class MovieSegment<T> {
     }
 
     /**
-     * @param enableRelease 为true后当{@link #release()}函数被调用时不会真正执行释放资源操作，
+     * @param enableRelease 为false后当{@link #release()}函数被调用时不会真正执行释放资源操作，
      *                      需要由该函数的调用者自行管理释放资源
+     *                      用于下一个片段需要用到当前片段的情况
+     *
      */
     public final void enableRelease(boolean enableRelease) {
         mEnableRelease = enableRelease;

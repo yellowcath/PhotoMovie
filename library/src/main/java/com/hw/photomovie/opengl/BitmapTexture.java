@@ -1,7 +1,10 @@
 package com.hw.photomovie.opengl;
 
 import android.graphics.Bitmap;
+import android.opengl.GLES20;
 import junit.framework.Assert;
+
+import static com.hw.photomovie.util.GLUtil.NO_TEXTURE;
 
 // BitmapTexture is a texture whose content is specified by a fixed Bitmap.
 //
@@ -11,6 +14,11 @@ import junit.framework.Assert;
 public class BitmapTexture extends UploadedTexture {
     protected Bitmap mContentBitmap;
     protected boolean mIsRecycled;
+    /**
+     * 默认情况是统一由GLESCanvas销毁，但是PhotoMovie循环播放时会导致纹理越来越多.
+     * 因此这里改变默认行为
+     */
+    protected boolean mRecycleDirectly = true;
 
     public BitmapTexture(Bitmap bitmap) {
         this(bitmap, false);
@@ -26,7 +34,17 @@ public class BitmapTexture extends UploadedTexture {
     @Override
     public void recycle() {
         mIsRecycled = true;
+        if(mRecycleDirectly) {
+            if (mId != NO_TEXTURE && GLES20.glIsTexture(mId)) {
+                GLES20.glDeleteTextures(1, new int[]{mId}, 0);
+                mId = NO_TEXTURE;
+            }
+        }
         super.recycle();
+    }
+
+    public void setRecycleDirectly(boolean recycleDirectly) {
+        this.mRecycleDirectly = recycleDirectly;
     }
 
     @Override
