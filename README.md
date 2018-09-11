@@ -10,7 +10,7 @@
 
 ``` groovy 
 	dependencies {
-	        implementation 'com.github.yellowcath:PhotoMovie:1.4.3'
+	        implementation 'com.github.yellowcath:PhotoMovie:1.4.5'
 	}
 ```
 ![image](https://github.com/yellowcath/PhotoMovie/raw/master/readme/demo.gif)
