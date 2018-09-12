@@ -38,11 +38,7 @@ public class FitCenterScaleSegment extends FitCenterSegment {
         }
         drawBackground(canvas);
         float scale = mScaleFrom + (mScaleTo - mScaleFrom) * mProgress;
+        //FitCenterSegment已经具有缩放能力，这里传缩放值即可
         drawContent(canvas, scale);
-    }
-
-    @Override
-    public boolean showNextAsBackground() {
-        return true;
     }
 }
