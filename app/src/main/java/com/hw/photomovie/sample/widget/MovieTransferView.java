@@ -28,7 +28,7 @@ public class MovieTransferView extends FrameLayout {
     private RecyclerView.Adapter mAdapter;
     private List<TransferItem> mItemList = new ArrayList<TransferItem>();
     private TransferCallback mCallback;
-    private int mCheckIndex = -1;
+    private int mCheckIndex = 0;
 
     public MovieTransferView(@NonNull Context context) {
         super(context);
@@ -75,8 +75,10 @@ public class MovieTransferView extends FrameLayout {
             public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
                 AppCompatImageView img = holder.itemView.findViewById(R.id.transfer_img);
                 TextView txt = holder.itemView.findViewById(R.id.transfer_txt);
+                ImageView checkImg = holder.itemView.findViewById(R.id.transfer_check);
 
                 final TransferItem item = mItemList.get(position);
+                checkImg.setVisibility(mCheckIndex==position?View.VISIBLE:View.GONE);
                 img.setImageResource(item.imgRes);
                 txt.setText(item.name);
                 holder.itemView.setOnClickListener(new OnClickListener() {
