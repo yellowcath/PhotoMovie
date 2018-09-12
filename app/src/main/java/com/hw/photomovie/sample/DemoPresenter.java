@@ -56,8 +56,9 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
         items.add(new TransferItem(R.drawable.ic_movie_transfer, "LeftRight", PhotoMovieFactory.PhotoMovieType.HORIZONTAL_TRANS));
         items.add(new TransferItem(R.drawable.ic_movie_transfer, "UpDown", PhotoMovieFactory.PhotoMovieType.VERTICAL_TRANS));
         items.add(new TransferItem(R.drawable.ic_movie_transfer, "Window", PhotoMovieFactory.PhotoMovieType.WINDOW));
-        items.add(new TransferItem(R.drawable.ic_movie_transfer, "Thaw", PhotoMovieFactory.PhotoMovieType.THAW));
+        items.add(new TransferItem(R.drawable.ic_movie_transfer, "Gradient", PhotoMovieFactory.PhotoMovieType.GRADIENT));
         items.add(new TransferItem(R.drawable.ic_movie_transfer, "Tranlation", PhotoMovieFactory.PhotoMovieType.SCALE_TRANS));
+        items.add(new TransferItem(R.drawable.ic_movie_transfer, "Thaw", PhotoMovieFactory.PhotoMovieType.THAW));
         items.add(new TransferItem(R.drawable.ic_movie_transfer, "Scale", PhotoMovieFactory.PhotoMovieType.SCALE));
         mDemoView.setTransfers(items);
     }
@@ -108,7 +109,7 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
         });
     }
 
-    private void startPlay(PhotoSource photoSource){
+    private void startPlay(PhotoSource photoSource) {
         mPhotoMovie = PhotoMovieFactory.generatePhotoMovie(photoSource, mMovieType);
         mPhotoMoviePlayer.setDataSource(mPhotoMovie);
         mPhotoMoviePlayer.prepare();
@@ -154,7 +155,7 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
         mPhotoMoviePlayer.stop();
         mPhotoMovie = PhotoMovieFactory.generatePhotoMovie(mPhotoMovie.getPhotoSource(), mMovieType);
         mPhotoMoviePlayer.setDataSource(mPhotoMovie);
-        if(mMusicUri!=null) {
+        if (mMusicUri != null) {
             mPhotoMoviePlayer.setMusic(mDemoView.getActivity(), mMusicUri);
         }
         mPhotoMoviePlayer.setOnPreparedListener(new PhotoMoviePlayer.OnPreparedListener() {
@@ -200,7 +201,7 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
         int bitrate = glTextureView.getWidth() * glTextureView.getHeight() > 1000 * 1500 ? 8000000 : 4000000;
         recorder.configOutput(glTextureView.getWidth(), glTextureView.getHeight(), bitrate, 30, 1, file.getAbsolutePath());
         //生成一个全新的MovieRender，不然与现有的GL环境不一致，相互干扰容易出问题
-        PhotoMovie newPhotoMovie = PhotoMovieFactory.generatePhotoMovie(mPhotoMovie.getPhotoSource(),mMovieType);
+        PhotoMovie newPhotoMovie = PhotoMovieFactory.generatePhotoMovie(mPhotoMovie.getPhotoSource(), mMovieType);
         GLSurfaceMovieRenderer newMovieRenderer = new GLSurfaceMovieRenderer();
         newMovieRenderer.setMovieFilter(mMovieRenderer.getMovieFilter());
         newMovieRenderer.setPhotoMovie(newPhotoMovie);
@@ -229,7 +230,7 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
                 }
                 dialog.dismiss();
                 if (success) {
-                    Toast.makeText(mDemoView.getActivity().getApplicationContext(), "Video save to path:"+outputFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(mDemoView.getActivity().getApplicationContext(), "Video save to path:" + outputFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
                     Intent intent = new Intent();
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.setAction(Intent.ACTION_VIEW);
@@ -274,7 +275,7 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
             mPhotoMoviePlayer.stop();
             mPhotoMovie = PhotoMovieFactory.generatePhotoMovie(photoSource, PhotoMovieFactory.PhotoMovieType.HORIZONTAL_TRANS);
             mPhotoMoviePlayer.setDataSource(mPhotoMovie);
-            if(mMusicUri!=null) {
+            if (mMusicUri != null) {
                 mPhotoMoviePlayer.setMusic(mDemoView.getActivity(), mMusicUri);
             }
             mPhotoMoviePlayer.setOnPreparedListener(new PhotoMoviePlayer.OnPreparedListener() {

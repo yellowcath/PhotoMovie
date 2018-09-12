@@ -3,7 +3,9 @@ package com.hw.photomovie;
 import com.hw.photomovie.model.PhotoSource;
 import com.hw.photomovie.opengl.GLESCanvas;
 import com.hw.photomovie.segment.EndGaussianBlurSegment;
+import com.hw.photomovie.segment.FitCenterScaleSegment;
 import com.hw.photomovie.segment.FitCenterSegment;
+import com.hw.photomovie.segment.GradientTransferSegment;
 import com.hw.photomovie.segment.LayerSegment;
 import com.hw.photomovie.segment.MoveTransitionSegment;
 import com.hw.photomovie.segment.MovieSegment;
@@ -30,6 +32,7 @@ public class PhotoMovieFactory {
         WINDOW, //窗扉
         HORIZONTAL_TRANS,//横向平移
         VERTICAL_TRANS,//纵向平移
+        GRADIENT,//渐变
         TEST
     }
 
@@ -49,6 +52,8 @@ public class PhotoMovieFactory {
                 return generateHorizontalTransPhotoMovie(photoSource);
             case VERTICAL_TRANS:
                 return generateVerticalTransPhotoMovie(photoSource);
+            case GRADIENT:
+                return genGradientPhotoMovie(photoSource);
             case TEST:
                 return generateTestPhotoMovie(photoSource);
             default:
@@ -60,7 +65,7 @@ public class PhotoMovieFactory {
         List<MovieSegment> segmentList = new ArrayList<MovieSegment>();
         for (int i = 0; i < photoSource.size(); i++) {
             segmentList.add(new FitCenterSegment(1000).setBackgroundColor(0xFF323232));
-            segmentList.add(new MoveTransitionSegment(MoveTransitionSegment.DIRECTION_HORIZON,800));
+            segmentList.add(new MoveTransitionSegment(MoveTransitionSegment.DIRECTION_HORIZON, 800));
         }
         segmentList.remove(segmentList.size() - 1);
         PhotoMovie photoMovie = new PhotoMovie(photoSource, segmentList);
@@ -71,7 +76,7 @@ public class PhotoMovieFactory {
         List<MovieSegment> segmentList = new ArrayList<MovieSegment>();
         for (int i = 0; i < photoSource.size(); i++) {
             segmentList.add(new FitCenterSegment(1000).setBackgroundColor(0xFF323232));
-            segmentList.add(new MoveTransitionSegment(MoveTransitionSegment.DIRECTION_VERTICAL,800));
+            segmentList.add(new MoveTransitionSegment(MoveTransitionSegment.DIRECTION_VERTICAL, 800));
         }
         segmentList.remove(segmentList.size() - 1);
         PhotoMovie photoMovie = new PhotoMovie(photoSource, segmentList);
@@ -99,7 +104,7 @@ public class PhotoMovieFactory {
     }
 
     private static PhotoMovie generateScalePhotoMovie(PhotoSource photoSource) {
-        List<MovieSegment> segmentList = new ArrayList<MovieSegment>(photoSource.size()+1);
+        List<MovieSegment> segmentList = new ArrayList<MovieSegment>(photoSource.size() + 1);
         for (int i = 0; i < photoSource.size(); i++) {
             segmentList.add(new ScaleSegment(1800, 10, 1));
         }
@@ -109,8 +114,8 @@ public class PhotoMovieFactory {
     }
 
     private static PhotoMovie generateScaleTransPhotoMovie(PhotoSource photoSource) {
-        List<MovieSegment> segmentList = new ArrayList<MovieSegment>(photoSource.size()+1);
-        for (int i = 0; i < photoSource.size()-1; i++) {
+        List<MovieSegment> segmentList = new ArrayList<MovieSegment>(photoSource.size() + 1);
+        for (int i = 0; i < photoSource.size() - 1; i++) {
             segmentList.add(new ScaleTransSegment());
         }
         segmentList.add(new LayerSegment(new MovieLayer[]{new GaussianBlurLayer()}, 2000));
@@ -122,9 +127,9 @@ public class PhotoMovieFactory {
         List<MovieSegment> segmentList = new ArrayList<>();
         int thawType = 0;
         int duration = 1800;
-        for (int i = 0; i < photoSource.size()-1; i++) {
-            segmentList.add(new ThawSegment(duration,thawType++));
-            if(thawType==3){
+        for (int i = 0; i < photoSource.size() - 1; i++) {
+            segmentList.add(new ThawSegment(duration, thawType++));
+            if (thawType == 3) {
                 thawType = 0;
             }
         }
@@ -134,4 +139,18 @@ public class PhotoMovieFactory {
         return photoMovie;
     }
 
+    private static PhotoMovie genGradientPhotoMovie(PhotoSource photoSource) {
+        List<MovieSegment> segmentList = new ArrayList<>(photoSource.size());
+        for (int i = 0; i < photoSource.size(); i++) {
+            if (i == 0) {
+                segmentList.add(new FitCenterScaleSegment(1600, 1f, 1.1f));
+            } else {
+                segmentList.add(new FitCenterScaleSegment(1600, 1.05f, 1.1f));
+            }
+            if (i < photoSource.size() - 1) {
+                segmentList.add(new GradientTransferSegment(800, 1.1f, 1.15f, 1.0f, 1.05f));
+            }
+        }
+        return new PhotoMovie(photoSource, segmentList);
+    }
 }

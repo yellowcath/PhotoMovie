@@ -54,8 +54,8 @@ public class SingleBitmapSegment extends GLMovieSegment {
                     }
                 }
             });
-        }else{
-            MLog.e(TAG, "available photoData is null,segment:"+this);
+        } else {
+            MLog.e(TAG, "available photoData is null,segment:" + this);
         }
     }
 
@@ -100,6 +100,10 @@ public class SingleBitmapSegment extends GLMovieSegment {
 
     @Override
     protected boolean checkPrepared() {
-        return mBitmapInfo!=null && mBitmapInfo.isTextureAvailable();
+        return mBitmapInfo != null && mBitmapInfo.isTextureAvailable();
+    }
+
+    public BitmapInfo getBitmapInfo() {
+        return mBitmapInfo;
     }
 }
