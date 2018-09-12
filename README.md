@@ -16,5 +16,10 @@
 
 详细说明请移步[https://blog.csdn.net/yellowcath/article/details/82664987](https://blog.csdn.net/yellowcath/article/details/82664987)
 
-![image](https://github.com/yellowcath/PhotoMovie/raw/master/readme/filter.gif)
+### 滤镜效果  
+
+![image](https://github.com/yellowcath/PhotoMovie/raw/master/readme/filter.gif)  
+
+### 转场效果  
+
 ![image](https://github.com/yellowcath/PhotoMovie/raw/master/readme/transfer.gif)
