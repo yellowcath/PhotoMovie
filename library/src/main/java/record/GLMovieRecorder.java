@@ -257,7 +257,7 @@ public class GLMovieRecorder {
     }
 
     private void drainEncoder(boolean endOfStream) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT < 21) {
             drainEncoderImpl(endOfStream);
         } else {
             drainEncoderApi21(endOfStream);

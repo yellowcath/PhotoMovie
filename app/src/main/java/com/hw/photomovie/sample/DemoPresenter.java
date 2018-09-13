@@ -212,7 +212,7 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
             public void onRecordFinish(boolean success) {
                 File outputFile = file;
                 if (mMusicUri != null) {
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                    if (Build.VERSION.SDK_INT < 21) {
                         Toast.makeText(mDemoView.getActivity().getApplicationContext(), "Mix audio needs api21!", Toast.LENGTH_LONG).show();
                     } else {
                         //合成音乐
