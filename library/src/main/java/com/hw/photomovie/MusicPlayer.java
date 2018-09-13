@@ -31,7 +31,11 @@ public class MusicPlayer {
         }
         if (!isPlaying()) {
             safeSetVolume(1f);
-            mMediaPlayer.start();
+            try {
+                mMediaPlayer.start();
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
         }
     }
 
