@@ -248,7 +248,9 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
         if (mMovieListener != null) {
             mMovieListener.onMovieUpdate(elapsedTime);
         }
-        mPhotoMovie.updateProgress(elapsedTime);
+        if(mPhotoMovie!=null) {
+            mPhotoMovie.updateProgress(elapsedTime);
+        }
     }
 
     @Override
