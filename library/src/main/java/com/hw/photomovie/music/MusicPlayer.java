@@ -1,4 +1,4 @@
-package com.hw.photomovie;
+package com.hw.photomovie.music;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
@@ -12,7 +12,7 @@ import java.io.IOException;
 /**
  * Created by huangwei on 2015/6/1.
  */
-public class MusicPlayer {
+public class MusicPlayer implements IMusicPlayer {
     private static final int FADE_DURATION = 1800;
 
     private MediaPlayer mMediaPlayer;
@@ -31,7 +31,11 @@ public class MusicPlayer {
         }
         if (!isPlaying()) {
             safeSetVolume(1f);
-            mMediaPlayer.start();
+            try {
+                mMediaPlayer.start();
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
         }
     }
 

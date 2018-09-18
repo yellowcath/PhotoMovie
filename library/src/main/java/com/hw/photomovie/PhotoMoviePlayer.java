@@ -7,6 +7,8 @@ import android.os.Handler;
 import com.hw.photomovie.model.ErrorReason;
 import com.hw.photomovie.model.PhotoData;
 import com.hw.photomovie.model.PhotoSource;
+import com.hw.photomovie.music.IMusicPlayer;
+import com.hw.photomovie.music.MusicPlayer;
 import com.hw.photomovie.render.GLMovieRenderer;
 import com.hw.photomovie.render.GLSurfaceMovieRenderer;
 import com.hw.photomovie.render.MovieRenderer;
@@ -46,7 +48,7 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
     private IMovieTimer mMovieTimer;
     private IMovieTimer.MovieListener mMovieListener;
 
-    private MusicPlayer mMusicPlayer;
+    private IMusicPlayer mMusicPlayer;
 
     private OnPreparedListener mOnPreparedListener;
     private boolean mLoop;
@@ -54,6 +56,10 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
     public PhotoMoviePlayer(Context context) {
         mMusicPlayer = new MusicPlayer();
         AppResources.getInstance().init(context.getResources());
+    }
+
+    public void setMusicPlayer(IMusicPlayer musicPlayer) {
+        mMusicPlayer = musicPlayer;
     }
 
     public void setDataSource(PhotoMovie photoMovie) {
@@ -92,7 +98,7 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
         mMusicPlayer.setDataSource(fileDescriptor);
     }
 
-    public MusicPlayer getMusicPlayer() {
+    public IMusicPlayer getMusicPlayer() {
         return mMusicPlayer;
     }
 
@@ -242,7 +248,9 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
         if (mMovieListener != null) {
             mMovieListener.onMovieUpdate(elapsedTime);
         }
-        mPhotoMovie.updateProgress(elapsedTime);
+        if(mPhotoMovie!=null) {
+            mPhotoMovie.updateProgress(elapsedTime);
+        }
     }
 
     @Override
@@ -292,7 +300,7 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
     }
 
     private void releaseAndRestart() {
-        if(mMovieRenderer instanceof GLSurfaceMovieRenderer && !((GLSurfaceMovieRenderer) mMovieRenderer).isSurfaceCreated()){
+        if (mMovieRenderer instanceof GLSurfaceMovieRenderer && !((GLSurfaceMovieRenderer) mMovieRenderer).isSurfaceCreated()) {
             restartImpl();
             return;
         }

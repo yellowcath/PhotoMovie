@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewStub;
@@ -25,7 +26,9 @@ import java.util.List;
  * Created by huangwei on 2018/9/9.
  */
 public class DemoActivity extends AppCompatActivity implements IDemoView, MovieBottomView.MovieBottomCallback {
-
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
     private static final int REQUEST_MUSIC = 234;
     private DemoPresenter mDemoPresenter = new DemoPresenter();
     private GLTextureView mGLTextureView;
