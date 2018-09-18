@@ -13,7 +13,7 @@ The functions are shown below.
 
 ![image](https://github.com/yellowcath/PhotoMovie/raw/master/readme/transfer.gif)
 
-## Maven
+## Gradle
 
 add Maven
 ``` groovy
