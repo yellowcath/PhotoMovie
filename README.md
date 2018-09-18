@@ -76,15 +76,15 @@ PhotoMovie uses a modular design, and each part can be customized and replaced.
 Class Diagram
 ![image](https://github.com/yellowcath/PhotoMovie/raw/master/readme/PhotoMovie.png)
 
-- **MovieSegment**:Each movie segment has a specific length of time during which images are played in a specific way.
+- **MovieSegment**:Each MovieSegment has a specific length of time during which images are played in a specific way.
 For example
 >ScaleSegment will do scale animation.
 >EndGaussianBlurSegment will do a gaussian blur animation from clear to blurry
-- **PhotoMovie**:PhotoMovie stands for the Movie itself，A complete photo movie consists of a PhotoSource and a series of MovieSegment，images are allocated to MovieSegment through PhotoAllocator.
+- **PhotoMovie**:PhotoMovie stands for the Movie itself，A complete PhotoMovie consists of a PhotoSource and a series of MovieSegment，images are allocated to MovieSegment through PhotoAllocator.
 
 - **MovieLayer**:MovieLayer provides the ability to render multilayer effects for MovieSegment ， such as SubtitleLayer with subtitle demonstrations
 
-- **IMovieFilter**:provides filters for the entire photo movie
+- **IMovieFilter**:MovieFilter provides filters for the entire PhotoMovie.
 
 - **MovieRenderer**:The MovieRenderer's function is to render the photo movie to the specified output interface, such as TextureView (GLTextureMovieRender), GLSurfaceView(GLSurfaceMovieRenderer)
 
@@ -107,10 +107,12 @@ Six types are currently built in
 
 Here is an example of how to extend the gradient effect of 微视
 
-According to the analysis, the picture was placed in the center first, and then a weak zooming animation was made throughout, and the change of transparency disappeared in the second half
+According to the analysis, the picture was placed in the center first, and then a weak zoom in animation was made throughout, and the change of transparency disappeared in the second half
 ，A more intuitive flow chart is shown below
 ![image](https://github.com/yellowcath/PhotoMovie/raw/master/readme/gradient_timeline.png)
-So two different MovieSegment is required for visibility
+
+So two different MovieSegment is required.
+
 FitCenterScaleSegment for zooming in images
 ``` java
 public class FitCenterScaleSegment extends FitCenterSegment {
@@ -243,7 +245,7 @@ public interface IMovieFilter {
     void release();
 }
 ```
-The MovieRenderer will provide an input texture that is then drawn to the output texture after being processed by the IMovieFilter, which implements the filter effect
+The MovieRenderer will provide an input texture that is then drawn to the output texture after being processed by the IMovieFilter, which implements the filter effect.
 
 BaseMovieFilter has implemented basic input and output processes.
 For example, to make a basic black and white filter, just change FRAGMENT_SHADER
@@ -270,7 +272,7 @@ PhotoMovie also offers support for Lut filters
 
 For example
 
-lut | 效果
+lut | filter
 ---|---
 <img src="https://github.com/yellowcath/PhotoMovie/raw/master/library/src/main/assets/lut/lut_default.png" width="200" hegiht="200" align=center /> | <img src="https://github.com/yellowcath/PhotoMovie/raw/master/app/src/main/res/drawable-nodpi//filter_default.jpg" width="200" hegiht="200" align=center />
 <img src="https://github.com/yellowcath/PhotoMovie/raw/master/library/src/main/assets/lut/lut_2.jpg" width="200" hegiht="200" align=center /> | <img src="https://github.com/yellowcath/PhotoMovie/raw/master/app/src/main/res/drawable-nodpi/l2.jpg" width="200" hegiht="200" align=center />
