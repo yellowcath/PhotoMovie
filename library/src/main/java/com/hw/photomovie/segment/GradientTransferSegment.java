@@ -1,5 +1,6 @@
 package com.hw.photomovie.segment;
 
+import android.opengl.GLES20;
 import com.hw.photomovie.opengl.GLESCanvas;
 
 /**
@@ -31,6 +32,7 @@ public class GradientTransferSegment extends TransitionSegment<FitCenterScaleSeg
 
     @Override
     public void drawFrame(GLESCanvas canvas, float segmentProgress) {
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
         //下一个片段开始放大
         float nextScale = mNextScaleFrom + (mNextScaleTo - mNextScaleFrom) * segmentProgress;
         mNextSegment.drawContent(canvas, nextScale);
