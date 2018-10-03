@@ -250,7 +250,14 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
     }
 
     private File initVideoFile() {
-        return new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES), String.format("photo_movie_%s.mp4",
+        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        if (!dir.exists()) {
+            dir = mDemoView.getActivity().getCacheDir();
+        }
+        return new File(dir, String.format("photo_movie_%s.mp4",
                 new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(System.currentTimeMillis())));
     }
 
