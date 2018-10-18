@@ -62,12 +62,17 @@ public class PhotoMovieFactory {
     }
 
     private static PhotoMovie generateHorizontalTransPhotoMovie(PhotoSource photoSource) {
+        int fitCenterSegmentDurationMs = 1000;
+        int movieSegmentDutationMs = 800;
+        int segmentsTotalDutationMs = 60*1000;
+        float segmentGroupCount = segmentsTotalDutationMs / (float) (movieSegmentDutationMs+fitCenterSegmentDurationMs);
+        int extraDuration = (int) ((segmentGroupCount - ((int) segmentGroupCount) + 1) * movieSegmentDutationMs);
         List<MovieSegment> segmentList = new ArrayList<MovieSegment>();
-        for (int i = 0; i < photoSource.size(); i++) {
-            segmentList.add(new FitCenterSegment(1000).setBackgroundColor(0xFF323232));
-            segmentList.add(new MoveTransitionSegment(MoveTransitionSegment.DIRECTION_HORIZON, 800));
+        for (int i = 0; i < (int) segmentGroupCount; i++) {
+            segmentList.add(new FitCenterSegment(fitCenterSegmentDurationMs).setBackgroundColor(0xFF323232));
+            segmentList.add(new MoveTransitionSegment(MoveTransitionSegment.DIRECTION_HORIZON, movieSegmentDutationMs));
         }
-        segmentList.remove(segmentList.size() - 1);
+        segmentList.add(new FitCenterSegment(extraDuration).setBackgroundColor(0xFF323232));
         PhotoMovie photoMovie = new PhotoMovie(photoSource, segmentList);
         return photoMovie;
     }

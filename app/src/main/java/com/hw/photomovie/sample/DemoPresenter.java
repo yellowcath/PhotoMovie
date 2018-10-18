@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 import com.hw.photomovie.PhotoMovie;
 import com.hw.photomovie.PhotoMovieFactory;
@@ -23,7 +25,7 @@ import com.hw.photomovie.sample.widget.TransferItem;
 import com.hw.photomovie.timer.IMovieTimer;
 import com.hw.photomovie.util.MLog;
 import com.hw.videoprocessor.VideoProcessor;
-import record.GLMovieRecorder;
+import com.hw.photomovie.record.GLMovieRecorder;
 
 import java.io.File;
 import java.io.IOException;
@@ -195,6 +197,7 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
         dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         dialog.setCancelable(false);
         dialog.show();
+        final long startRecodTime = System.currentTimeMillis();
         GLMovieRecorder recorder = new GLMovieRecorder();
         final File file = initVideoFile();
         GLTextureView glTextureView = mDemoView.getGLView();
@@ -205,29 +208,26 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
         GLSurfaceMovieRenderer newMovieRenderer = new GLSurfaceMovieRenderer();
         newMovieRenderer.setMovieFilter(mMovieRenderer.getMovieFilter());
         newMovieRenderer.setPhotoMovie(newPhotoMovie);
-
+        String audioPath = null;
+        if(mMusicUri!=null) {
+            audioPath = UriUtil.getPath(mDemoView.getActivity(), mMusicUri);
+        }
+        audioPath = "/storage/emulated/0/UCDownloads/tiya.aac";
+        Toast.makeText(mDemoView.getActivity().getApplicationContext(), "Mix audio needs api18!", Toast.LENGTH_LONG).show();
+        if (!TextUtils.isEmpty(audioPath)) {
+            if (Build.VERSION.SDK_INT < 18) {
+                Toast.makeText(mDemoView.getActivity().getApplicationContext(), "Mix audio needs api18!", Toast.LENGTH_LONG).show();
+            } else {
+                recorder.setMusic(audioPath);
+            }
+        }
         recorder.setDataSource(newMovieRenderer);
         recorder.startRecord(new GLMovieRecorder.OnRecordListener() {
             @Override
             public void onRecordFinish(boolean success) {
                 File outputFile = file;
-                if (mMusicUri != null) {
-                    if (Build.VERSION.SDK_INT < 21) {
-                        Toast.makeText(mDemoView.getActivity().getApplicationContext(), "Mix audio needs api21!", Toast.LENGTH_LONG).show();
-                    } else {
-                        //合成音乐
-                        File mixFile = initVideoFile();
-                        String audioPath = UriUtil.getPath(mDemoView.getActivity(), mMusicUri);
-                        try {
-                            VideoProcessor.mixAudioTrack(mDemoView.getActivity(), file.getAbsolutePath(), audioPath, mixFile.getAbsolutePath(), null, null, 0,
-                                    100, 1f, 1f);
-                            file.delete();
-                            outputFile = mixFile;
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
+                long recordEndTime = System.currentTimeMillis();
+                MLog.i("Record", "record:" + (recordEndTime - startRecodTime));
                 dialog.dismiss();
                 if (success) {
                     Toast.makeText(mDemoView.getActivity().getApplicationContext(), "Video save to path:" + outputFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
@@ -238,7 +238,7 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
                     intent.setDataAndType(Uri.fromFile(outputFile), type);
                     mDemoView.getActivity().startActivity(intent);
                 } else {
-                    Toast.makeText(mDemoView.getActivity().getApplicationContext(), "record error!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mDemoView.getActivity().getApplicationContext(), "com.hw.photomovie.record error!", Toast.LENGTH_LONG).show();
                 }
             }
 

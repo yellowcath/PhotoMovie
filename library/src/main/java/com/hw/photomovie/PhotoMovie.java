@@ -117,7 +117,7 @@ public class PhotoMovie<T> {
                     mCurSegment.release();
                 }
                 mCurSegment = segment;
-                MLog.i("TAG", "pick segment " + ":" + segment.toString());
+                MLog.i(TAG, "pick segment " + ":" + segment.toString());
             }
             //通知下一个片段准备
             /**第一个片段会prepare两次，第一次是在{@link PhotoMoviePlayer#prepareFirstSegment(int, int)}
@@ -125,7 +125,7 @@ public class PhotoMovie<T> {
              * 初始化可能之后就无效了*/
             MovieSegment<T> nextSegment = getNextSegment(elapsedTime);
             if (nextSegment != mNextSegment) {
-                MLog.i("TAG", "onPrepare next segment " + ":" + nextSegment.toString());
+                MLog.i(TAG, "onPrepare next segment " + ":" + nextSegment.toString());
                 nextSegment.prepare();
                 mNextSegment = nextSegment;
             }

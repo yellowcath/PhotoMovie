@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package record.gles;
+package com.hw.photomovie.record.gles;
 
 import android.opengl.GLES20;
 import android.util.Log;

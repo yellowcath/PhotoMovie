@@ -1,4 +1,4 @@
-package record;
+package com.hw.photomovie.record;
 
 import android.annotation.TargetApi;
 import android.media.MediaCodec;
@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Surface;
 import com.hw.photomovie.PhotoMovie;
@@ -23,6 +24,8 @@ import com.hw.photomovie.util.MLog;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 
 /**
  * Created by huangwei on 2015/5/26.
@@ -34,6 +37,8 @@ public class GLMovieRecorder {
     private GLSurfaceMovieRenderer mGLSurfaceMovieRenderer;
     private boolean mInited;
     private HandlerThread mRecordThread = new HandlerThread("GLMovieRecorder");
+    private String mAudioPath;
+    private CyclicBarrier mCyclicBarrier;
 
     public GLMovieRecorder() {
         super();
@@ -44,6 +49,9 @@ public class GLMovieRecorder {
         mGLSurfaceMovieRenderer = glSurfaceMovieRenderer;
     }
 
+    public void setMusic(String audioPath){
+        mAudioPath = audioPath;
+    }
     public void configOutput(int width, int height, int bitRate, int frameRate, int iFrameInterval, String outputPath) {
         mWidth = width;
         mHeight = height;
@@ -109,6 +117,13 @@ public class GLMovieRecorder {
         //开始录制
         PhotoMovie photoMovie = mGLSurfaceMovieRenderer.getPhotoMovie();
 
+        if(!TextUtils.isEmpty(mAudioPath)){
+            mCyclicBarrier = new CyclicBarrier(2);
+            AudioRecordThread audioRecordThread = new AudioRecordThread(mAudioPath,mMuxer,mCyclicBarrier,photoMovie.getDuration());
+            audioRecordThread.start();
+        }else{
+            mCyclicBarrier = new CyclicBarrier(1);
+        }
         int duration;
         int elapsedTime = 0;
         int frameCount = 0;
@@ -127,8 +142,8 @@ public class GLMovieRecorder {
                 mInputSurface.swapBuffers();
                 long e = System.currentTimeMillis();
 
-                MLog.i(TAG, "record frame " + frameCount);
-                MLog.i(TAG, "record 耗时 " + (e - s) + "ms" + " 绘制耗时:" + (e1 - s1) + "ms");
+                MLog.i(TAG, "com.hw.photomovie.record frame " + frameCount);
+                MLog.i(TAG, "com.hw.photomovie.record 耗时 " + (e - s) + "ms" + " 绘制耗时:" + (e1 - s1) + "ms");
                 frameCount++;
                 elapsedTime += frameTime;
                 /**
@@ -250,6 +265,13 @@ public class GLMovieRecorder {
             mInputSurface = null;
         }
         if (mMuxer != null) {
+            try {
+                mCyclicBarrier.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (BrokenBarrierException e) {
+                e.printStackTrace();
+            }
             mMuxer.stop();
             mMuxer.release();
             mMuxer = null;
@@ -309,7 +331,21 @@ public class GLMovieRecorder {
 
                 // now that we have the Magic Goodies, start the muxer
                 mTrackIndex = mMuxer.addTrack(newFormat);
+                try {
+                    mCyclicBarrier.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (BrokenBarrierException e) {
+                    e.printStackTrace();
+                }
                 mMuxer.start();
+                try {
+                    mCyclicBarrier.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (BrokenBarrierException e) {
+                    e.printStackTrace();
+                }
                 mMuxerStarted = true;
             } else if (encoderStatus < 0) {
                 Log.w(TAG, "unexpected result from encoder.dequeueOutputBuffer: " +
@@ -408,7 +444,21 @@ public class GLMovieRecorder {
 
                 // now that we have the Magic Goodies, start the muxer
                 mTrackIndex = mMuxer.addTrack(newFormat);
+                try {
+                    mCyclicBarrier.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (BrokenBarrierException e) {
+                    e.printStackTrace();
+                }
                 mMuxer.start();
+                try {
+                    mCyclicBarrier.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (BrokenBarrierException e) {
+                    e.printStackTrace();
+                }
                 mMuxerStarted = true;
             } else if (encoderIndex < 0) {
                 Log.w(TAG, "unexpected result from encoder.dequeueOutputBuffer: " +

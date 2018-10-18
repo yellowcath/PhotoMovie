@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package record.gles;
+package com.hw.photomovie.record.gles;
 
 /**
  * This class essentially represents a viewport-sized sprite that will be rendered with

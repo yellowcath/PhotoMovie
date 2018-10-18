@@ -1,7 +1,7 @@
 package com.hw.photomovie.opengl;
 
 import android.opengl.GLES20;
-import record.gles.GlUtil;
+import com.hw.photomovie.record.gles.GlUtil;
 
 import javax.microedition.khronos.opengles.GL11;
 

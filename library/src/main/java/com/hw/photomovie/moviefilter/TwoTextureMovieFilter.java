@@ -6,7 +6,7 @@ import com.hw.photomovie.PhotoMovie;
 import com.hw.photomovie.filter.GLHelper;
 import com.hw.photomovie.opengl.FboTexture;
 import com.hw.photomovie.util.GLUtil;
-import record.gles.GlUtil;
+import com.hw.photomovie.record.gles.GlUtil;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

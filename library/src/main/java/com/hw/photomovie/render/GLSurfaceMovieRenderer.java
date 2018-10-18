@@ -23,7 +23,7 @@ public class GLSurfaceMovieRenderer extends GLMovieRenderer implements GLSurface
     protected boolean mRenderToRecorder = false;
 
     /**
-     * 无GLSurfaceView的构造函数用于{@link record.GLMovieRecorder},会在外部设置GLES输出的Surface
+     * 无GLSurfaceView的构造函数用于{@link com.hw.photomovie.record.GLMovieRecorder},会在外部设置GLES输出的Surface
      */
     public GLSurfaceMovieRenderer() {
         super();
