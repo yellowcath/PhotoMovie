@@ -31,7 +31,7 @@ dependencies {
 ### Changelog
 #### 1.6.0
 * Synchronous remix while recording video  
->Record PhotoMovie with Music  
+>Recording PhotoMovie with Music  
 Before:------------Record Video------------>------Mix Music------>End  
 Now:   --------Record Video And Music------>End  
 
