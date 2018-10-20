@@ -1,6 +1,7 @@
 package com.hw.photomovie.record;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
@@ -34,14 +35,16 @@ import java.util.concurrent.CyclicBarrier;
 public class GLMovieRecorder {
     private static final String TAG = "GLMovieRecorder";
 
+    private Context mContext;
     private GLSurfaceMovieRenderer mGLSurfaceMovieRenderer;
     private boolean mInited;
     private HandlerThread mRecordThread = new HandlerThread("GLMovieRecorder");
     private String mAudioPath;
     private CyclicBarrier mCyclicBarrier;
+    private Exception mAudioRecordException;
 
-    public GLMovieRecorder() {
-        super();
+    public GLMovieRecorder(Context context) {
+        mContext = context.getApplicationContext();
         mRecordThread.start();
     }
 
@@ -117,9 +120,10 @@ public class GLMovieRecorder {
         //开始录制
         PhotoMovie photoMovie = mGLSurfaceMovieRenderer.getPhotoMovie();
 
+        AudioRecordThread audioRecordThread = null;
         if(!TextUtils.isEmpty(mAudioPath)){
             mCyclicBarrier = new CyclicBarrier(2);
-            AudioRecordThread audioRecordThread = new AudioRecordThread(mAudioPath,mMuxer,mCyclicBarrier,photoMovie.getDuration());
+            audioRecordThread = new AudioRecordThread(mContext,mAudioPath,mMuxer,mCyclicBarrier,photoMovie.getDuration());
             audioRecordThread.start();
         }else{
             mCyclicBarrier = new CyclicBarrier(1);
@@ -162,7 +166,19 @@ public class GLMovieRecorder {
             mGLSurfaceMovieRenderer.release();
             releaseEncoder();
             mGLSurfaceMovieRenderer.setRenderToRecorder(false);
+            if(audioRecordThread!=null){
+                try {
+                    audioRecordThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            mAudioRecordException = audioRecordThread==null?null:audioRecordThread.getException();
         }
+    }
+
+    public Exception getAudioRecordException() {
+        return mAudioRecordException;
     }
 
     private static final boolean VERBOSE = true;           // lots of logging

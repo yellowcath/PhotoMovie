@@ -198,7 +198,7 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
         dialog.setCancelable(false);
         dialog.show();
         final long startRecodTime = System.currentTimeMillis();
-        GLMovieRecorder recorder = new GLMovieRecorder();
+        final GLMovieRecorder recorder = new GLMovieRecorder(mDemoView.getActivity());
         final File file = initVideoFile();
         GLTextureView glTextureView = mDemoView.getGLView();
         int bitrate = glTextureView.getWidth() * glTextureView.getHeight() > 1000 * 1500 ? 8000000 : 4000000;
@@ -212,8 +212,6 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
         if(mMusicUri!=null) {
             audioPath = UriUtil.getPath(mDemoView.getActivity(), mMusicUri);
         }
-        audioPath = "/storage/emulated/0/UCDownloads/tiya.aac";
-        Toast.makeText(mDemoView.getActivity().getApplicationContext(), "Mix audio needs api18!", Toast.LENGTH_LONG).show();
         if (!TextUtils.isEmpty(audioPath)) {
             if (Build.VERSION.SDK_INT < 18) {
                 Toast.makeText(mDemoView.getActivity().getApplicationContext(), "Mix audio needs api18!", Toast.LENGTH_LONG).show();
@@ -239,6 +237,9 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
                     mDemoView.getActivity().startActivity(intent);
                 } else {
                     Toast.makeText(mDemoView.getActivity().getApplicationContext(), "com.hw.photomovie.record error!", Toast.LENGTH_LONG).show();
+                }
+                if(recorder.getAudioRecordException()!=null){
+                    Toast.makeText(mDemoView.getActivity().getApplicationContext(), "record audio failed:"+recorder.getAudioRecordException().toString(), Toast.LENGTH_LONG).show();
                 }
             }
 
