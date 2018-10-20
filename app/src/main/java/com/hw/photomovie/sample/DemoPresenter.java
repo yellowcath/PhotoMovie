@@ -24,7 +24,6 @@ import com.hw.photomovie.sample.widget.MovieTransferView;
 import com.hw.photomovie.sample.widget.TransferItem;
 import com.hw.photomovie.timer.IMovieTimer;
 import com.hw.photomovie.util.MLog;
-import com.hw.videoprocessor.VideoProcessor;
 import com.hw.photomovie.record.GLMovieRecorder;
 
 import java.io.File;

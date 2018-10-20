@@ -55,7 +55,6 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation 'de.hdodenhof:circleimageview:2.1.0'
-    implementation 'com.github.yellowcath:VideoProcessor:2.3.1'
     implementation 'me.iwf.photopicker:PhotoPicker:0.9.12@aar'
     compile 'com.github.bumptech.glide:glide:4.1.1'
     implementation 'com.android.support:design:27.1.1'

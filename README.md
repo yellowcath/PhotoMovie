@@ -25,9 +25,15 @@ add Maven
 add implementation
 ``` groovy
 dependencies {
-    implementation 'com.github.yellowcath:PhotoMovie:1.5.5'
+    implementation 'com.github.yellowcath:PhotoMovie:1.6.0'
 }
 ```
+
+### Changelog
+
+#### 1.6.0
+* Synchronous remix while recording video
+Before:   
 
 ### Usage
 For reference [DemoPresenter](https://github.com/yellowcath/PhotoMovie/blob/master/app/src/main/java/com/hw/photomovie/sample/DemoPresenter.java)
