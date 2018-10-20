@@ -28,12 +28,12 @@ dependencies {
     implementation 'com.github.yellowcath:PhotoMovie:1.6.0'
 }
 ```
-
 ### Changelog
-
 #### 1.6.0
-* Synchronous remix while recording video
-Before:   
+* Synchronous remix while recording video  
+>Record PhotoMovie with Music  
+Before:------------Record Video------------>------Mix Music------>End  
+Now:   --------Record Video And Music------>End  
 
 ### Usage
 For reference [DemoPresenter](https://github.com/yellowcath/PhotoMovie/blob/master/app/src/main/java/com/hw/photomovie/sample/DemoPresenter.java)
@@ -314,13 +314,14 @@ See [DemoPresenter](https://github.com/yellowcath/PhotoMovie/blob/master/app/src
 ```
 ### Background Music
 
+#### Play
 ``` java
  mPhotoMoviePlayer.setMusic(context, mMusicUri);
 ```
-PhotoMovie only provides the function of playing background music now, and it needs to be mixed after recording.
-The demo uses [VideoProcessor](https://github.com/yellowcath/VideoProcessor) for audio mix.
+
+#### Record
 ``` java
- VideoProcessor.mixAudioTrack(context, videPath, audioPath,outputPath, null, null, 0,100, 1f, 1f);
+ glMovieRecorder.setMusic(audioPath);
 ```
 
 
