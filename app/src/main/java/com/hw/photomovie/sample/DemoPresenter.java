@@ -2,10 +2,15 @@ package com.hw.photomovie.sample;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
 import com.hw.photomovie.PhotoMovie;
@@ -82,7 +87,9 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
     private void initMoviePlayer() {
         final GLTextureView glTextureView = mDemoView.getGLView();
 
+
         mMovieRenderer = new GLTextureMovieRender(glTextureView);
+        addWaterMark();
         mPhotoMoviePlayer = new PhotoMoviePlayer(mDemoView.getActivity().getApplicationContext());
         mPhotoMoviePlayer.setMovieRenderer(mMovieRenderer);
         mPhotoMoviePlayer.setMovieListener(this);
@@ -108,6 +115,14 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
                 MLog.i("onPrepare", "onPrepare error");
             }
         });
+    }
+
+    private void addWaterMark(){
+        Bitmap waterMark = BitmapFactory.decodeResource(mDemoView.getActivity().getResources(),R.drawable.watermark);
+        DisplayMetrics displayMetrics = mDemoView.getActivity().getResources().getDisplayMetrics();
+//        mMovieRenderer.setWaterMark(waterMark,new Rect(displayMetrics.widthPixels-waterMark.getWidth(),0,displayMetrics.widthPixels,waterMark.getHeight()));
+
+        mMovieRenderer.setWaterMark("我是水印",40, Color.argb(100,255,0,0),100,100);
     }
 
     private void startPlay(PhotoSource photoSource) {
@@ -204,8 +219,7 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
         recorder.configOutput(glTextureView.getWidth(), glTextureView.getHeight(), bitrate, 30, 1, file.getAbsolutePath());
         //生成一个全新的MovieRender，不然与现有的GL环境不一致，相互干扰容易出问题
         PhotoMovie newPhotoMovie = PhotoMovieFactory.generatePhotoMovie(mPhotoMovie.getPhotoSource(), mMovieType);
-        GLSurfaceMovieRenderer newMovieRenderer = new GLSurfaceMovieRenderer();
-        newMovieRenderer.setMovieFilter(mMovieRenderer.getMovieFilter());
+        GLSurfaceMovieRenderer newMovieRenderer = new GLSurfaceMovieRenderer(mMovieRenderer);
         newMovieRenderer.setPhotoMovie(newPhotoMovie);
         String audioPath = null;
         if(mMusicUri!=null) {

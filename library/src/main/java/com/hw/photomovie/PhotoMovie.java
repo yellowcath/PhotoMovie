@@ -1,5 +1,7 @@
 package com.hw.photomovie;
 
+import android.graphics.Bitmap;
+import android.graphics.Rect;
 import com.hw.photomovie.model.PhotoData;
 import com.hw.photomovie.model.PhotoSource;
 import com.hw.photomovie.render.MovieRenderer;
@@ -79,6 +81,16 @@ public class PhotoMovie<T> {
 
     protected MovieRenderer getMovieRender() {
         return mMovieRenderer;
+    }
+
+    public void setWaterMark(Bitmap bitmap, Rect dstRect) {
+        if (mMovieRenderer == null) {
+            throw new IllegalStateException("please call setMovieRenderer() at first!");
+        }
+        if (bitmap == null || dstRect == null) {
+            return;
+        }
+        mMovieRenderer.setWaterMark(bitmap, dstRect);
     }
 
     public static class SegmentPicker<T> {
@@ -178,7 +190,7 @@ public class PhotoMovie<T> {
         }
 
         public MovieSegment<T> getLastSegment() {
-            return mMovieSegments.get(mMovieSegments.size()-1);
+            return mMovieSegments.get(mMovieSegments.size() - 1);
         }
 
         public float getSegmentProgress(MovieSegment<T> movieSegment, int elapsedTime) {

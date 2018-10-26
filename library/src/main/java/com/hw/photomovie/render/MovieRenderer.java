@@ -1,8 +1,12 @@
 package com.hw.photomovie.render;
 
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import com.hw.photomovie.PhotoMovie;
+import com.hw.photomovie.opengl.GLESCanvas;
 import com.hw.photomovie.segment.MovieSegment;
+import com.hw.photomovie.segment.SingleBitmapSegment;
+import com.hw.photomovie.segment.WaterMarkSegment;
 
 /**
  * Created by huangwei on 2015/5/26.
@@ -15,8 +19,16 @@ public abstract class MovieRenderer<T> {
     protected boolean mEnableDraw = true;
     protected OnReleaseListener mOnReleaseListener;
     protected MovieSegment<T> mCurrentSegment;
+    /**
+     * 用于展示水印
+     */
+    protected MovieSegment<T> mCoverSegment;
 
     public MovieRenderer() {
+    }
+
+    public MovieRenderer(MovieRenderer<T> movieRenderer) {
+        mCoverSegment = movieRenderer.mCoverSegment;
     }
 
     public abstract void drawFrame(int elapsedTime);
@@ -43,6 +55,9 @@ public abstract class MovieRenderer<T> {
             movieSegment.drawFrame(mPainter, segmentProgress);
             mCurrentSegment = movieSegment;
         }
+        if(mCoverSegment!=null && mPainter instanceof GLESCanvas){
+            mCoverSegment.drawFrame(mPainter,0);
+        }
     }
 
     public void releaseLastSegment() {
@@ -53,6 +68,9 @@ public abstract class MovieRenderer<T> {
         MovieSegment<T> lastSegment = segmentPicker.getLastSegment();
         lastSegment.onSegmentEnd();
         lastSegment.release();
+        if(mCoverSegment!=null){
+            mCoverSegment.release();
+        }
     }
 
     public void setMovieViewport(int l, int t, int r, int b) {
@@ -60,6 +78,9 @@ public abstract class MovieRenderer<T> {
             for (MovieSegment<T> segment : mPhotoMovie.getMovieSegments()) {
                 segment.setViewport(l, t, r, b);
             }
+        }
+        if(mCoverSegment!=null){
+            mCoverSegment.setViewport(l, t, r, b);
         }
         mViewportRect.set(l, t, r, b);
     }
@@ -85,6 +106,12 @@ public abstract class MovieRenderer<T> {
         mOnReleaseListener = listener;
     }
 
+    public void setCoverSegment(MovieSegment<T> coverSegment){
+        mCoverSegment = coverSegment;
+    }
+
+    public abstract void setWaterMark(Bitmap bitmap, Rect dstRect);
+    public abstract void setWaterMark(String text,int textSize,int textColor,int x,int y);
     public interface OnReleaseListener {
         void onRelease();
     }

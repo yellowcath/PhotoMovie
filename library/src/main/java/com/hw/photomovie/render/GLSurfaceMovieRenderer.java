@@ -29,6 +29,13 @@ public class GLSurfaceMovieRenderer extends GLMovieRenderer implements GLSurface
         super();
     }
 
+    /**
+     * 无GLSurfaceView的构造函数用于{@link com.hw.photomovie.record.GLMovieRecorder},会在外部设置GLES输出的Surface
+     */
+    public GLSurfaceMovieRenderer(GLSurfaceMovieRenderer movieRenderer) {
+        super(movieRenderer);
+    }
+
     protected AtomicBoolean mNeedRelease = new AtomicBoolean(false);
 
     public GLSurfaceMovieRenderer(GLSurfaceView glSurfaceView) {
@@ -108,4 +115,5 @@ public class GLSurfaceMovieRenderer extends GLMovieRenderer implements GLSurface
     public void setRenderToRecorder(boolean renderToRecorder){
         mRenderToRecorder = renderToRecorder;
     }
+
 }

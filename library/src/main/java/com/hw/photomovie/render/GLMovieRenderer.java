@@ -1,11 +1,16 @@
 package com.hw.photomovie.render;
 
+import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.opengl.GLES20;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import com.hw.photomovie.moviefilter.IMovieFilter;
 import com.hw.photomovie.opengl.FboTexture;
 import com.hw.photomovie.opengl.GLESCanvas;
+import com.hw.photomovie.segment.WaterMarkSegment;
+import com.hw.photomovie.util.BitmapUtil;
 
 /**
  * Created by huangwei on 2015/5/26.
@@ -19,6 +24,16 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
     private Object mSetFilterLock = new Object();
     protected volatile boolean mPrepared;
     private volatile OnGLPrepareListener mOnGLPrepareListener;
+
+    public GLMovieRenderer() {
+    }
+
+    public GLMovieRenderer(MovieRenderer<GLESCanvas> movieRenderer) {
+        super(movieRenderer);
+        if(movieRenderer instanceof GLMovieRenderer) {
+            mMovieFilter = ((GLMovieRenderer) movieRenderer).mMovieFilter;
+        }
+    }
 
     public void setMovieFilter(IMovieFilter movieFilter) {
         synchronized (mSetFilterLock) {
@@ -134,6 +149,33 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
 
     public IMovieFilter getMovieFilter() {
         return mMovieFilter;
+    }
+
+    public void setWaterMark(Bitmap bitmap, Rect dstRect){
+        if (bitmap == null || dstRect == null) {
+            return;
+        }
+        if(mCoverSegment==null || !(mCoverSegment instanceof WaterMarkSegment)){
+            mCoverSegment = new WaterMarkSegment();
+        }
+        ((WaterMarkSegment)mCoverSegment).setWaterMark(bitmap, dstRect);
+        if(mViewportRect!=null&& mViewportRect.width()>0) {
+            mCoverSegment.setViewport(mViewportRect.left, mViewportRect.top, mViewportRect.right, mViewportRect.bottom);
+        }
+    }
+
+    public void setWaterMark(String text,int textSize,int textColor,int x,int y){
+        if (TextUtils.isEmpty(text)) {
+            return;
+        }
+        if(mCoverSegment==null || !(mCoverSegment instanceof WaterMarkSegment)){
+            mCoverSegment = new WaterMarkSegment();
+        }
+        Bitmap bitmap = BitmapUtil.generateBitmap(text,textSize,textColor);
+        ((WaterMarkSegment)mCoverSegment).setWaterMark(bitmap,new Rect(x,y,x+bitmap.getWidth(),y+bitmap.getHeight()));
+        if(mViewportRect!=null&& mViewportRect.width()>0) {
+            mCoverSegment.setViewport(mViewportRect.left, mViewportRect.top, mViewportRect.right, mViewportRect.bottom);
+        }
     }
 
     public static interface OnGLPrepareListener {

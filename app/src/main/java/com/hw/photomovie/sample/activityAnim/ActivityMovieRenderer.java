@@ -1,6 +1,8 @@
 package com.hw.photomovie.sample.activityAnim;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import com.hw.photomovie.render.MovieRenderer;
 
@@ -22,6 +24,16 @@ public class ActivityMovieRenderer extends MovieRenderer<Activity> {
 
     @Override
     public void release() {
+
+    }
+
+    @Override
+    public void setWaterMark(Bitmap bitmap, Rect dstRect) {
+
+    }
+
+    @Override
+    public void setWaterMark(String text, int textSize, int textColor, int x, int y) {
 
     }
 }
