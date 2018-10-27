@@ -2,6 +2,7 @@ package com.hw.photomovie.render;
 
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import com.hw.photomovie.PhotoMovie;
 import com.hw.photomovie.opengl.GLESCanvas;
 import com.hw.photomovie.segment.MovieSegment;
@@ -25,10 +26,6 @@ public abstract class MovieRenderer<T> {
     protected MovieSegment<T> mCoverSegment;
 
     public MovieRenderer() {
-    }
-
-    public MovieRenderer(MovieRenderer<T> movieRenderer) {
-        mCoverSegment = movieRenderer.mCoverSegment;
     }
 
     public abstract void drawFrame(int elapsedTime);
@@ -110,8 +107,6 @@ public abstract class MovieRenderer<T> {
         mCoverSegment = coverSegment;
     }
 
-    public abstract void setWaterMark(Bitmap bitmap, Rect dstRect,float alpha);
-    public abstract void setWaterMark(String text,int textSize,int textColor,int x,int y);
     public interface OnReleaseListener {
         void onRelease();
     }

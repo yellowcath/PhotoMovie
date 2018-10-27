@@ -163,7 +163,7 @@ public class GLMovieRecorder {
             }
             drainEncoder(true);
         } finally {
-            mGLSurfaceMovieRenderer.release();
+            mGLSurfaceMovieRenderer.releaseInGLThread();
             releaseEncoder();
             mGLSurfaceMovieRenderer.setRenderToRecorder(false);
             if(audioRecordThread!=null){

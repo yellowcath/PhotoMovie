@@ -3,6 +3,7 @@ package com.hw.photomovie.segment;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 import com.hw.photomovie.opengl.BitmapTexture;
 import com.hw.photomovie.opengl.GLESCanvas;
 import com.hw.photomovie.util.ScaleType;
@@ -10,19 +11,24 @@ import com.hw.photomovie.util.ScaleType;
 /**
  * Created by huangwei on 2018/10/26.
  */
-public class WaterMarkSegment extends SingleBitmapSegment {
+public class WaterMarkSegment extends SingleBitmapSegment implements Cloneable{
 
     private Bitmap mBitmap;
     private RectF mDstRect;
     private float mAlpha;
 
-    public void setWaterMark(Bitmap bitmap, Rect dstRect,float alpha) {
+    public void setWaterMark(Bitmap bitmap, RectF dstRect,float alpha) {
         mBitmap = bitmap;
         mDstRect = new RectF(dstRect);
         mAlpha = alpha;
         synchronized (this) {
             mBitmapInfo = null;
         }
+    }
+
+    @Override
+    public void onPrepare() {
+        onDataPrepared();
     }
 
     @Override
@@ -48,5 +54,12 @@ public class WaterMarkSegment extends SingleBitmapSegment {
             canvas.drawTexture(mBitmapInfo.bitmapTexture, mBitmapInfo.srcShowRect, mDstRect);
             canvas.restore();
         }
+    }
+
+    @Override
+    public WaterMarkSegment clone(){
+        WaterMarkSegment waterMarkSegment = new WaterMarkSegment();
+        waterMarkSegment.setWaterMark(mBitmap,mDstRect,mAlpha);
+        return waterMarkSegment;
     }
 }

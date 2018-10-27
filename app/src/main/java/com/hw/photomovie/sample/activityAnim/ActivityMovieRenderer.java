@@ -26,14 +26,4 @@ public class ActivityMovieRenderer extends MovieRenderer<Activity> {
     public void release() {
 
     }
-
-    @Override
-    public void setWaterMark(Bitmap bitmap, Rect dstRect,float alpha) {
-
-    }
-
-    @Override
-    public void setWaterMark(String text, int textSize, int textColor, int x, int y) {
-
-    }
 }
