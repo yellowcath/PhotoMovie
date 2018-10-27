@@ -151,14 +151,14 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
         return mMovieFilter;
     }
 
-    public void setWaterMark(Bitmap bitmap, Rect dstRect){
+    public void setWaterMark(Bitmap bitmap, Rect dstRect,float alpha){
         if (bitmap == null || dstRect == null) {
             return;
         }
         if(mCoverSegment==null || !(mCoverSegment instanceof WaterMarkSegment)){
             mCoverSegment = new WaterMarkSegment();
         }
-        ((WaterMarkSegment)mCoverSegment).setWaterMark(bitmap, dstRect);
+        ((WaterMarkSegment)mCoverSegment).setWaterMark(bitmap, dstRect,alpha);
         if(mViewportRect!=null&& mViewportRect.width()>0) {
             mCoverSegment.setViewport(mViewportRect.left, mViewportRect.top, mViewportRect.right, mViewportRect.bottom);
         }
@@ -172,7 +172,7 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
             mCoverSegment = new WaterMarkSegment();
         }
         Bitmap bitmap = BitmapUtil.generateBitmap(text,textSize,textColor);
-        ((WaterMarkSegment)mCoverSegment).setWaterMark(bitmap,new Rect(x,y,x+bitmap.getWidth(),y+bitmap.getHeight()));
+        ((WaterMarkSegment)mCoverSegment).setWaterMark(bitmap,new Rect(x,y,x+bitmap.getWidth(),y+bitmap.getHeight()),1f);
         if(mViewportRect!=null&& mViewportRect.width()>0) {
             mCoverSegment.setViewport(mViewportRect.left, mViewportRect.top, mViewportRect.right, mViewportRect.bottom);
         }

@@ -120,9 +120,9 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
     private void addWaterMark(){
         Bitmap waterMark = BitmapFactory.decodeResource(mDemoView.getActivity().getResources(),R.drawable.watermark);
         DisplayMetrics displayMetrics = mDemoView.getActivity().getResources().getDisplayMetrics();
-//        mMovieRenderer.setWaterMark(waterMark,new Rect(displayMetrics.widthPixels-waterMark.getWidth(),0,displayMetrics.widthPixels,waterMark.getHeight()));
-
-        mMovieRenderer.setWaterMark("我是水印",40, Color.argb(100,255,0,0),100,100);
+        mMovieRenderer.setWaterMark(waterMark,new Rect(displayMetrics.widthPixels-waterMark.getWidth(),0,displayMetrics.widthPixels,waterMark.getHeight()),0.5f);
+//
+//        mMovieRenderer.setWaterMark("我是水印",40, Color.argb(100,255,0,0),100,100);
     }
 
     private void startPlay(PhotoSource photoSource) {

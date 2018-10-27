@@ -83,16 +83,6 @@ public class PhotoMovie<T> {
         return mMovieRenderer;
     }
 
-    public void setWaterMark(Bitmap bitmap, Rect dstRect) {
-        if (mMovieRenderer == null) {
-            throw new IllegalStateException("please call setMovieRenderer() at first!");
-        }
-        if (bitmap == null || dstRect == null) {
-            return;
-        }
-        mMovieRenderer.setWaterMark(bitmap, dstRect);
-    }
-
     public static class SegmentPicker<T> {
 
         private MovieSegment<T> mNextSegment;

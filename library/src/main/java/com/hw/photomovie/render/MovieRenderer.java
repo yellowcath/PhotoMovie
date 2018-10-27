@@ -110,7 +110,7 @@ public abstract class MovieRenderer<T> {
         mCoverSegment = coverSegment;
     }
 
-    public abstract void setWaterMark(Bitmap bitmap, Rect dstRect);
+    public abstract void setWaterMark(Bitmap bitmap, Rect dstRect,float alpha);
     public abstract void setWaterMark(String text,int textSize,int textColor,int x,int y);
     public interface OnReleaseListener {
         void onRelease();

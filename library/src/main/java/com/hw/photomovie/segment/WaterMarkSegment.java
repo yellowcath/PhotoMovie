@@ -14,10 +14,12 @@ public class WaterMarkSegment extends SingleBitmapSegment {
 
     private Bitmap mBitmap;
     private RectF mDstRect;
+    private float mAlpha;
 
-    public void setWaterMark(Bitmap bitmap, Rect dstRect) {
+    public void setWaterMark(Bitmap bitmap, Rect dstRect,float alpha) {
         mBitmap = bitmap;
         mDstRect = new RectF(dstRect);
+        mAlpha = alpha;
         synchronized (this) {
             mBitmapInfo = null;
         }
@@ -41,7 +43,10 @@ public class WaterMarkSegment extends SingleBitmapSegment {
             return;
         }
         if (mBitmapInfo != null && mBitmapInfo.makeTextureAvailable(canvas)) {
+            canvas.save();
+            canvas.setAlpha(mAlpha);
             canvas.drawTexture(mBitmapInfo.bitmapTexture, mBitmapInfo.srcShowRect, mDstRect);
+            canvas.restore();
         }
     }
 }

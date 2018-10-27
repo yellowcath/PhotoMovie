@@ -1,5 +1,7 @@
 package com.hw.photomovie.render;
 
+import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import com.hw.photomovie.opengl.GLES20Canvas;
@@ -102,10 +104,16 @@ public class GLSurfaceMovieRenderer extends GLMovieRenderer implements GLSurface
 
     @Override
     public void release() {
-        mNeedRelease.set(true);
-        if(mSurfaceCreated){
-            mGLSurfaceView.requestRender();
+        if(mGLSurfaceView!=null) {
+            mNeedRelease.set(true);
+            if (mSurfaceCreated) {
+                mGLSurfaceView.requestRender();
+            }
         }
+    }
+
+    public void releaseInGLThread(){
+        releaseGLResources();
     }
 
     public boolean isSurfaceCreated() {
