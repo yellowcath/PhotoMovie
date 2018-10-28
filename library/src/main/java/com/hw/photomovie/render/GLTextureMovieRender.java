@@ -20,8 +20,12 @@ public class GLTextureMovieRender extends GLSurfaceMovieRenderer {
         mGLTextureView.setRenderer(new GLTextureView.Renderer() {
             @Override
             public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+                //资源起其实已经销毁了，这里只是告知其保存的纹理已经不可用，需要重建
                 if (mMovieFilter != null) {
                     mMovieFilter.release();
+                }
+                if(mCoverSegment!=null){
+                    mCoverSegment.release();
                 }
                 releaseTextures();
                 mNeedRelease.set(false);

@@ -55,6 +55,9 @@ public class GLSurfaceMovieRenderer extends GLMovieRenderer implements GLSurface
         if (mMovieFilter != null) {
             mMovieFilter.release();
         }
+        if(mCoverSegment!=null){
+            mCoverSegment.release();
+        }
         releaseTextures();
         prepare();
     }
