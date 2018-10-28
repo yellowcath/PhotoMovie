@@ -52,6 +52,7 @@ public class GLSurfaceMovieRenderer extends GLMovieRenderer implements GLSurface
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         mSurfaceCreated = true;
         mNeedRelease.set(false);
+        //资源起其实已经销毁了，这里只是告知其保存的纹理已经不可用，需要重建
         if (mMovieFilter != null) {
             mMovieFilter.release();
         }
