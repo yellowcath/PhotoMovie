@@ -25,7 +25,7 @@ add Maven
 add implementation
 ``` groovy
 dependencies {
-    implementation 'com.github.yellowcath:PhotoMovie:1.6.0'
+    implementation 'com.github.yellowcath:PhotoMovie:1.6.1'
 }
 ```
 ### Changelog
@@ -34,6 +34,13 @@ dependencies {
 >Recording PhotoMovie with Music  
 Before:------------Record Video------------>------Mix Music------>End  
 Now:   --------Record Video And Music------>End  
+
+#### 1.6.1
+* Support to add watermark
+``` java
+GLMovieRenderer.setWaterMark(bitmap,dstRect,alpha);
+GLMovieRenderer.setWaterMark(text,textSize,textColor,x,y);
+```
 
 ### Usage
 For reference [DemoPresenter](https://github.com/yellowcath/PhotoMovie/blob/master/app/src/main/java/com/hw/photomovie/sample/DemoPresenter.java)
