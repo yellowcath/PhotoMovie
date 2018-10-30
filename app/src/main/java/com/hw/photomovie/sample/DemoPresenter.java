@@ -2,17 +2,10 @@ package com.hw.photomovie.sample;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.widget.Toast;
 import com.hw.photomovie.PhotoMovie;
 import com.hw.photomovie.PhotoMovieFactory;
@@ -20,6 +13,7 @@ import com.hw.photomovie.PhotoMoviePlayer;
 import com.hw.photomovie.model.PhotoData;
 import com.hw.photomovie.model.PhotoSource;
 import com.hw.photomovie.model.SimplePhotoData;
+import com.hw.photomovie.record.GLMovieRecorder;
 import com.hw.photomovie.render.GLSurfaceMovieRenderer;
 import com.hw.photomovie.render.GLTextureMovieRender;
 import com.hw.photomovie.render.GLTextureView;
@@ -30,10 +24,8 @@ import com.hw.photomovie.sample.widget.MovieTransferView;
 import com.hw.photomovie.sample.widget.TransferItem;
 import com.hw.photomovie.timer.IMovieTimer;
 import com.hw.photomovie.util.MLog;
-import com.hw.photomovie.record.GLMovieRecorder;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -119,11 +111,11 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
     }
 
     private void addWaterMark(){
-        Bitmap waterMark = BitmapFactory.decodeResource(mDemoView.getActivity().getResources(),R.drawable.watermark);
-        DisplayMetrics displayMetrics = mDemoView.getActivity().getResources().getDisplayMetrics();
-        mMovieRenderer.setWaterMark(waterMark,new RectF(displayMetrics.widthPixels-waterMark.getWidth(),0,displayMetrics.widthPixels,waterMark.getHeight()),0.5f);
+//        Bitmap waterMark = BitmapFactory.decodeResource(mDemoView.getActivity().getResources(),R.drawable.watermark);
+//        DisplayMetrics displayMetrics = mDemoView.getActivity().getResources().getDisplayMetrics();
+//        mMovieRenderer.setWaterMark(waterMark,new RectF(displayMetrics.widthPixels-waterMark.getWidth(),0,displayMetrics.widthPixels,waterMark.getHeight()),0.5f);
 //
-//        mMovieRenderer.setWaterMark("我是水印",40, Color.argb(100,255,0,0),100,100);
+//        mMovieRenderer.setWaterMark("Watermark",40, Color.argb(100,255,0,0),100,100);
     }
 
     private void startPlay(PhotoSource photoSource) {
