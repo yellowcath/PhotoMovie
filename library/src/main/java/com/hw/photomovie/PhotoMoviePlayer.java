@@ -63,6 +63,9 @@ public class PhotoMoviePlayer implements MovieTimer.MovieListener {
     }
 
     public void setDataSource(PhotoMovie photoMovie) {
+        if(mPhotoMovie!=null && mMovieRenderer!=null){
+            mMovieRenderer.release(mPhotoMovie.getMovieSegments());
+        }
         setStateValue(STATE_IDLE);
         mPhotoMovie = photoMovie;
         mMovieTimer = new MovieTimer(mPhotoMovie);

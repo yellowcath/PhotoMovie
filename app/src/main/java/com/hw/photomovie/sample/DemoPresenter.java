@@ -163,38 +163,32 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
     public void onTransferSelect(TransferItem item) {
         mMovieType = item.type;
         mPhotoMoviePlayer.stop();
-        mMovieRenderer.setOnReleaseListener(new MovieRenderer.OnReleaseListener() {
+        mPhotoMovie = PhotoMovieFactory.generatePhotoMovie(mPhotoMovie.getPhotoSource(), mMovieType);
+        mPhotoMoviePlayer.setDataSource(mPhotoMovie);
+        if (mMusicUri != null) {
+            mPhotoMoviePlayer.setMusic(mDemoView.getActivity(), mMusicUri);
+        }
+        mPhotoMoviePlayer.setOnPreparedListener(new PhotoMoviePlayer.OnPreparedListener() {
             @Override
-            public void onRelease() {
-                mPhotoMovie = PhotoMovieFactory.generatePhotoMovie(mPhotoMovie.getPhotoSource(), mMovieType);
-                mPhotoMoviePlayer.setDataSource(mPhotoMovie);
-                if (mMusicUri != null) {
-                    mPhotoMoviePlayer.setMusic(mDemoView.getActivity(), mMusicUri);
-                }
-                mPhotoMoviePlayer.setOnPreparedListener(new PhotoMoviePlayer.OnPreparedListener() {
-                    @Override
-                    public void onPreparing(PhotoMoviePlayer moviePlayer, float progress) {
-                    }
+            public void onPreparing(PhotoMoviePlayer moviePlayer, float progress) {
+            }
 
+            @Override
+            public void onPrepared(PhotoMoviePlayer moviePlayer, int prepared, int total) {
+                mDemoView.getActivity().runOnUiThread(new Runnable() {
                     @Override
-                    public void onPrepared(PhotoMoviePlayer moviePlayer, int prepared, int total) {
-                        mDemoView.getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mPhotoMoviePlayer.start();
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(PhotoMoviePlayer moviePlayer) {
-                        MLog.i("onPrepare", "onPrepare error");
+                    public void run() {
+                        mPhotoMoviePlayer.start();
                     }
                 });
-                mPhotoMoviePlayer.prepare();
+            }
+
+            @Override
+            public void onError(PhotoMoviePlayer moviePlayer) {
+                MLog.i("onPrepare", "onPrepare error");
             }
         });
-        mMovieRenderer.release();
+        mPhotoMoviePlayer.prepare();
     }
 
     public void setMusic(Uri uri) {

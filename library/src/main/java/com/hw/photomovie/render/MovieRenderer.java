@@ -9,6 +9,8 @@ import com.hw.photomovie.segment.MovieSegment;
 import com.hw.photomovie.segment.SingleBitmapSegment;
 import com.hw.photomovie.segment.WaterMarkSegment;
 
+import java.util.List;
+
 /**
  * Created by huangwei on 2015/5/26.
  */
@@ -91,6 +93,7 @@ public abstract class MovieRenderer<T> {
     }
 
     public abstract void release();
+    public abstract void release(List<MovieSegment<T>> segments);
 
     public void setOnReleaseListener(OnReleaseListener listener) {
         mOnReleaseListener = listener;

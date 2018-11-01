@@ -25,7 +25,7 @@ add Maven
 add implementation
 ``` groovy
 dependencies {
-    implementation 'com.github.yellowcath:PhotoMovie:1.6.1'
+    implementation 'com.github.yellowcath:PhotoMovie:1.6.2'
 }
 ```
 ### Changelog

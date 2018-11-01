@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import com.hw.photomovie.moviefilter.IMovieFilter;
 import com.hw.photomovie.opengl.FboTexture;
 import com.hw.photomovie.opengl.GLESCanvas;
+import com.hw.photomovie.segment.GLMovieSegment;
 import com.hw.photomovie.segment.MovieSegment;
 import com.hw.photomovie.segment.WaterMarkSegment;
 import com.hw.photomovie.util.BitmapUtil;
@@ -28,6 +29,7 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
     protected volatile boolean mPrepared;
     private volatile OnGLPrepareListener mOnGLPrepareListener;
     protected float[] mClearColor = new float[]{0f,0f,0f,1f};
+    protected volatile List<MovieSegment<GLESCanvas>> mReleaseMovieSegments;
 
     public GLMovieRenderer() {
     }
@@ -54,6 +56,12 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
     }
 
     private void initTexture(int w, int h) {
+        if(mFboTexture!=null){
+            mFboTexture.release();
+        }
+        if(mFilterTexture!=null){
+            mFilterTexture.release();
+        }
         mFboTexture = new FboTexture();
         mFboTexture.setSize(w, h);
         mFilterTexture = new FboTexture();
@@ -86,6 +94,10 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
                 });
             }
         }
+        if(mReleaseMovieSegments!=null){
+            releaseSegments(mReleaseMovieSegments);
+            mReleaseMovieSegments = null;
+        }
         if (mMovieFilter == null) {
             super.drawMovieFrame(elapsedTime);
             return;
@@ -115,7 +127,8 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
      * 由子类调用
      */
     protected void releaseGLResources() {
-        releaseSegments();
+        List<MovieSegment<GLESCanvas>> movieSegments = (mPhotoMovie==null || mPhotoMovie.getMovieSegments()==null)?null:mPhotoMovie.getMovieSegments();
+        releaseSegments(movieSegments);
         releaseCoverSegment();
         releaseTextures();
         if (mMovieFilter != null) {
@@ -127,14 +140,18 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
         }
     }
 
-    protected void releaseSegments() {
-        if(mPhotoMovie==null || mPhotoMovie.getMovieSegments()==null){
-            return;
-        }
-        List<MovieSegment<GLESCanvas>> movieSegments = mPhotoMovie.getMovieSegments();
+    @Override
+    public void release(List<MovieSegment<GLESCanvas>> movieSegments) {
+        mReleaseMovieSegments = movieSegments;
+    }
+
+    protected void releaseSegments(List<MovieSegment<GLESCanvas>> movieSegments) {
         for(MovieSegment<GLESCanvas> segment:movieSegments){
             segment.enableRelease(true);
             segment.release();
+        }
+        if(mPainter!=null) {
+            mPainter.deleteRecycledResources();
         }
     }
 
