@@ -1,7 +1,6 @@
 package com.hw.photomovie.render;
 
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.opengl.GLES20;
 import android.os.Handler;
@@ -10,8 +9,11 @@ import android.text.TextUtils;
 import com.hw.photomovie.moviefilter.IMovieFilter;
 import com.hw.photomovie.opengl.FboTexture;
 import com.hw.photomovie.opengl.GLESCanvas;
+import com.hw.photomovie.segment.MovieSegment;
 import com.hw.photomovie.segment.WaterMarkSegment;
 import com.hw.photomovie.util.BitmapUtil;
+
+import java.util.List;
 
 /**
  * Created by huangwei on 2015/5/26.
@@ -113,8 +115,8 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
      * 由子类调用
      */
     protected void releaseGLResources() {
-        releaseCurrentSegment();
-        releaseLastSegment();
+        releaseSegments();
+        releaseCoverSegment();
         releaseTextures();
         if (mMovieFilter != null) {
             mMovieFilter.release();
@@ -125,9 +127,14 @@ public abstract class GLMovieRenderer extends MovieRenderer<GLESCanvas> {
         }
     }
 
-    protected void releaseCurrentSegment() {
-        if (mCurrentSegment != null) {
-            mCurrentSegment.release();
+    protected void releaseSegments() {
+        if(mPhotoMovie==null || mPhotoMovie.getMovieSegments()==null){
+            return;
+        }
+        List<MovieSegment<GLESCanvas>> movieSegments = mPhotoMovie.getMovieSegments();
+        for(MovieSegment<GLESCanvas> segment:movieSegments){
+            segment.enableRelease(true);
+            segment.release();
         }
     }
 

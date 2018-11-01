@@ -57,14 +57,7 @@ public abstract class MovieRenderer<T> {
         }
     }
 
-    public void releaseLastSegment() {
-        if (mPhotoMovie == null) {
-            return;
-        }
-        PhotoMovie.SegmentPicker<T> segmentPicker = mPhotoMovie.getSegmentPicker();
-        MovieSegment<T> lastSegment = segmentPicker.getLastSegment();
-        lastSegment.onSegmentEnd();
-        lastSegment.release();
+    public void releaseCoverSegment() {
         if(mCoverSegment!=null){
             mCoverSegment.release();
         }
