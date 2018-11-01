@@ -42,6 +42,9 @@ GLMovieRenderer.setWaterMark(bitmap,dstRect,alpha);
 GLMovieRenderer.setWaterMark(text,textSize,textColor,x,y);
 ```
 
+#### 1.6.2
+* Fixed memory leak when switching transfer animation in demo
+
 ### Usage
 For reference [DemoPresenter](https://github.com/yellowcath/PhotoMovie/blob/master/app/src/main/java/com/hw/photomovie/sample/DemoPresenter.java)
 ``` java
