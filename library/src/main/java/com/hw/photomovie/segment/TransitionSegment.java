@@ -47,8 +47,10 @@ public abstract class TransitionSegment<PRE extends MovieSegment, NEXT extends M
     @Override
     public void onRelease() {
         super.onRelease();
-        mPreSegment.enableRelease(true);
-        mPreSegment.release();
+        if(mPreSegment!=null) {
+            mPreSegment.enableRelease(true);
+            mPreSegment.release();
+        }
     }
 
     @Override

@@ -23,6 +23,7 @@ import com.hw.photomovie.model.SimplePhotoData;
 import com.hw.photomovie.render.GLSurfaceMovieRenderer;
 import com.hw.photomovie.render.GLTextureMovieRender;
 import com.hw.photomovie.render.GLTextureView;
+import com.hw.photomovie.render.MovieRenderer;
 import com.hw.photomovie.sample.widget.FilterItem;
 import com.hw.photomovie.sample.widget.FilterType;
 import com.hw.photomovie.sample.widget.MovieFilterView;
@@ -170,33 +171,38 @@ public class DemoPresenter implements MovieFilterView.FilterCallback, IMovieTime
     public void onTransferSelect(TransferItem item) {
         mMovieType = item.type;
         mPhotoMoviePlayer.stop();
-        mPhotoMovie = PhotoMovieFactory.generatePhotoMovie(mPhotoMovie.getPhotoSource(), mMovieType);
-        mPhotoMoviePlayer.setDataSource(mPhotoMovie);
-        if (mMusicUri != null) {
-            mPhotoMoviePlayer.setMusic(mDemoView.getActivity(), mMusicUri);
-        }
-        mPhotoMoviePlayer.setOnPreparedListener(new PhotoMoviePlayer.OnPreparedListener() {
+        mMovieRenderer.setOnReleaseListener(new MovieRenderer.OnReleaseListener() {
             @Override
-            public void onPreparing(PhotoMoviePlayer moviePlayer, float progress) {
-            }
-
-            @Override
-            public void onPrepared(PhotoMoviePlayer moviePlayer, int prepared, int total) {
-                mDemoView.getActivity().runOnUiThread(new Runnable() {
+            public void onRelease() {
+                mPhotoMovie = PhotoMovieFactory.generatePhotoMovie(mPhotoMovie.getPhotoSource(), mMovieType);
+                mPhotoMoviePlayer.setDataSource(mPhotoMovie);
+                if (mMusicUri != null) {
+                    mPhotoMoviePlayer.setMusic(mDemoView.getActivity(), mMusicUri);
+                }
+                mPhotoMoviePlayer.setOnPreparedListener(new PhotoMoviePlayer.OnPreparedListener() {
                     @Override
-                    public void run() {
-                        mPhotoMoviePlayer.start();
+                    public void onPreparing(PhotoMoviePlayer moviePlayer, float progress) {
+                    }
+
+                    @Override
+                    public void onPrepared(PhotoMoviePlayer moviePlayer, int prepared, int total) {
+                        mDemoView.getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mPhotoMoviePlayer.start();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(PhotoMoviePlayer moviePlayer) {
+                        MLog.i("onPrepare", "onPrepare error");
                     }
                 });
-            }
-
-            @Override
-            public void onError(PhotoMoviePlayer moviePlayer) {
-                MLog.i("onPrepare", "onPrepare error");
+                mPhotoMoviePlayer.prepare();
             }
         });
-        mPhotoMoviePlayer.prepare();
-
+        mMovieRenderer.release();
     }
 
     public void setMusic(Uri uri) {
