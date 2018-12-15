@@ -25,7 +25,7 @@ add Maven
 add implementation
 ``` groovy
 dependencies {
-    implementation 'com.github.yellowcath:PhotoMovie:1.6.2'
+    implementation 'com.github.yellowcath:PhotoMovie:1.6.3'
 }
 ```
 ### Changelog
@@ -45,6 +45,8 @@ GLMovieRenderer.setWaterMark(text,textSize,textColor,x,y);
 #### 1.6.2
 * Fixed memory leak when switching transfer animation in demo
 
+#### 1.6.3
+* Fixed crash of encoder "OMX.MTK.VIDEO.ENCODER.AVC"
 ### Usage
 For reference [DemoPresenter](https://github.com/yellowcath/PhotoMovie/blob/master/app/src/main/java/com/hw/photomovie/sample/DemoPresenter.java)
 ``` java

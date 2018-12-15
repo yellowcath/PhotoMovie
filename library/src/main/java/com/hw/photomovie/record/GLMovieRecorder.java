@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
+import android.media.MediaCodecList;
 import android.media.MediaFormat;
 import android.media.MediaMuxer;
 import android.opengl.EGL14;
@@ -25,6 +26,8 @@ import com.hw.photomovie.util.MLog;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
@@ -162,7 +165,11 @@ public class GLMovieRecorder {
                 }
             }
             drainEncoder(true);
-        } finally {
+        }catch (Exception e){
+            e.printStackTrace();
+            MLog.e(TAG, "Encode Error",e);
+        }
+        finally {
             mGLSurfaceMovieRenderer.releaseInGLThread();
             releaseEncoder();
             mGLSurfaceMovieRenderer.setRenderToRecorder(false);
@@ -216,9 +223,21 @@ public class GLMovieRecorder {
      */
     private void prepareEncoder() throws IOException {
         mBufferInfo = new MediaCodec.BufferInfo();
+        mEncoder = MediaCodec.createEncoderByType(MIME_TYPE);
+        MLog.i(TAG,"encoder name:"+mEncoder.getName());
 
-        MediaFormat format = MediaFormat.createVideoFormat(MIME_TYPE, getEven(mWidth), getEven(mHeight));
-
+        if (mEncoder.getName().equals("OMX.MTK.VIDEO.ENCODER.AVC")) {
+            if(mWidth>mHeight && mWidth>1920){
+                mHeight = (int) (mHeight/(mWidth/1920f));
+                mWidth = 1920;
+                MLog.e(TAG,"The encoder limited max size,set size to "+mWidth+" X "+ mHeight);
+            }else if(mHeight>mWidth && mHeight>1920){
+                mWidth = (int) (mWidth/(mHeight/1920f));
+                mHeight = 1920;
+                MLog.e(TAG,"The encoder limited max size,set size to "+mWidth+" X "+ mHeight);
+            }
+        }
+        MediaFormat format = MediaFormat.createVideoFormat(MIME_TYPE,getEven(mWidth), getEven(mHeight));
         // Set some properties.  Failing to specify some of these can cause the MediaCodec
         // configure() call to throw an unhelpful exception.
         format.setInteger(MediaFormat.KEY_COLOR_FORMAT,
@@ -237,7 +256,6 @@ public class GLMovieRecorder {
         // you will likely want to defer instantiation of CodecInputSurface until after the
         // "display" EGL context is created, then modify the eglCreateContext call to
         // take eglGetCurrentContext() as the share_context argument.
-        mEncoder = MediaCodec.createEncoderByType(MIME_TYPE);
         mEncoder.configure(format, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
         mInputSurface = new CodecInputSurface(mEncoder.createInputSurface());
         mEncoder.start();
