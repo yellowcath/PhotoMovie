@@ -25,7 +25,7 @@ add Maven
 add implementation
 ``` groovy
 dependencies {
-    implementation 'com.github.yellowcath:PhotoMovie:1.6.3'
+    implementation 'com.github.yellowcath:PhotoMovie:1.6.4'
 }
 ```
 ### Changelog
@@ -47,6 +47,10 @@ GLMovieRenderer.setWaterMark(text,textSize,textColor,x,y);
 
 #### 1.6.3
 * Fixed crash of encoder "OMX.MTK.VIDEO.ENCODER.AVC"
+
+#### 1.6.4
+* Fixed: non-AAC format music recording without looping
+
 ### Usage
 For reference [DemoPresenter](https://github.com/yellowcath/PhotoMovie/blob/master/app/src/main/java/com/hw/photomovie/sample/DemoPresenter.java)
 ``` java

@@ -21,7 +21,6 @@ public class MusicPlayer implements IMusicPlayer {
 
     public MusicPlayer() {
         mMediaPlayer = new MediaPlayer();
-        mMediaPlayer.setLooping(true);
     }
 
     public void start() {
@@ -32,6 +31,7 @@ public class MusicPlayer implements IMusicPlayer {
         if (!isPlaying()) {
             safeSetVolume(1f);
             try {
+                mMediaPlayer.setLooping(true);
                 mMediaPlayer.start();
             } catch (IllegalStateException e) {
                 e.printStackTrace();
