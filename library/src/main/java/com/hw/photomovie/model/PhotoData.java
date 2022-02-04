@@ -14,7 +14,7 @@ public abstract class PhotoData {
     public static final int STATE_LOADING = 3;
     public static final int STATE_BITMAP = 4;
 
-    protected String mUri;
+    protected Bitmap mUri;
     protected String mLocalUri;
     protected volatile Bitmap mBitmap;
 
@@ -23,11 +23,11 @@ public abstract class PhotoData {
 
     private PhotoInfo mPhotoInfo;
 
-    public PhotoData(String uri, int state) {
+    public PhotoData(Bitmap uri, int state) {
         this(uri, state, null);
     }
 
-    public PhotoData(String uri, int state, PhotoInfo photoInfo) {
+    public PhotoData(Bitmap uri, int state, PhotoInfo photoInfo) {
         mUri = uri;
         mState = state;
         mPhotoInfo = photoInfo;
@@ -59,7 +59,7 @@ public abstract class PhotoData {
         }
     }
 
-    public String getUri() {
+    public Bitmap getUri() {
         return mUri;
     }
 
