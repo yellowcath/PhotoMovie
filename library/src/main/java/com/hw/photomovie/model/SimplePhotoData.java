@@ -22,7 +22,7 @@ public class SimplePhotoData extends PhotoData {
     private Context mContext;
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
-    public SimplePhotoData(Context context, String uri, int state) {
+    public SimplePhotoData(Context context, Bitmap uri, int state) {
         super(uri, state);
         mContext = context.getApplicationContext();
     }
@@ -46,7 +46,7 @@ public class SimplePhotoData extends PhotoData {
                         @Override
                         public void run() {
                             mState = STATE_LOADING;
-                            mBitmap = loadBitmap(getUri());
+                            mBitmap = mUri
                             if (mBitmap != null) {
                                 if (mTargetState == STATE_LOCAL) {
                                     mState = STATE_LOCAL;
@@ -91,7 +91,7 @@ public class SimplePhotoData extends PhotoData {
                     @Override
                     public void run() {
                         mState = STATE_LOADING;
-                        loadBitmap(getUri());
+                      //  loadBitmap(getUri());
                         mState = STATE_BITMAP;
                     }
                 });
